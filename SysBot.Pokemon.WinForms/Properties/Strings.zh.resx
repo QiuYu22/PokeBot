@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title_BotManagement" xml:space="preserve">
+    <value>机器人管理</value>
+  </data>
+  <data name="Title_Configuration" xml:space="preserve">
+    <value>配置</value>
+  </data>
+  <data name="Title_SystemLogs" xml:space="preserve">
+    <value>系统日志</value>
+  </data>
+  <data name="Button_Bots" xml:space="preserve">
+    <value>机器人</value>
+  </data>
+  <data name="Button_Configuration" xml:space="preserve">
+    <value>配置</value>
+  </data>
+  <data name="Button_SystemLogs" xml:space="preserve">
+    <value>系统日志</value>
+  </data>
+  <data name="Button_SendToTray" xml:space="preserve">
+    <value>最小化到托盘</value>
+  </data>
+  <data name="Button_Start" xml:space="preserve">
+    <value>启动</value>
+  </data>
+  <data name="Button_Stop" xml:space="preserve">
+    <value>停止</value>
+  </data>
+  <data name="Button_Restart" xml:space="preserve">
+    <value>重启</value>
+  </data>
+  <data name="Button_Add" xml:space="preserve">
+    <value>添加</value>
+  </data>
+  <data name="Button_ClearLogs" xml:space="preserve">
+    <value>清除日志</value>
+  </data>
+  <data name="Placeholder_IPAddress" xml:space="preserve">
+    <value>IP地址</value>
+  </data>
+  <data name="Message_Alert" xml:space="preserve">
+    <value>提示</value>
+  </data>
+  <data name="Message_Error" xml:space="preserve">
+    <value>错误</value>
+  </data>
+  <data name="Message_Prompt" xml:space="preserve">
+    <value>询问</value>
+  </data>
+  <data name="Message_NoBotsConfigured" xml:space="preserve">
+    <value>未配置机器人，但所有支持服务已启动。</value>
+  </data>
+  <data name="Message_NothingRunning" xml:space="preserve">
+    <value>当前没有运行的任务。</value>
+  </data>
+  <data name="Message_UnableToAddBot" xml:space="preserve">
+    <value>无法添加机器人；请确保详细信息有效且不与现有机器人重复。</value>
+  </data>
+  <data name="Message_UpdateCheck" xml:space="preserve">
+    <value>更新检查</value>
+  </data>
+  <data name="Message_LatestVersion" xml:space="preserve">
+    <value>您使用的是最新版本。是否要重新下载当前版本？</value>
+  </data>
+  <data name="Tooltip_ManageBotConnections" xml:space="preserve">
+    <value>管理机器人连接</value>
+  </data>
+  <data name="Tooltip_SystemSettings" xml:space="preserve">
+    <value>系统设置</value>
+  </data>
+  <data name="Tooltip_ViewActivityLogs" xml:space="preserve">
+    <value>查看活动日志</value>
+  </data>
+  <data name="Tooltip_MinimizeToTray" xml:space="preserve">
+    <value>最小化到系统托盘</value>
+  </data>
+  <data name="Message_StartingAllBots" xml:space="preserve">
+    <value>正在启动所有机器人...</value>
+  </data>
+  <data name="Message_AllBotsStopped" xml:space="preserve">
+    <value>已向所有机器人发出 {0} 命令。</value>
+  </data>
+  <data name="Message_NoMatchesFound" xml:space="preserve">
+    <value>未找到匹配项</value>
+  </data>
+  <data name="Message_InvalidRegexPattern" xml:space="preserve">
+    <value>正则表达式无效</value>
+  </data>
+  <data name="Message_SearchStatus" xml:space="preserve">
+    <value>{0} / {1}</value>
+  </data>
+  <data name="Message_PokeBotMinimized" xml:space="preserve">
+    <value>PokéBot 已最小化</value>
+  </data>
+  <data name="Message_BotsRunning" xml:space="preserve">
+    <value>{0} / {1} 个机器人运行中</value>
+  </data>
+  <data name="Message_NoBotsConfiguredShort" xml:space="preserve">
+    <value>未配置机器人</value>
+  </data>
+</root>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Category_FeatureToggle" xml:space="preserve">
+    <value>Feature Toggle</value>
+  </data>
+  <data name="Category_Operation" xml:space="preserve">
+    <value>Operation</value>
+  </data>
+  <data name="Category_BotTrade" xml:space="preserve">
+    <value>Bot Trade</value>
+  </data>
+  <data name="Category_Integration" xml:space="preserve">
+    <value>Integration</value>
+  </data>
+  <data name="Category_BotEncounter" xml:space="preserve">
+    <value>Bot Encounter</value>
+  </data>
+  <data name="Category_TradeConfig" xml:space="preserve">
+    <value>Trade Config</value>
+  </data>
+  <data name="Category_EmbedSettings" xml:space="preserve">
+    <value>Embed Settings</value>
+  </data>
+  <data name="Category_RequestFolders" xml:space="preserve">
+    <value>Request Folders</value>
+  </data>
+  <data name="Category_CountStats" xml:space="preserve">
+    <value>Count Stats</value>
+  </data>
+  <data name="Category_Generate" xml:space="preserve">
+    <value>Generate</value>
+  </data>
+  <data name="Category_Files" xml:space="preserve">
+    <value>Files</value>
+  </data>
+  <data name="Category_WebServer" xml:space="preserve">
+    <value>Web Server</value>
+  </data>
+  <data name="Desc_AntiIdle" xml:space="preserve">
+    <value>When enabled, the bot will press the B button occasionally when it is not processing anything (to avoid sleep).</value>
+  </data>
+  <data name="Desc_LoggingEnabled" xml:space="preserve">
+    <value>Enables text logs. Restart to apply changes.</value>
+  </data>
+  <data name="Desc_MaxArchiveFiles" xml:space="preserve">
+    <value>Maximum number of old text log files to retain. Set this to &lt;= 0 to disable log cleanup. Restart to apply changes.</value>
+  </data>
+  <data name="Desc_UseKeyboard" xml:space="preserve">
+    <value>When enabled, the bot will Enter Link Trade Code via Keyboard (faster).</value>
+  </data>
+  <data name="Desc_BotName" xml:space="preserve">
+    <value>Name of the Discord Bot the Program is Running. This will Title the window for easier recognition. Requires program restart.</value>
+  </data>
+  <data name="Desc_DistributeFolder" xml:space="preserve">
+    <value>Source folder: where PKM files to distribute are selected from.</value>
+  </data>
+  <data name="Desc_Dump" xml:space="preserve">
+    <value>When enabled, dumps any received PKM files (trade results) to the DumpFolder.</value>
+  </data>
+  <data name="Desc_DumpFolder" xml:space="preserve">
+    <value>Destination folder: where all received PKM files are dumped to.</value>
+  </data>
+  <data name="Desc_ControlPanelPort" xml:space="preserve">
+    <value>The port number for the Bot Control Panel web interface. Default is 8080.</value>
+  </data>
+  <data name="Desc_EnableWebServer" xml:space="preserve">
+    <value>Enable or disable the web control panel. When disabled, the web interface will not be accessible.</value>
+  </data>
+  <data name="Desc_AllowExternalConnections" xml:space="preserve">
+    <value>Allow external connections to the web control panel. When false, only localhost connections are allowed.</value>
+  </data>
+</root>

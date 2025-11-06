@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using SysBot.Pokemon.WinForms.Helpers;
 
 namespace SysBot.Pokemon.WinForms;
 
@@ -14,7 +15,8 @@ public static class WinFormsUtil
         if (sound)
             System.Media.SystemSounds.Asterisk.Play();
         string msg = string.Join(Environment.NewLine + Environment.NewLine, lines);
-        return MessageBox.Show(msg, "Alert", MessageBoxButtons.OK, sound ? MessageBoxIcon.Information : MessageBoxIcon.None);
+        string title = LocalizationHelper.GetString("Message_Alert", "Alert");
+        return MessageBox.Show(msg, title, MessageBoxButtons.OK, sound ? MessageBoxIcon.Information : MessageBoxIcon.None);
     }
 
     /// <summary>
@@ -26,14 +28,16 @@ public static class WinFormsUtil
     {
         System.Media.SystemSounds.Hand.Play();
         string msg = string.Join(Environment.NewLine + Environment.NewLine, lines);
-        return MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        string title = LocalizationHelper.GetString("Message_Error", "Error");
+        return MessageBox.Show(msg, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
     }
 
     internal static DialogResult Prompt(MessageBoxButtons btn, params string[] lines)
     {
         System.Media.SystemSounds.Asterisk.Play();
         string msg = string.Join(Environment.NewLine + Environment.NewLine, lines);
-        return MessageBox.Show(msg, "Prompt", btn, MessageBoxIcon.Question);
+        string title = LocalizationHelper.GetString("Message_Prompt", "Prompt");
+        return MessageBox.Show(msg, title, btn, MessageBoxIcon.Question);
     }
 
     #endregion Message Displays

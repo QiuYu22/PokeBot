@@ -1,0 +1,2161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Category_FeatureToggle" xml:space="preserve">
+    <value>功能开关</value>
+  </data>
+  <data name="Category_Operation" xml:space="preserve">
+    <value>操作</value>
+  </data>
+  <data name="Category_BotTrade" xml:space="preserve">
+    <value>机器人交易</value>
+  </data>
+  <data name="Category_Integration" xml:space="preserve">
+    <value>集成</value>
+  </data>
+  <data name="Category_BotEncounter" xml:space="preserve">
+    <value>机器人遭遇</value>
+  </data>
+  <data name="Category_TradeConfig" xml:space="preserve">
+    <value>交易配置</value>
+  </data>
+  <data name="Category_EmbedSettings" xml:space="preserve">
+    <value>嵌入设置</value>
+  </data>
+  <data name="Category_RequestFolders" xml:space="preserve">
+    <value>请求文件夹</value>
+  </data>
+  <data name="Category_CountStats" xml:space="preserve">
+    <value>统计计数</value>
+  </data>
+  <data name="Category_Generate" xml:space="preserve">
+    <value>生成</value>
+  </data>
+  <data name="Category_Files" xml:space="preserve">
+    <value>文件</value>
+  </data>
+  <data name="Category_WebServer" xml:space="preserve">
+    <value>Web服务器</value>
+  </data>
+  <data name="Desc_AntiIdle" xml:space="preserve">
+    <value>启用后，机器人会在不处理任何任务时偶尔按下B键（以避免休眠）。</value>
+  </data>
+  <data name="Desc_LoggingEnabled" xml:space="preserve">
+    <value>启用文本日志。需要重启程序以应用更改。</value>
+  </data>
+  <data name="Desc_MaxArchiveFiles" xml:space="preserve">
+    <value>保留的旧文本日志文件的最大数量。设置为 &lt;= 0 以禁用日志清理。需要重启程序以应用更改。</value>
+  </data>
+  <data name="Desc_UseKeyboard" xml:space="preserve">
+    <value>启用后，机器人将通过键盘输入链接交易代码（更快）。</value>
+  </data>
+  <data name="Desc_BotName" xml:space="preserve">
+    <value>Discord机器人的名称。这将为窗口标题以便于识别。需要重启程序。</value>
+  </data>
+  <data name="Desc_DistributeFolder" xml:space="preserve">
+    <value>源文件夹：选择要分发的PKM文件的位置。</value>
+  </data>
+  <data name="Desc_Dump" xml:space="preserve">
+    <value>启用后，会将接收到的所有PKM文件（交易结果）转储到DumpFolder。</value>
+  </data>
+  <data name="Desc_DumpFolder" xml:space="preserve">
+    <value>目标文件夹：所有接收到的PKM文件转储的位置。</value>
+  </data>
+  <data name="Desc_ControlPanelPort" xml:space="preserve">
+    <value>机器人控制面板Web界面的端口号。默认为8080。</value>
+  </data>
+  <data name="Desc_EnableWebServer" xml:space="preserve">
+    <value>启用或禁用Web控制面板。禁用后，Web界面将无法访问。</value>
+  </data>
+  <data name="Desc_AllowExternalConnections" xml:space="preserve">
+    <value>允许外部连接到Web控制面板。设置为false时，仅允许本地主机连接。</value>
+  </data>
+  <data name="Category_Monitoring" xml:space="preserve">
+    <value>监控</value>
+  </data>
+  <data name="Category_QueueToggle" xml:space="preserve">
+    <value>队列开关</value>
+  </data>
+  <data name="Category_TimeBias" xml:space="preserve">
+    <value>时间偏置</value>
+  </data>
+  <data name="Category_UserBias" xml:space="preserve">
+    <value>用户偏置</value>
+  </data>
+  <data name="Category_Distribute" xml:space="preserve">
+    <value>分发</value>
+  </data>
+  <data name="Category_Synchronize" xml:space="preserve">
+    <value>同步</value>
+  </data>
+  <data name="Category_Recovery" xml:space="preserve">
+    <value>恢复</value>
+  </data>
+  <data name="Category_Miscellaneous" xml:space="preserve">
+    <value>其他</value>
+  </data>
+  <data name="Category_Misc" xml:space="preserve">
+    <value>杂项</value>
+  </data>
+  <data name="Category_HOMELegality" xml:space="preserve">
+    <value>HOME合法性</value>
+  </data>
+  <data name="Desc_TradeSettingsCategory_TradeConfiguration" xml:space="preserve">
+    <value>交易配置相关设置。</value>
+  </data>
+  <data name="Display_TradeConfiguration" xml:space="preserve">
+    <value>交易配置</value>
+  </data>
+  <data name="Desc_TradeSettingsCategory_MinTradeCode" xml:space="preserve">
+    <value>最小链接代码。</value>
+  </data>
+  <data name="Display_MinimumTradeLinkCode" xml:space="preserve">
+    <value>最小交易链接代码</value>
+  </data>
+  <data name="Desc_TradeSettingsCategory_MaxTradeCode" xml:space="preserve">
+    <value>最大链接代码。</value>
+  </data>
+  <data name="Display_MaximumTradeLinkCode" xml:space="preserve">
+    <value>最大交易链接代码</value>
+  </data>
+  <data name="Desc_TradeSettingsCategory_StoreTradeCodes" xml:space="preserve">
+    <value>如果设置为True，Discord用户的交易代码将被存储并重复使用，不会更改。</value>
+  </data>
+  <data name="Display_StoreAndReuseTradeCodes" xml:space="preserve">
+    <value>存储并重用交易代码</value>
+  </data>
+  <data name="Desc_TradeSettingsCategory_TradeWaitTime" xml:space="preserve">
+    <value>等待交易伙伴的时间（秒）。</value>
+  </data>
+  <data name="Display_TradePartnerWaitTime" xml:space="preserve">
+    <value>交易伙伴等待时间（秒）</value>
+  </data>
+  <data name="Desc_TradeSettingsCategory_MaxTradeConfirmTime" xml:space="preserve">
+    <value>等待交易处理的最大时间（秒），按A键等待。</value>
+  </data>
+  <data name="Display_MaximumTradeConfirmationTime" xml:space="preserve">
+    <value>最大交易确认时间（秒）</value>
+  </data>
+  <data name="Desc_TradeSettingsCategory_ItemTradeSpecies" xml:space="preserve">
+    <value>如果已配置，为"ItemTrade"选择默认精灵种类。</value>
+  </data>
+  <data name="Display_DefaultSpeciesForItemTrades" xml:space="preserve">
+    <value>道具交易的默认精灵</value>
+  </data>
+  <data name="Desc_TradeSettingsCategory_DefaultHeldItem" xml:space="preserve">
+    <value>如果未指定，发送的默认持有道具。</value>
+  </data>
+  <data name="Display_DefaultHeldItemForTrades" xml:space="preserve">
+    <value>交易的默认持有道具</value>
+  </data>
+  <data name="Desc_TradeSettingsCategory_SuggestRelearnMoves" xml:space="preserve">
+    <value>如果设置为True，每个有效的宝可梦都会自动包含所有建议的可重新学习招式，无需批处理命令。</value>
+  </data>
+  <data name="Display_SuggestRelearnableMovesByDefault" xml:space="preserve">
+    <value>默认建议可重新学习招式</value>
+  </data>
+  <data name="Desc_TradeSettingsCategory_AllowBatchTrades" xml:space="preserve">
+    <value>切换是否允许批量交易。</value>
+  </data>
+  <data name="Display_AllowBatchTrades" xml:space="preserve">
+    <value>允许批量交易</value>
+  </data>
+  <data name="Desc_TradeSettingsCategory_EnableSpamCheck" xml:space="preserve">
+    <value>检查昵称和OT是否包含垃圾信息。</value>
+  </data>
+  <data name="Display_EnableSpamCheck" xml:space="preserve">
+    <value>启用垃圾信息检查</value>
+  </data>
+  <data name="Desc_TradeSettingsCategory_MaxPkmsPerTrade" xml:space="preserve">
+    <value>单次交易的最大宝可梦数量。如果此配置小于1，批量模式将关闭。</value>
+  </data>
+  <data name="Display_MaximumPokémonPerTrade" xml:space="preserve">
+    <value>每次交易的最大宝可梦数</value>
+  </data>
+  <data name="Desc_TradeSettingsCategory_MaxDumpsPerTrade" xml:space="preserve">
+    <value>转储交易：转储例程将在单个用户转储达到最大数量后停止。</value>
+  </data>
+  <data name="Display_MaximumDumpsPerTrade" xml:space="preserve">
+    <value>每次交易的最大转储数</value>
+  </data>
+  <data name="Desc_TradeSettingsCategory_MaxDumpTradeTime" xml:space="preserve">
+    <value>转储交易：转储例程在交易中花费x秒后停止。</value>
+  </data>
+  <data name="Display_MaximumDumpTradeTime" xml:space="preserve">
+    <value>最大转储交易时间（秒）</value>
+  </data>
+  <data name="Desc_TradeSettingsCategory_DumpTradeLegalityCheck" xml:space="preserve">
+    <value>转储交易：如果启用，转储例程将向用户输出合法性检查信息。</value>
+  </data>
+  <data name="Display_DumpTradeLegalityCheck" xml:space="preserve">
+    <value>转储交易合法性检查</value>
+  </data>
+  <data name="Desc_TradeEmbedSettingsCategory_TradeEmbedSettings" xml:space="preserve">
+    <value>Discord中交易嵌入的相关设置。</value>
+  </data>
+  <data name="Display_TradeEmbedSettings" xml:space="preserve">
+    <value>交易嵌入设置</value>
+  </data>
+  <data name="Desc_TradeEmbedSettingsCategory_UseEmbeds" xml:space="preserve">
+    <value>如果为true，将在Discord交易频道中显示美观的嵌入内容，显示用户正在交易的内容。False将显示默认文本。</value>
+  </data>
+  <data name="Display_UseEmbeds" xml:space="preserve">
+    <value>使用嵌入</value>
+  </data>
+  <data name="Desc_TradeEmbedSettingsCategory_PreferredImageSize" xml:space="preserve">
+    <value>嵌入的优选精灵图像大小。</value>
+  </data>
+  <data name="Display_SpeciesImageSize" xml:space="preserve">
+    <value>精灵图像大小</value>
+  </data>
+  <data name="Desc_TradeEmbedSettingsCategory_MoveTypeEmojis" xml:space="preserve">
+    <value>将在交易嵌入中的招式旁边显示招式类型图标（仅限Discord）。需要用户将表情符号上传到服务器。</value>
+  </data>
+  <data name="Display_ShowMoveTypeEmojis" xml:space="preserve">
+    <value>显示招式类型表情符号</value>
+  </data>
+  <data name="Desc_TradeEmbedSettingsCategory_CustomTypeEmojis" xml:space="preserve">
+    <value>招式类型的自定义表情符号信息。</value>
+  </data>
+  <data name="Display_CustomTypeEmojis" xml:space="preserve">
+    <value>自定义类型表情符号</value>
+  </data>
+  <data name="Desc_TradeEmbedSettingsCategory_MaleEmoji" xml:space="preserve">
+    <value>男性性别的完整表情符号字符串。</value>
+  </data>
+  <data name="Display_MaleEmoji" xml:space="preserve">
+    <value>男性表情符号</value>
+  </data>
+  <data name="Desc_TradeEmbedSettingsCategory_FemaleEmoji" xml:space="preserve">
+    <value>女性性别的完整表情符号字符串。</value>
+  </data>
+  <data name="Display_FemaleEmoji" xml:space="preserve">
+    <value>女性表情符号</value>
+  </data>
+  <data name="Desc_TradeEmbedSettingsCategory_ShowScale" xml:space="preserve">
+    <value>将在交易嵌入中显示尺寸（仅限SV和Discord）。需要用户将表情符号上传到服务器。</value>
+  </data>
+  <data name="Display_ShowScale" xml:space="preserve">
+    <value>显示尺寸</value>
+  </data>
+  <data name="Desc_TradeEmbedSettingsCategory_ShowTeraType" xml:space="preserve">
+    <value>将在交易嵌入中显示太晶类型（仅限SV和Discord）。</value>
+  </data>
+  <data name="Display_ShowTeraType" xml:space="preserve">
+    <value>显示太晶类型</value>
+  </data>
+  <data name="Desc_TradeEmbedSettingsCategory_ShowLevel" xml:space="preserve">
+    <value>将在交易嵌入中显示等级（仅限Discord）。</value>
+  </data>
+  <data name="Display_ShowLevel" xml:space="preserve">
+    <value>显示等级</value>
+  </data>
+  <data name="Desc_TradeEmbedSettingsCategory_ShowMetDate" xml:space="preserve">
+    <value>将在交易嵌入中显示捕获日期（仅限Discord）。</value>
+  </data>
+  <data name="Display_ShowMetDate" xml:space="preserve">
+    <value>显示捕获日期</value>
+  </data>
+  <data name="Desc_TradeEmbedSettingsCategory_ShowAbility" xml:space="preserve">
+    <value>将在交易嵌入中显示特性（仅限Discord）。</value>
+  </data>
+  <data name="Display_ShowAbility" xml:space="preserve">
+    <value>显示特性</value>
+  </data>
+  <data name="Desc_TradeEmbedSettingsCategory_ShowNature" xml:space="preserve">
+    <value>将在交易嵌入中显示性格（仅限Discord）。</value>
+  </data>
+  <data name="Display_ShowNature" xml:space="preserve">
+    <value>显示性格</value>
+  </data>
+  <data name="Desc_TradeEmbedSettingsCategory_ShowLanguage" xml:space="preserve">
+    <value>将在交易嵌入中显示PKM语言（仅限Discord）。</value>
+  </data>
+  <data name="Display_ShowLanguage" xml:space="preserve">
+    <value>显示语言</value>
+  </data>
+  <data name="Desc_TradeEmbedSettingsCategory_ShowIVs" xml:space="preserve">
+    <value>将在交易嵌入中显示个体值（仅限Discord）。</value>
+  </data>
+  <data name="Display_ShowIVs" xml:space="preserve">
+    <value>显示个体值</value>
+  </data>
+  <data name="Desc_TradeEmbedSettingsCategory_ShowEVs" xml:space="preserve">
+    <value>将在交易嵌入中显示努力值（仅限Discord）。</value>
+  </data>
+  <data name="Display_ShowEVs" xml:space="preserve">
+    <value>显示努力值</value>
+  </data>
+  <data name="Desc_RequestFolderSettingsCategory_EventsFolder" xml:space="preserve">
+    <value>事件文件夹的路径。创建一个名为'events'的新文件夹并在此处复制路径。</value>
+  </data>
+  <data name="Display_EventsFolderPath" xml:space="preserve">
+    <value>事件文件夹路径</value>
+  </data>
+  <data name="Desc_RequestFolderSettingsCategory_BattleReadyPKMFolder" xml:space="preserve">
+    <value>对战就绪文件夹的路径。创建一个名为'battleready'的新文件夹并在此处复制路径。</value>
+  </data>
+  <data name="Display_Battle-ReadyFolderPath" xml:space="preserve">
+    <value>对战就绪文件夹路径</value>
+  </data>
+  <data name="Desc_TradeSettings_ScreenOff" xml:space="preserve">
+    <value>在交易期间关闭Switch屏幕。</value>
+  </data>
+  <data name="Display_ScreenOff" xml:space="preserve">
+    <value>关闭屏幕</value>
+  </data>
+  <data name="Desc_CountStatsSettingsCategory_CompletedSurprise" xml:space="preserve">
+    <value>已完成的惊喜交易。</value>
+  </data>
+  <data name="Desc_CountStatsSettingsCategory_CompletedDistribution" xml:space="preserve">
+    <value>已完成的链接交易（分发）。</value>
+  </data>
+  <data name="Desc_CountStatsSettingsCategory_CompletedTrades" xml:space="preserve">
+    <value>已完成的链接交易（特定用户）。</value>
+  </data>
+  <data name="Desc_CountStatsSettingsCategory_CompletedFixOTs" xml:space="preserve">
+    <value>已完成的FixOT交易（特定用户）。</value>
+  </data>
+  <data name="Desc_CountStatsSettingsCategory_CompletedSeedChecks" xml:space="preserve">
+    <value>已完成的种子检查交易。</value>
+  </data>
+  <data name="Desc_CountStatsSettingsCategory_CompletedClones" xml:space="preserve">
+    <value>已完成的克隆交易（特定用户）。</value>
+  </data>
+  <data name="Desc_CountStatsSettingsCategory_CompletedDumps" xml:space="preserve">
+    <value>已完成的转储交易（特定用户）。</value>
+  </data>
+  <data name="Desc_CountStatsSettingsCategory_EmitCountsOnStatusCheck" xml:space="preserve">
+    <value>启用后，在请求状态检查时将发出计数。</value>
+  </data>
+  <data name="Desc_QueueSettings_CanDequeueIfProcessing" xml:space="preserve">
+    <value>允许用户在交易时退出队列。</value>
+  </data>
+  <data name="Desc_QueueSettings_CanQueue" xml:space="preserve">
+    <value>切换用户是否可以加入队列。</value>
+  </data>
+  <data name="Desc_QueueSettings_EstimatedDelayFactor" xml:space="preserve">
+    <value>将队列中的用户数量乘以一个因子，以估算用户被处理所需的时间。</value>
+  </data>
+  <data name="Desc_QueueSettings_FlexMode" xml:space="preserve">
+    <value>确定Flex模式如何处理队列。</value>
+  </data>
+  <data name="Desc_QueueSettings_IntervalCloseFor" xml:space="preserve">
+    <value>计划模式：队列关闭的秒数，然后队列解锁。</value>
+  </data>
+  <data name="Desc_QueueSettings_IntervalOpenFor" xml:space="preserve">
+    <value>计划模式：队列打开的秒数，然后队列锁定。</value>
+  </data>
+  <data name="Desc_QueueSettings_MaxQueueCount" xml:space="preserve">
+    <value>如果队列中已有这么多用户，则阻止添加用户。</value>
+  </data>
+  <data name="Desc_QueueSettings_QueueToggleMode" xml:space="preserve">
+    <value>确定队列何时打开和关闭。</value>
+  </data>
+  <data name="Desc_QueueSettings_NotifyOnQueueClose" xml:space="preserve">
+    <value>启用后，当队列因达到最大容量而关闭时，会向公告频道发送嵌入通知。</value>
+  </data>
+  <data name="Desc_QueueSettings_ThresholdLock" xml:space="preserve">
+    <value>阈值模式：导致队列关闭的用户数量。</value>
+  </data>
+  <data name="Desc_QueueSettings_ThresholdUnlock" xml:space="preserve">
+    <value>阈值模式：导致队列打开的用户数量。</value>
+  </data>
+  <data name="Desc_LegalitySettings_AllowBatchCommands" xml:space="preserve">
+    <value>允许用户使用批处理编辑器命令提交更多自定义。</value>
+  </data>
+  <data name="Desc_LegalitySettings_AllowTrainerDataOverride" xml:space="preserve">
+    <value>允许用户在Showdown集合中提交自定义OT、TID、SID和OT性别。</value>
+  </data>
+  <data name="Desc_LegalitySettings_DisallowNonNatives" xml:space="preserve">
+    <value>阻止交易需要HOME追踪器的宝可梦，即使文件已经有一个。</value>
+  </data>
+  <data name="Display_DisallowNon-NativePokémon" xml:space="preserve">
+    <value>禁止非本地宝可梦</value>
+  </data>
+  <data name="Desc_LegalitySettings_DisallowTracked" xml:space="preserve">
+    <value>阻止交易已经有HOME追踪器的宝可梦。</value>
+  </data>
+  <data name="Display_DisallowHomeTrackedPokémon" xml:space="preserve">
+    <value>禁止HOME追踪宝可梦</value>
+  </data>
+  <data name="Desc_LegalitySettings_EnableEasterEggs" xml:space="preserve">
+    <value>如果提供非法集合，机器人将创建一个彩蛋宝可梦。</value>
+  </data>
+  <data name="Desc_LegalitySettings_EnableHOMETrackerCheck" xml:space="preserve">
+    <value>要求在Switch游戏之间旅行的宝可梦必须有HOME追踪器。</value>
+  </data>
+  <data name="Desc_LegalitySettings_ForceLevel100for50" xml:space="preserve">
+    <value>假设50级的集合是100级的对战集合。</value>
+  </data>
+  <data name="Desc_LegalitySettings_ForceSpecifiedBall" xml:space="preserve">
+    <value>如果合法，强制使用指定的球。</value>
+  </data>
+  <data name="Desc_LegalitySettings_GenerateLanguage" xml:space="preserve">
+    <value>与提供的PKM文件不匹配的PKM文件的默认语言。</value>
+  </data>
+  <data name="Desc_LegalitySettings_GenerateOT" xml:space="preserve">
+    <value>与提供的PKM文件不匹配的PKM文件的默认原始训练师名称。</value>
+  </data>
+  <data name="Desc_LegalitySettings_GeneratePathTrainerInfo" xml:space="preserve">
+    <value>包含训练师数据的PKM文件文件夹，用于重新生成的PKM文件。</value>
+  </data>
+  <data name="Desc_LegalitySettings_GenerateSID16" xml:space="preserve">
+    <value>与提供的训练师数据文件不匹配的请求的默认16位秘密ID（SID）。这应该是一个5位数字。</value>
+  </data>
+  <data name="Desc_LegalitySettings_GenerateTID16" xml:space="preserve">
+    <value>与提供的训练师数据文件不匹配的请求的默认16位训练师ID（TID）。这应该是一个5位数字。</value>
+  </data>
+  <data name="Desc_LegalitySettings_MGDBPath" xml:space="preserve">
+    <value>奇迹卡片的MGDB目录路径。</value>
+  </data>
+  <data name="Desc_LegalitySettings_PrioritizeEncounters" xml:space="preserve">
+    <value>尝试宝可梦遭遇类型的顺序。</value>
+  </data>
+  <data name="Desc_LegalitySettings_PrioritizeGame" xml:space="preserve">
+    <value>如果PrioritizeGame设置为"True"，使用PriorityOrder开始查找遭遇。如果"False"，使用最新游戏作为版本。建议将其保留为"True"。</value>
+  </data>
+  <data name="Desc_LegalitySettings_PriorityOrder" xml:space="preserve">
+    <value>ALM将尝试合法化的游戏版本顺序。</value>
+  </data>
+  <data name="Desc_LegalitySettings_SetAllLegalRibbons" xml:space="preserve">
+    <value>为任何生成的宝可梦设置所有可能的合法缎带。</value>
+  </data>
+  <data name="Desc_LegalitySettings_SetMatchingBalls" xml:space="preserve">
+    <value>为任何生成的宝可梦设置匹配的球（基于颜色）。</value>
+  </data>
+  <data name="Desc_LegalitySettings_Timeout" xml:space="preserve">
+    <value>生成集合时在取消前花费的最大时间（秒）。这可以防止困难的集合冻结机器人。</value>
+  </data>
+  <data name="Desc_LegalitySettings_UseTradePartnerInfo" xml:space="preserve">
+    <value>使用有效的宝可梦，应用训练师的OT/SID/TID（AutoOT）。</value>
+  </data>
+  <data name="Desc_TradeAbuseSettings_TradeCooldown" xml:space="preserve">
+    <value>当一个人在少于此设置的值（分钟）内再次出现时，将发送通知。</value>
+  </data>
+  <data name="Desc_TradeAbuseSettings_EchoNintendoOnlineIDCooldown" xml:space="preserve">
+    <value>当一个人忽略交易冷却时间时，回显消息将包含他们的Nintendo账户ID。</value>
+  </data>
+  <data name="Desc_TradeAbuseSettings_CooldownAbuseEchoMention" xml:space="preserve">
+    <value>如果不为空，提供的字符串将附加到Echo警报中，以在用户违反交易冷却时间时通知您指定的人员。对于Discord，使用&lt;@userIDnumber&gt;来提及。</value>
+  </data>
+  <data name="Desc_TradeAbuseSettings_TradeAbuseExpiration" xml:space="preserve">
+    <value>当一个人在少于此设置的值（分钟）内使用不同的Discord/Twitch账户出现时，将发送通知。</value>
+  </data>
+  <data name="Desc_TradeAbuseSettings_EchoNintendoOnlineIDMulti" xml:space="preserve">
+    <value>当检测到一个人使用多个Discord/Twitch账户时，回显消息将包含他们的Nintendo账户ID。</value>
+  </data>
+  <data name="Desc_TradeAbuseSettings_EchoNintendoOnlineIDMultiRecipients" xml:space="preserve">
+    <value>当检测到一个人向多个游戏内账户发送时，回显消息将包含他们的Nintendo账户ID。</value>
+  </data>
+  <data name="Desc_TradeAbuseSettings_TradeAbuseAction" xml:space="preserve">
+    <value>当检测到一个人使用多个Discord/Twitch账户时，将采取此操作。</value>
+  </data>
+  <data name="Desc_TradeAbuseSettings_BanIDWhenBlockingUser" xml:space="preserve">
+    <value>当一个人在游戏中因多个账户而被阻止时，他们的在线ID将被添加到BannedIDs中。</value>
+  </data>
+  <data name="Desc_TradeAbuseSettings_MultiAbuseEchoMention" xml:space="preserve">
+    <value>如果不为空，提供的字符串将附加到Echo警报中，以在发现用户使用多个账户时通知您指定的人员。对于Discord，使用&lt;@userIDnumber&gt;来提及。</value>
+  </data>
+  <data name="Desc_TradeAbuseSettings_MultiRecipientEchoMention" xml:space="preserve">
+    <value>如果不为空，提供的字符串将附加到Echo警报中，以在发现用户向游戏内多个玩家发送时通知您指定的人员。对于Discord，使用&lt;@userIDnumber&gt;来提及。</value>
+  </data>
+  <data name="Desc_TradeAbuseSettings_BannedIDs" xml:space="preserve">
+    <value>将触发交易退出或游戏内阻止的已禁止在线ID。</value>
+  </data>
+  <data name="Desc_TradeAbuseSettings_BlockDetectedBannedUser" xml:space="preserve">
+    <value>当遇到具有已禁止ID的人时，在退出交易之前在游戏中阻止他们。</value>
+  </data>
+  <data name="Desc_TradeAbuseSettings_BannedIDMatchEchoMention" xml:space="preserve">
+    <value>如果不为空，提供的字符串将附加到Echo警报中，以在用户匹配已禁止ID时通知您指定的人员。对于Discord，使用&lt;@userIDnumber&gt;来提及。</value>
+  </data>
+  <data name="Desc_RecoverySettings_EnableRecovery" xml:space="preserve">
+    <value>为崩溃或停止的机器人启用自动恢复尝试。</value>
+  </data>
+  <data name="Desc_RecoverySettings_MaxRecoveryAttempts" xml:space="preserve">
+    <value>在放弃机器人之前连续恢复尝试的最大次数。</value>
+  </data>
+  <data name="Desc_RecoverySettings_InitialRecoveryDelaySeconds" xml:space="preserve">
+    <value>尝试重启崩溃的机器人之前的初始延迟（秒）。</value>
+  </data>
+  <data name="Desc_RecoverySettings_MaxRecoveryDelaySeconds" xml:space="preserve">
+    <value>恢复尝试之间的最大延迟（秒）（用于指数退避）。</value>
+  </data>
+  <data name="Desc_RecoverySettings_BackoffMultiplier" xml:space="preserve">
+    <value>指数退避的乘数（例如，2.0每次使延迟加倍）。</value>
+  </data>
+  <data name="Desc_RecoverySettings_CrashHistoryWindowMinutes" xml:space="preserve">
+    <value>跟踪崩溃历史的时间窗口（分钟）。此窗口外的崩溃不计入。</value>
+  </data>
+  <data name="Desc_RecoverySettings_MaxCrashesInWindow" xml:space="preserve">
+    <value>在历史窗口内永久关闭之前允许的最大崩溃次数。</value>
+  </data>
+  <data name="Desc_RecoverySettings_RecoverIntentionalStops" xml:space="preserve">
+    <value>启用对故意停止的机器人的恢复（对网络断开有用）。</value>
+  </data>
+  <data name="Desc_RecoverySettings_SuccessfulRecoveryResetDelaySeconds" xml:space="preserve">
+    <value>成功恢复后等待重置尝试计数器的延迟（秒）。</value>
+  </data>
+  <data name="Desc_RecoverySettings_NotifyOnRecoveryAttempt" xml:space="preserve">
+    <value>当机器人崩溃并尝试恢复时发送通知。</value>
+  </data>
+  <data name="Desc_RecoverySettings_NotifyOnRecoveryFailure" xml:space="preserve">
+    <value>当机器人在所有尝试后无法恢复时发送通知。</value>
+  </data>
+  <data name="Desc_RecoverySettings_MinimumStableUptimeSeconds" xml:space="preserve">
+    <value>机器人被认为稳定（重置恢复尝试）之前的最小运行时间（秒）。</value>
+  </data>
+  <data name="Desc_DistributionSettings_DistributeWhileIdle" xml:space="preserve">
+    <value>启用后，空闲的LinkTrade机器人将从DistributeFolder随机分发PKM文件。</value>
+  </data>
+  <data name="Desc_DistributionSettings_LedyQuitIfNoMatch" xml:space="preserve">
+    <value>如果设置为true，随机Ledy昵称交换交易将退出，而不是从池中交易随机实体。</value>
+  </data>
+  <data name="Desc_DistributionSettings_LedySpecies" xml:space="preserve">
+    <value>当设置为None以外的值时，随机交易除了昵称匹配外还需要此精灵种类。</value>
+  </data>
+  <data name="Desc_DistributionSettings_RandomCode" xml:space="preserve">
+    <value>分发交易链接代码使用最小和最大范围，而不是固定的交易代码。</value>
+  </data>
+  <data name="Desc_DistributionSettings_RemainInUnionRoomBDSP" xml:space="preserve">
+    <value>对于BDSP，分发机器人将前往特定房间并保持在那里，直到机器人停止。</value>
+  </data>
+  <data name="Desc_DistributionSettings_Shuffled" xml:space="preserve">
+    <value>启用后，DistributionFolder将随机产生，而不是按相同顺序产生。</value>
+  </data>
+  <data name="Desc_DistributionSettings_SynchronizeBots" xml:space="preserve">
+    <value>链接交易：使用多个分发机器人——所有机器人将在同一时间确认其交易代码。当为Local时，机器人将在所有机器人都到达屏障时继续。当为Remote时，必须由其他东西发出信号让机器人继续。</value>
+  </data>
+  <data name="Desc_DistributionSettings_SynchronizeDelayBarrier" xml:space="preserve">
+    <value>链接交易：使用多个分发机器人——一旦所有机器人都准备好确认交易代码，Hub将在释放所有机器人之前等待X毫秒。</value>
+  </data>
+  <data name="Desc_DistributionSettings_SynchronizeTimeout" xml:space="preserve">
+    <value>链接交易：使用多个分发机器人——机器人在继续之前等待同步的时间（秒）。</value>
+  </data>
+  <data name="Category_Configure" xml:space="preserve">
+    <value>配置</value>
+  </data>
+  <data name="Category_StopConditions" xml:space="preserve">
+    <value>停止条件</value>
+  </data>
+  <data name="Category_Channels" xml:space="preserve">
+    <value>频道</value>
+  </data>
+  <data name="Category_Roles" xml:space="preserve">
+    <value>角色</value>
+  </data>
+  <data name="Category_Servers" xml:space="preserve">
+    <value>服务器</value>
+  </data>
+  <data name="Category_Startup" xml:space="preserve">
+    <value>启动</value>
+  </data>
+  <data name="Category_Users" xml:space="preserve">
+    <value>用户</value>
+  </data>
+  <data name="Category_Messages" xml:space="preserve">
+    <value>消息</value>
+  </data>
+  <data name="Category_CloseGame" xml:space="preserve">
+    <value>关闭游戏</value>
+  </data>
+  <data name="Category_OpenGame" xml:space="preserve">
+    <value>打开游戏</value>
+  </data>
+  <data name="Category_Raid" xml:space="preserve">
+    <value>极巨团体战</value>
+  </data>
+  <data name="Desc_FavoredPrioritySettings_EnableFavoritism" xml:space="preserve">
+    <value>启用或禁用优先级用户偏好。禁用后，所有用户将被平等对待。</value>
+  </data>
+  <data name="Desc_FavoredPrioritySettings_SkipPercentage" xml:space="preserve">
+    <value>优先级用户可以跳过的普通用户百分比（0-100）。例如：50%意味着优先级用户在队列中普通用户的一半位置加入。百分比越高=对优先级用户越有利。</value>
+  </data>
+  <data name="Desc_FavoredPrioritySettings_MinimumRegularUsersFirst" xml:space="preserve">
+    <value>在任何优先级用户可以跳过之前必须处理的普通用户最小数量。这可以防止优先级用户在大队列中完全阻止普通用户。</value>
+  </data>
+  <data name="Desc_SeedCheckSettings_ResultDisplayMode" xml:space="preserve">
+    <value>允许只返回最接近的闪光帧、第一个星星和方块闪光帧，或前三个闪光帧。</value>
+  </data>
+  <data name="Desc_SeedCheckSettings_ShowAllZ3Results" xml:space="preserve">
+    <value>启用后，种子检查将返回所有可能的种子结果，而不是第一个有效匹配。</value>
+  </data>
+  <data name="Desc_StopConditionSettings_CaptureVideoClip" xml:space="preserve">
+    <value>当EncounterBot或Fossilbot找到匹配的宝可梦时，按住捕获按钮录制30秒片段。</value>
+  </data>
+  <data name="Desc_StopConditionSettings_ExtraTimeWaitCaptureVideo" xml:space="preserve">
+    <value>匹配遭遇后，在按捕获按钮之前等待的额外时间（毫秒），用于EncounterBot或Fossilbot。</value>
+  </data>
+  <data name="Desc_StopConditionSettings_MarkOnly" xml:space="preserve">
+    <value>仅在具有标记的宝可梦上停止。</value>
+  </data>
+  <data name="Desc_StopConditionSettings_MatchFoundEchoMention" xml:space="preserve">
+    <value>如果不为空，提供的字符串将添加到找到的结果日志消息的开头，以向您指定的人员发送Echo警报。对于Discord，使用&lt;@userIDnumber&gt;来提及。</value>
+  </data>
+  <data name="Desc_StopConditionSettings_MatchShinyAndIV" xml:space="preserve">
+    <value>如果设置为TRUE，同时匹配ShinyTarget和TargetIVs设置。否则，查找ShinyTarget或TargetIVs匹配。</value>
+  </data>
+  <data name="Desc_StopConditionSettings_ShinyTarget" xml:space="preserve">
+    <value>选择要停止的闪光类型。</value>
+  </data>
+  <data name="Desc_StopConditionSettings_StopOnForm" xml:space="preserve">
+    <value>仅在此FormID的宝可梦上停止。如果留空则无限制。</value>
+  </data>
+  <data name="Desc_StopConditionSettings_StopOnSpecies" xml:space="preserve">
+    <value>仅在此种类的宝可梦上停止。如果设置为"None"则无限制。</value>
+  </data>
+  <data name="Desc_StopConditionSettings_TargetMaxIVs" xml:space="preserve">
+    <value>最大接受个体值，格式为HP/Atk/Def/SpA/SpD/Spe。使用"x"表示未检查的个体值，使用"/"作为分隔符。</value>
+  </data>
+  <data name="Desc_StopConditionSettings_TargetMinIVs" xml:space="preserve">
+    <value>最小接受个体值，格式为HP/Atk/Def/SpA/SpD/Spe。使用"x"表示未检查的个体值，使用"/"作为分隔符。</value>
+  </data>
+  <data name="Desc_StopConditionSettings_TargetNature" xml:space="preserve">
+    <value>仅在指定性格的宝可梦上停止。</value>
+  </data>
+  <data name="Desc_StopConditionSettings_UnwantedMarks" xml:space="preserve">
+    <value>要忽略的标记列表，用逗号分隔。使用全名，例如"Uncommon Mark, Dawn Mark, Prideful Mark"。</value>
+  </data>
+  <data name="Desc_DiscordSettings_Token" xml:space="preserve">
+    <value>机器人登录令牌。</value>
+  </data>
+  <data name="Desc_DiscordSettings_AdditionalEmbedText" xml:space="preserve">
+    <value>添加到嵌入描述开头的附加文本。</value>
+  </data>
+  <data name="Desc_DiscordSettings_AllowGlobalSudo" xml:space="preserve">
+    <value>禁用此选项将移除全局sudo支持。</value>
+  </data>
+  <data name="Desc_DiscordSettings_AnnouncementChannels" xml:space="preserve">
+    <value>将记录特殊消息的频道，例如公告。</value>
+  </data>
+  <data name="Desc_DiscordSettings_AbuseLogChannels" xml:space="preserve">
+    <value>将记录滥用消息的频道。</value>
+  </data>
+  <data name="Desc_DiscordSettings_BotColorStatusTradeOnly" xml:space="preserve">
+    <value>仅考虑交易类型机器人的Discord存在状态颜色。</value>
+  </data>
+  <data name="Desc_DiscordSettings_BotEmbedStatus" xml:space="preserve">
+    <value>将向所有白名单频道发送在线/离线状态嵌入。</value>
+  </data>
+  <data name="Desc_DiscordSettings_BotGameStatus" xml:space="preserve">
+    <value>正在玩游戏的自定义状态。</value>
+  </data>
+  <data name="Desc_DiscordSettings_ChannelStatus" xml:space="preserve">
+    <value>将根据当前状态向频道名称添加在线/离线表情符号。仅限白名单频道。</value>
+  </data>
+  <data name="Desc_DiscordSettings_ChannelWhitelist" xml:space="preserve">
+    <value>具有这些ID的频道是机器人确认命令的唯一频道。</value>
+  </data>
+  <data name="Desc_DiscordSettings_CommandPrefix" xml:space="preserve">
+    <value>机器人命令前缀。</value>
+  </data>
+  <data name="Desc_DiscordSettings_ConvertPKMReplyAnyChannel" xml:space="preserve">
+    <value>机器人可以在任何可以看到的频道中用ShowdownSet回复，而不仅限于机器人已列入白名单的频道。只有在您希望机器人在非机器人频道中提供更多实用程序时才将此设置为true。</value>
+  </data>
+  <data name="Desc_DiscordSettings_ConvertPKMToShowdownSet" xml:space="preserve">
+    <value>机器人监听频道消息，每当附加PKM文件时（不使用命令）用ShowdownSet回复。</value>
+  </data>
+  <data name="Desc_DiscordSettings_GlobalSudoList" xml:space="preserve">
+    <value>将拥有对机器人中心sudo访问权限的Discord用户ID，用逗号分隔。</value>
+  </data>
+  <data name="Desc_DiscordSettings_HelloResponse" xml:space="preserve">
+    <value>当用户向机器人打招呼时，机器人将回复的自定义消息。使用字符串格式化在回复中提及用户。</value>
+  </data>
+  <data name="Desc_DiscordSettings_LoggingChannels" xml:space="preserve">
+    <value>将回显日志机器人数据的频道ID。</value>
+  </data>
+  <data name="Desc_DiscordSettings_ModuleBlacklist" xml:space="preserve">
+    <value>机器人启动时不会加载的模块列表（逗号分隔）。</value>
+  </data>
+  <data name="Desc_DiscordSettings_OfflineEmoji" xml:space="preserve">
+    <value>机器人离线时使用的自定义表情符号。</value>
+  </data>
+  <data name="Desc_DiscordSettings_OnlineEmoji" xml:space="preserve">
+    <value>机器人在线时使用的自定义表情符号。</value>
+  </data>
+  <data name="Desc_DiscordSettings_ReplyCannotUseCommandInChannel" xml:space="preserve">
+    <value>如果用户不允许在频道中使用给定命令，则回复用户。当为false时，机器人将静默忽略他们。</value>
+  </data>
+  <data name="Desc_DiscordSettings_ReplyToThanks" xml:space="preserve">
+    <value>将向感谢机器人的用户发送随机回复。</value>
+  </data>
+  <data name="Desc_DiscordSettings_ReturnPKMs" xml:space="preserve">
+    <value>将交易中显示的宝可梦的PKM返回给用户。</value>
+  </data>
+  <data name="Desc_DiscordSettings_MessageDeletionEnabled" xml:space="preserve">
+    <value>启用后，机器人将在延迟后自动删除错误消息和用户命令。禁用以永久保留所有消息。</value>
+  </data>
+  <data name="Desc_DiscordSettings_ErrorMessageDeleteDelaySeconds" xml:space="preserve">
+    <value>删除机器人错误/响应消息之前等待的秒数。仅当MessageDeletionEnabled为true时适用。</value>
+  </data>
+  <data name="Desc_DiscordSettings_DeleteUserCommandMessages" xml:space="preserve">
+    <value>启用后，用户命令消息将与机器人响应一起删除。禁用以保持用户命令可见。</value>
+  </data>
+  <data name="Desc_DiscordSettings_RoleCanClone" xml:space="preserve">
+    <value>具有此角色的用户被允许进入克隆队列。</value>
+  </data>
+  <data name="Desc_DiscordSettings_RoleCanDump" xml:space="preserve">
+    <value>具有此角色的用户被允许进入转储队列。</value>
+  </data>
+  <data name="Desc_DiscordSettings_RoleCanFixOT" xml:space="preserve">
+    <value>具有此角色的用户被允许进入FixOT队列。</value>
+  </data>
+  <data name="Desc_DiscordSettings_RoleCanSeedCheckorSpecialRequest" xml:space="preserve">
+    <value>具有此角色的用户被允许进入种子检查/特殊请求队列。</value>
+  </data>
+  <data name="Desc_DiscordSettings_RoleCanTrade" xml:space="preserve">
+    <value>具有此角色的用户被允许进入交易队列。</value>
+  </data>
+  <data name="Desc_DiscordSettings_RoleFavored" xml:space="preserve">
+    <value>具有此角色的用户被允许以更好的位置加入队列。</value>
+  </data>
+  <data name="Desc_DiscordSettings_RoleRemoteControl" xml:space="preserve">
+    <value>具有此角色的用户被允许远程控制控制台（如果作为远程控制机器人运行）。</value>
+  </data>
+  <data name="Desc_DiscordSettings_RoleSudo" xml:space="preserve">
+    <value>具有此角色的用户被允许绕过命令限制。</value>
+  </data>
+  <data name="Desc_DiscordSettings_ServerBlacklist" xml:space="preserve">
+    <value>具有这些ID的服务器将无法使用机器人，机器人将离开服务器。</value>
+  </data>
+  <data name="Desc_DiscordSettings_TradeStartingChannels" xml:space="preserve">
+    <value>将记录交易开始消息的记录器频道。</value>
+  </data>
+  <data name="Desc_DiscordSettings_UserBlacklist" xml:space="preserve">
+    <value>具有这些用户ID的用户无法使用机器人。</value>
+  </data>
+  <data name="Desc_AnnouncementSettingsCategory_AnnouncementEmbedColor" xml:space="preserve">
+    <value>公告嵌入颜色选项。</value>
+  </data>
+  <data name="Desc_AnnouncementSettingsCategory_AnnouncementThumbnailOption" xml:space="preserve">
+    <value>公告的缩略图选项。</value>
+  </data>
+  <data name="Desc_AnnouncementSettingsCategory_CustomAnnouncementThumbnailUrl" xml:space="preserve">
+    <value>公告的自定义缩略图URL。</value>
+  </data>
+  <data name="Desc_AnnouncementSettingsCategory_RandomAnnouncementColor" xml:space="preserve">
+    <value>为公告启用随机颜色选择。</value>
+  </data>
+  <data name="Desc_AnnouncementSettingsCategory_RandomAnnouncementThumbnail" xml:space="preserve">
+    <value>为公告启用随机缩略图选择。</value>
+  </data>
+  <data name="Desc_TwitchSettings_AllowCommandsViaChannel" xml:space="preserve">
+    <value>启用后，机器人将处理发送到频道的命令。</value>
+  </data>
+  <data name="Desc_TwitchSettings_AllowCommandsViaWhisper" xml:space="preserve">
+    <value>启用后，机器人将允许用户通过私信发送命令（绕过慢速模式）。</value>
+  </data>
+  <data name="Desc_TwitchSettings_Channel" xml:space="preserve">
+    <value>发送消息的频道。</value>
+  </data>
+  <data name="Desc_TwitchSettings_CommandPrefix" xml:space="preserve">
+    <value>机器人命令前缀。</value>
+  </data>
+  <data name="Desc_TwitchSettings_DiscordLink" xml:space="preserve">
+    <value>Discord服务器链接。</value>
+  </data>
+  <data name="Desc_TwitchSettings_DistributionCountDown" xml:space="preserve">
+    <value>切换分发交易是否在开始前倒计时。</value>
+  </data>
+  <data name="Desc_TwitchSettings_DonationLink" xml:space="preserve">
+    <value>捐赠链接。</value>
+  </data>
+  <data name="Desc_TwitchSettings_MessageStart" xml:space="preserve">
+    <value>释放屏障时发送的消息。</value>
+  </data>
+  <data name="Desc_TwitchSettings_NotifyDestination" xml:space="preserve">
+    <value>确定通用通知的发送位置。</value>
+  </data>
+  <data name="Desc_TwitchSettings_SudoList" xml:space="preserve">
+    <value>Sudo用户名。</value>
+  </data>
+  <data name="Desc_TwitchSettings_ThrottleMessages" xml:space="preserve">
+    <value>如果过去Y秒内已发送X条消息，则限制机器人发送消息。</value>
+  </data>
+  <data name="Desc_TwitchSettings_ThrottleSeconds" xml:space="preserve">
+    <value>如果过去Y秒内已发送X条消息，则限制机器人发送消息。</value>
+  </data>
+  <data name="Desc_TwitchSettings_ThrottleWhispers" xml:space="preserve">
+    <value>如果过去Y秒内已发送X条消息，则限制机器人发送私信。</value>
+  </data>
+  <data name="Desc_TwitchSettings_ThrottleWhispersSeconds" xml:space="preserve">
+    <value>如果过去Y秒内已发送X条消息，则限制机器人发送私信。</value>
+  </data>
+  <data name="Desc_TwitchSettings_Token" xml:space="preserve">
+    <value>机器人登录令牌。</value>
+  </data>
+  <data name="Desc_TwitchSettings_TradeCanceledDestination" xml:space="preserve">
+    <value>确定TradeCanceled通知的发送位置。</value>
+  </data>
+  <data name="Desc_TwitchSettings_TradeFinishDestination" xml:space="preserve">
+    <value>确定TradeFinish通知的发送位置。</value>
+  </data>
+  <data name="Desc_TwitchSettings_TradeSearchDestination" xml:space="preserve">
+    <value>确定TradeSearch通知的发送位置。</value>
+  </data>
+  <data name="Desc_TwitchSettings_TradeStartDestination" xml:space="preserve">
+    <value>确定TradeStart通知的发送位置。</value>
+  </data>
+  <data name="Desc_TwitchSettings_TutorialLink" xml:space="preserve">
+    <value>机器人使用教程链接。</value>
+  </data>
+  <data name="Desc_TwitchSettings_TutorialText" xml:space="preserve">
+    <value>机器人使用教程文本。</value>
+  </data>
+  <data name="Desc_TwitchSettings_UserBlacklist" xml:space="preserve">
+    <value>具有这些用户名的用户无法使用机器人。</value>
+  </data>
+  <data name="Desc_TwitchSettings_Username" xml:space="preserve">
+    <value>机器人用户名。</value>
+  </data>
+  <data name="Desc_YouTubeSettings_ChannelID" xml:space="preserve">
+    <value>发送消息的频道ID。</value>
+  </data>
+  <data name="Desc_YouTubeSettings_ClientID" xml:space="preserve">
+    <value>机器人客户端ID。</value>
+  </data>
+  <data name="Desc_YouTubeSettings_ClientSecret" xml:space="preserve">
+    <value>机器人客户端密钥。</value>
+  </data>
+  <data name="Desc_YouTubeSettings_CommandPrefix" xml:space="preserve">
+    <value>机器人命令前缀。</value>
+  </data>
+  <data name="Desc_YouTubeSettings_MessageStart" xml:space="preserve">
+    <value>释放屏障时发送的消息。</value>
+  </data>
+  <data name="Desc_YouTubeSettings_SudoList" xml:space="preserve">
+    <value>Sudo用户名。</value>
+  </data>
+  <data name="Desc_YouTubeSettings_UserBlacklist" xml:space="preserve">
+    <value>具有这些用户名的用户无法使用机器人。</value>
+  </data>
+  <data name="Desc_TimingSettings_AvoidSystemUpdate" xml:space="preserve">
+    <value>启用此选项以拒绝传入的系统更新。</value>
+  </data>
+  <data name="Desc_TimingSettings_ExtraReconnectDelay" xml:space="preserve">
+    <value>在尝试重新连接之间等待的额外时间（毫秒）。基本时间为30秒。</value>
+  </data>
+  <data name="Desc_TimingSettings_ExtraTimeAddFriend" xml:space="preserve">
+    <value>[RaidBot]接受好友后等待的额外时间（毫秒）。</value>
+  </data>
+  <data name="Desc_TimingSettings_ExtraTimeCloseGame" xml:space="preserve">
+    <value>点击关闭游戏后等待的额外时间（毫秒）。</value>
+  </data>
+  <data name="Desc_TimingSettings_ExtraTimeConnectOnline" xml:space="preserve">
+    <value>[SWSH/SV]点击+连接到Y-Comm（SWSH）或L在线连接（SV）后等待的额外时间（毫秒）。</value>
+  </data>
+  <data name="Desc_TimingSettings_ExtraTimeDeleteFriend" xml:space="preserve">
+    <value>[RaidBot]删除好友后等待的额外时间（毫秒）。</value>
+  </data>
+  <data name="Desc_TimingSettings_ExtraTimeEndRaid" xml:space="preserve">
+    <value>[RaidBot]在关闭游戏以重置极巨团体战之前等待的额外时间（毫秒）。</value>
+  </data>
+  <data name="Desc_TimingSettings_ExtraTimeJoinUnionRoom" xml:space="preserve">
+    <value>[BDSP]在尝试调用交易之前等待联合房间加载的额外时间（毫秒）。</value>
+  </data>
+  <data name="Desc_TimingSettings_ExtraTimeLeaveUnionRoom" xml:space="preserve">
+    <value>[BDSP]离开联合房间后等待世界加载的额外时间（毫秒）。</value>
+  </data>
+  <data name="Desc_TimingSettings_ExtraTimeLoadGame" xml:space="preserve">
+    <value>在标题屏幕点击A之前等待的额外时间（毫秒）。</value>
+  </data>
+  <data name="Desc_TimingSettings_ExtraTimeLoadOverworld" xml:space="preserve">
+    <value>标题屏幕后等待世界加载的额外时间（毫秒）。</value>
+  </data>
+  <data name="Desc_TimingSettings_ExtraTimeLoadPortal" xml:space="preserve">
+    <value>[SV]等待宝可梦门户加载的额外时间（毫秒）。</value>
+  </data>
+  <data name="Desc_TimingSettings_ProfileSelectionRequired" xml:space="preserve">
+    <value>如果在启动游戏时需要选择配置文件，请启用此选项。</value>
+  </data>
+  <data name="Desc_TimingSettings_ExtraTimeLoadProfile" xml:space="preserve">
+    <value>启动游戏时等待配置文件加载的额外时间（毫秒）。</value>
+  </data>
+  <data name="Desc_TimingSettings_CheckGameDelay" xml:space="preserve">
+    <value>启用此选项以为"检查游戏是否可以播放"弹出窗口添加延迟。</value>
+  </data>
+  <data name="Desc_TimingSettings_ExtraTimeCheckGame" xml:space="preserve">
+    <value>等待"检查游戏是否可以播放"弹出窗口的额外时间。</value>
+  </data>
+  <data name="Desc_TimingSettings_ExtraTimeLoadRaid" xml:space="preserve">
+    <value>[RaidBot]点击极巨巢穴后等待极巨团体战加载的额外时间（毫秒）。</value>
+  </data>
+  <data name="Desc_TimingSettings_ExtraTimeOpenBox" xml:space="preserve">
+    <value>找到交易后等待盒子加载的额外时间（毫秒）。</value>
+  </data>
+  <data name="Desc_TimingSettings_ExtraTimeOpenCodeEntry" xml:space="preserve">
+    <value>交易期间打开键盘进行代码输入后等待的时间。</value>
+  </data>
+  <data name="Desc_TimingSettings_ExtraTimeOpenRaid" xml:space="preserve">
+    <value>[RaidBot]点击"邀请其他人"后，在锁定到宝可梦之前等待的额外时间（毫秒）。</value>
+  </data>
+  <data name="Desc_TimingSettings_ExtraTimeOpenYMenu" xml:space="preserve">
+    <value>[BDSP]在每个交易循环开始时等待Y菜单加载的额外时间（毫秒）。</value>
+  </data>
+  <data name="Desc_TimingSettings_ExtraTimeReturnHome" xml:space="preserve">
+    <value>按HOME键最小化游戏后等待的额外时间（毫秒）。</value>
+  </data>
+  <data name="Desc_TimingSettings_KeypressTime" xml:space="preserve">
+    <value>在导航Switch菜单或输入链接代码时每次按键后等待的时间。</value>
+  </data>
+  <data name="Desc_TimingSettings_ReconnectAttempts" xml:space="preserve">
+    <value>连接丢失后尝试重新连接到套接字连接的次数。设置为-1以无限尝试。</value>
+  </data>
+  <data name="Desc_StreamSettings_CompletedTradesFormat" xml:space="preserve">
+    <value>显示已完成交易的格式。{0} = 计数</value>
+  </data>
+  <data name="Desc_StreamSettings_CopyImageFile" xml:space="preserve">
+    <value>如果TradeBlockFile存在，则复制它，否则将复制占位符图像。</value>
+  </data>
+  <data name="Desc_StreamSettings_CreateAssets" xml:space="preserve">
+    <value>生成流媒体资产；关闭将阻止生成资产。</value>
+  </data>
+  <data name="Desc_StreamSettings_CreateCompletedTrades" xml:space="preserve">
+    <value>在新交易开始时创建指示已完成交易数量的文件。</value>
+  </data>
+  <data name="Desc_StreamSettings_CreateEstimatedTime" xml:space="preserve">
+    <value>创建列出用户加入队列时需要等待的估计时间的文件。</value>
+  </data>
+  <data name="Desc_StreamSettings_CreateOnDeck" xml:space="preserve">
+    <value>生成当前待命的人员列表。</value>
+  </data>
+  <data name="Desc_StreamSettings_CreateOnDeck2" xml:space="preserve">
+    <value>生成当前待命#2的人员列表。</value>
+  </data>
+  <data name="Desc_StreamSettings_CreateTradeStart" xml:space="preserve">
+    <value>生成交易开始详细信息，指示机器人正在与谁交易。</value>
+  </data>
+  <data name="Desc_StreamSettings_CreateTradeStartSprite" xml:space="preserve">
+    <value>生成交易开始详细信息，指示机器人正在交易什么。</value>
+  </data>
+  <data name="Desc_StreamSettings_CreateUserList" xml:space="preserve">
+    <value>生成当前正在交易的人员列表。</value>
+  </data>
+  <data name="Desc_StreamSettings_CreateUsersInQueue" xml:space="preserve">
+    <value>创建指示队列中用户数量的文件。</value>
+  </data>
+  <data name="Desc_StreamSettings_CreateWaitedTime" xml:space="preserve">
+    <value>创建列出最近出队用户等待时间的文件。</value>
+  </data>
+  <data name="Desc_StreamSettings_EstimatedFulfillmentFormat" xml:space="preserve">
+    <value>显示估计等待时间戳的格式。</value>
+  </data>
+  <data name="Desc_StreamSettings_EstimatedTimeFormat" xml:space="preserve">
+    <value>显示估计等待时间的格式。</value>
+  </data>
+  <data name="Desc_StreamSettings_OnDeckFormat" xml:space="preserve">
+    <value>显示待命列表用户的格式。{0} = ID，{3} = 用户</value>
+  </data>
+  <data name="Desc_StreamSettings_OnDeckFormat2" xml:space="preserve">
+    <value>显示待命#2列表用户的格式。{0} = ID，{3} = 用户</value>
+  </data>
+  <data name="Desc_StreamSettings_OnDeckSeparator" xml:space="preserve">
+    <value>用于分隔待命列表用户的分隔符。</value>
+  </data>
+  <data name="Desc_StreamSettings_OnDeckSeparator2" xml:space="preserve">
+    <value>用于分隔待命#2列表用户的分隔符。</value>
+  </data>
+  <data name="Desc_StreamSettings_OnDeckSkip" xml:space="preserve">
+    <value>在顶部跳过的待命用户数量。如果您想隐藏正在处理的人员，请将此设置为您的控制台数量。</value>
+  </data>
+  <data name="Desc_StreamSettings_OnDeckSkip2" xml:space="preserve">
+    <value>在顶部跳过的待命#2用户数量。如果您想隐藏正在处理的人员，请将此设置为您的控制台数量。</value>
+  </data>
+  <data name="Desc_StreamSettings_OnDeckTake" xml:space="preserve">
+    <value>在待命列表中显示的用户数量。</value>
+  </data>
+  <data name="Desc_StreamSettings_OnDeckTake2" xml:space="preserve">
+    <value>在待命#2列表中显示的用户数量。</value>
+  </data>
+  <data name="Desc_StreamSettings_TradeBlockFile" xml:space="preserve">
+    <value>输入交易代码时要复制的图像的源文件名。如果留空，将创建占位符图像。</value>
+  </data>
+  <data name="Desc_StreamSettings_TradeBlockFormat" xml:space="preserve">
+    <value>链接代码阻止图像的目标文件名。{0}被替换为本地IP地址。</value>
+  </data>
+  <data name="Desc_StreamSettings_TrainerTradeStart" xml:space="preserve">
+    <value>显示正在交易详细信息的格式。{0} = ID，{1} = 用户</value>
+  </data>
+  <data name="Desc_StreamSettings_UserListFormat" xml:space="preserve">
+    <value>显示列表用户的格式。{0} = ID，{3} = 用户</value>
+  </data>
+  <data name="Desc_StreamSettings_UserListSeparator" xml:space="preserve">
+    <value>用于分隔列表用户的分隔符。</value>
+  </data>
+  <data name="Desc_StreamSettings_UserListSkip" xml:space="preserve">
+    <value>在顶部跳过的用户数量。如果您想隐藏正在处理的人员，请将此设置为您的控制台数量。</value>
+  </data>
+  <data name="Desc_StreamSettings_UserListTake" xml:space="preserve">
+    <value>在列表中显示的用户数量。</value>
+  </data>
+  <data name="Desc_StreamSettings_UsersInQueueFormat" xml:space="preserve">
+    <value>显示队列中用户的格式。{0} = 计数</value>
+  </data>
+  <data name="Desc_StreamSettings_WaitedTimeFormat" xml:space="preserve">
+    <value>显示最近出队用户等待时间的格式。</value>
+  </data>
+  <data name="Desc_PokeTradeHubConfig_BotName" xml:space="preserve">
+    <value>Discord机器人的名称。这将为窗口标题以便于识别。需要重启程序。</value>
+  </data>
+  <data name="Desc_PokeTradeHubConfig_Distribution" xml:space="preserve">
+    <value>空闲分发交易的设置。</value>
+  </data>
+  <data name="Desc_PokeTradeHubConfig_Favoritism" xml:space="preserve">
+    <value>允许优先用户以比非优先用户更有利的位置加入队列。</value>
+  </data>
+  <data name="Desc_PokeTradeHubConfig_Timings" xml:space="preserve">
+    <value>为较慢的Switch添加额外时间。</value>
+  </data>
+  <data name="Desc_PokeTradeHubConfig_Stream" xml:space="preserve">
+    <value>配置流媒体资产生成。</value>
+  </data>
+  <data name="Desc_PokeTradeHubConfig_StopConditions" xml:space="preserve">
+    <value>EncounterBot的停止条件。</value>
+  </data>
+  <data name="Desc_QueueSettings_YieldMultCountClone" xml:space="preserve">
+    <value>根据队列中的用户数量调整克隆队列的权重。</value>
+  </data>
+  <data name="Desc_QueueSettings_YieldMultCountDump" xml:space="preserve">
+    <value>根据队列中的用户数量调整转储队列的权重。</value>
+  </data>
+  <data name="Desc_QueueSettings_YieldMultCountFixOT" xml:space="preserve">
+    <value>根据队列中的用户数量调整FixOT队列的权重。</value>
+  </data>
+  <data name="Desc_QueueSettings_YieldMultCountSeedCheck" xml:space="preserve">
+    <value>根据队列中的用户数量调整种子检查队列的权重。</value>
+  </data>
+  <data name="Desc_QueueSettings_YieldMultCountTrade" xml:space="preserve">
+    <value>根据队列中的用户数量调整交易队列的权重。</value>
+  </data>
+  <data name="Desc_QueueSettings_YieldMultWait" xml:space="preserve">
+    <value>确定权重应该添加到总权重还是乘以总权重。</value>
+  </data>
+  <data name="Desc_QueueSettings_YieldMultWaitClone" xml:space="preserve">
+    <value>检查用户加入克隆队列后经过的时间，并相应地增加队列权重。</value>
+  </data>
+  <data name="Desc_QueueSettings_YieldMultWaitDump" xml:space="preserve">
+    <value>检查用户加入转储队列后经过的时间，并相应地增加队列权重。</value>
+  </data>
+  <data name="Desc_QueueSettings_YieldMultWaitFixOT" xml:space="preserve">
+    <value>检查用户加入FixOT队列后经过的时间，并相应地增加队列权重。</value>
+  </data>
+  <data name="Desc_QueueSettings_YieldMultWaitSeedCheck" xml:space="preserve">
+    <value>检查用户加入种子检查队列后经过的时间，并相应地增加队列权重。</value>
+  </data>
+  <data name="Desc_QueueSettings_YieldMultWaitTrade" xml:space="preserve">
+    <value>检查用户加入交易队列后经过的时间，并相应地增加队列权重。</value>
+  </data>
+  <data name="Desc_TradeSettings_EmojiInfo_EmojiString" xml:space="preserve">
+    <value>表情符号的完整字符串。</value>
+  </data>
+  <data name="Desc_TradeSettings_MoveTypeEmojiInfo_MoveType" xml:space="preserve">
+    <value>招式类型。</value>
+  </data>
+  <data name="Desc_TradeSettings_MoveTypeEmojiInfo_EmojiCode" xml:space="preserve">
+    <value>此招式类型的Discord表情符号字符串。</value>
+  </data>
+  <data name="Desc_TradeSettings_TeraTypeEmojiInfo_MoveType" xml:space="preserve">
+    <value>太晶类型。</value>
+  </data>
+  <data name="Desc_TradeSettings_TeraTypeEmojiInfo_EmojiCode" xml:space="preserve">
+    <value>此太晶类型的Discord表情符号字符串。</value>
+  </data>
+  <data name="Desc_TradeSettings_TradeSettingsCategory_TradeAnimationMaxDelaySeconds" xml:space="preserve">
+    <value>LGPE设置。</value>
+  </data>
+  <data name="Desc_TradeSettings_TradeEmbedSettingsCategory_UseTeraEmojis" xml:space="preserve">
+    <value>将在交易嵌入中的招式旁边显示招式类型图标（仅限Discord）。需要用户将表情符号上传到服务器。</value>
+  </data>
+  <data name="Display_ShowTeraTypeEmojis" xml:space="preserve">
+    <value>显示太晶类型表情符号？</value>
+  </data>
+  <data name="Desc_TradeSettings_TradeEmbedSettingsCategory_TeraTypeEmojis" xml:space="preserve">
+    <value>太晶类型的太晶类型表情符号信息。</value>
+  </data>
+  <data name="Display_CustomTeraTypeEmojis" xml:space="preserve">
+    <value>自定义太晶类型表情符号</value>
+  </data>
+  <data name="Desc_TradeSettings_TradeEmbedSettingsCategory_MysteryGiftEmoji" xml:space="preserve">
+    <value>显示神秘礼物状态的表情符号信息。</value>
+  </data>
+  <data name="Display_MysteryGiftEmoji" xml:space="preserve">
+    <value>神秘礼物表情符号</value>
+  </data>
+  <data name="Desc_TradeSettings_TradeEmbedSettingsCategory_AlphaMarkEmoji" xml:space="preserve">
+    <value>显示alpha标记的表情符号信息。</value>
+  </data>
+  <data name="Display_AlphaMarkEmoji" xml:space="preserve">
+    <value>Alpha标记表情符号</value>
+  </data>
+  <data name="Desc_TradeSettings_TradeEmbedSettingsCategory_MightiestMarkEmoji" xml:space="preserve">
+    <value>显示最强标记的表情符号信息。</value>
+  </data>
+  <data name="Display_MightiestMarkEmoji" xml:space="preserve">
+    <value>最强标记表情符号</value>
+  </data>
+  <data name="Desc_TradeSettings_TradeEmbedSettingsCategory_AlphaPLAEmoji" xml:space="preserve">
+    <value>在《传说 阿尔宙斯》中显示alpha表情符号的信息。</value>
+  </data>
+  <data name="Display_AlphaPLAEmoji" xml:space="preserve">
+    <value>Alpha PLA表情符号</value>
+  </data>
+  <data name="Desc_TradeSettings_RequestFolderSettingsCategory_RequestFolderSettings" xml:space="preserve">
+    <value>请求文件夹相关设置。</value>
+  </data>
+  <data name="Display_RequestFolderSettings" xml:space="preserve">
+    <value>请求文件夹设置</value>
+  </data>
+  <data name="Desc_TradeSettings_CountStatsSettingsCategory_CountStatsSettings" xml:space="preserve">
+    <value>交易计数统计相关设置。</value>
+  </data>
+  <data name="Display_TradeCountStatisticsSettings" xml:space="preserve">
+    <value>交易计数统计设置</value>
+  </data>
+  <data name="Display_BaseConfig_AntiIdle" xml:space="preserve">
+    <value>防休眠</value>
+  </data>
+  <data name="Display_BaseConfig_LoggingEnabled" xml:space="preserve">
+    <value>启用日志</value>
+  </data>
+  <data name="Display_BaseConfig_MaxArchiveFiles" xml:space="preserve">
+    <value>最大归档文件数</value>
+  </data>
+  <data name="Display_BaseConfig_UseKeyboard" xml:space="preserve">
+    <value>使用键盘</value>
+  </data>
+  <data name="Display_BaseConfig_Folder" xml:space="preserve">
+    <value>文件夹</value>
+  </data>
+  <data name="Display_BaseConfig_Legality" xml:space="preserve">
+    <value>合法性</value>
+  </data>
+  <data name="Display_QueueSettings" xml:space="preserve">
+    <value>队列加入设置</value>
+  </data>
+  <data name="Display_TimingSettings" xml:space="preserve">
+    <value>额外时间设置</value>
+  </data>
+  <data name="Display_RecoverySettings" xml:space="preserve">
+    <value>机器人恢复设置</value>
+  </data>
+  <data name="Display_FolderSettings" xml:space="preserve">
+    <value>文件夹/转储设置</value>
+  </data>
+  <data name="Display_LegalitySettings" xml:space="preserve">
+    <value>合法性生成设置</value>
+  </data>
+  <data name="Display_DistributionSettings" xml:space="preserve">
+    <value>分发交易设置</value>
+  </data>
+  <data name="Display_TradeSettings" xml:space="preserve">
+    <value>交易配置设置</value>
+  </data>
+  <data name="Display_TradeAbuseSettings" xml:space="preserve">
+    <value>交易滥用监控设置</value>
+  </data>
+  <data name="Display_DiscordSettings" xml:space="preserve">
+    <value>Discord集成设置</value>
+  </data>
+  <data name="Display_FavoredPrioritySettings" xml:space="preserve">
+    <value>偏好设置</value>
+  </data>
+  <data name="Display_StreamSettings" xml:space="preserve">
+    <value>流媒体设置</value>
+  </data>
+  <data name="Display_TwitchSettings" xml:space="preserve">
+    <value>Twitch集成设置</value>
+  </data>
+  <data name="Display_YouTubeSettings" xml:space="preserve">
+    <value>YouTube集成设置</value>
+  </data>
+  <data name="Display_SeedCheckSettings" xml:space="preserve">
+    <value>种子检查设置</value>
+  </data>
+  <data name="Display_StopConditionSettings" xml:space="preserve">
+    <value>停止条件设置</value>
+  </data>
+  <data name="Display_WebServerSettings" xml:space="preserve">
+    <value>Web服务器设置</value>
+  </data>
+  <data name="Display_AnnouncementSettingsCategory" xml:space="preserve">
+    <value>公告设置</value>
+  </data>
+  <data name="Display_TradeSettings_TradeConfiguration" xml:space="preserve">
+    <value>交易配置</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettings" xml:space="preserve">
+    <value>交易嵌入设置</value>
+  </data>
+  <data name="Display_TradeSettings_RequestFolderSettings" xml:space="preserve">
+    <value>请求文件夹设置</value>
+  </data>
+  <data name="Display_TradeSettings_CountStatsSettings" xml:space="preserve">
+    <value>交易计数统计设置</value>
+  </data>
+  <data name="Display_TradeSettingsCategory" xml:space="preserve">
+    <value>交易配置设置</value>
+  </data>
+  <data name="Display_TradeEmbedSettingsCategory" xml:space="preserve">
+    <value>交易嵌入配置设置</value>
+  </data>
+  <data name="Display_RequestFolderSettingsCategory" xml:space="preserve">
+    <value>请求文件夹设置</value>
+  </data>
+  <data name="Display_CountStatsSettingsCategory" xml:space="preserve">
+    <value>交易计数统计设置</value>
+  </data>
+  <data name="Display_TradeSettings_TradeSettingsCategory_MinTradeCode" xml:space="preserve">
+    <value>最小交易链接代码</value>
+  </data>
+  <data name="Display_TradeSettings_TradeSettingsCategory_MaxTradeCode" xml:space="preserve">
+    <value>最大交易链接代码</value>
+  </data>
+  <data name="Display_TradeSettings_TradeSettingsCategory_StoreTradeCodes" xml:space="preserve">
+    <value>存储并重用交易代码</value>
+  </data>
+  <data name="Display_TradeSettings_TradeSettingsCategory_TradeWaitTime" xml:space="preserve">
+    <value>交易伙伴等待时间（秒）</value>
+  </data>
+  <data name="Display_TradeSettings_TradeSettingsCategory_MaxTradeConfirmTime" xml:space="preserve">
+    <value>最大交易确认时间（秒）</value>
+  </data>
+  <data name="Display_TradeSettings_TradeSettingsCategory_ItemTradeSpecies" xml:space="preserve">
+    <value>物品交易的默认种类</value>
+  </data>
+  <data name="Display_TradeSettings_TradeSettingsCategory_DefaultHeldItem" xml:space="preserve">
+    <value>交易的默认持有物品</value>
+  </data>
+  <data name="Display_TradeSettings_TradeSettingsCategory_SuggestRelearnMoves" xml:space="preserve">
+    <value>默认建议可重学招式</value>
+  </data>
+  <data name="Display_TradeSettings_TradeSettingsCategory_AllowBatchTrades" xml:space="preserve">
+    <value>允许批量交易</value>
+  </data>
+  <data name="Display_TradeSettings_TradeSettingsCategory_EnableSpamCheck" xml:space="preserve">
+    <value>启用垃圾信息检查</value>
+  </data>
+  <data name="Display_TradeSettings_TradeSettingsCategory_MaxPkmsPerTrade" xml:space="preserve">
+    <value>每次交易的最大宝可梦数</value>
+  </data>
+  <data name="Display_TradeSettings_TradeSettingsCategory_MaxDumpsPerTrade" xml:space="preserve">
+    <value>每次交易的最大转储数</value>
+  </data>
+  <data name="Display_TradeSettings_TradeSettingsCategory_MaxDumpTradeTime" xml:space="preserve">
+    <value>最大转储交易时间（秒）</value>
+  </data>
+  <data name="Display_TradeSettings_TradeSettingsCategory_DumpTradeLegalityCheck" xml:space="preserve">
+    <value>转储交易合法性检查</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettingsCategory_UseEmbeds" xml:space="preserve">
+    <value>使用嵌入</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettingsCategory_PreferredImageSize" xml:space="preserve">
+    <value>种类图像大小</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettingsCategory_MoveTypeEmojis" xml:space="preserve">
+    <value>显示招式类型表情符号</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettingsCategory_CustomTypeEmojis" xml:space="preserve">
+    <value>自定义类型表情符号</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettingsCategory_MaleEmoji" xml:space="preserve">
+    <value>雄性表情符号</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettingsCategory_FemaleEmoji" xml:space="preserve">
+    <value>雌性表情符号</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettingsCategory_MysteryGiftEmoji" xml:space="preserve">
+    <value>神秘礼物表情符号</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettingsCategory_AlphaMarkEmoji" xml:space="preserve">
+    <value>阿尔法标记表情符号</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettingsCategory_MightiestMarkEmoji" xml:space="preserve">
+    <value>最强标记表情符号</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettingsCategory_AlphaPLAEmoji" xml:space="preserve">
+    <value>阿尔法传说表情符号</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettingsCategory_UseTeraEmojis" xml:space="preserve">
+    <value>显示太晶类型表情符号？</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettingsCategory_TeraTypeEmojis" xml:space="preserve">
+    <value>自定义太晶类型表情符号</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettingsCategory_ShowScale" xml:space="preserve">
+    <value>显示体型</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettingsCategory_ShowTeraType" xml:space="preserve">
+    <value>显示太晶类型</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettingsCategory_ShowLevel" xml:space="preserve">
+    <value>显示等级</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettingsCategory_ShowMetDate" xml:space="preserve">
+    <value>显示相遇日期</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettingsCategory_ShowAbility" xml:space="preserve">
+    <value>显示特性</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettingsCategory_ShowNature" xml:space="preserve">
+    <value>显示性格</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettingsCategory_ShowLanguage" xml:space="preserve">
+    <value>显示语言</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettingsCategory_ShowIVs" xml:space="preserve">
+    <value>显示个体值</value>
+  </data>
+  <data name="Display_TradeSettings_TradeEmbedSettingsCategory_ShowEVs" xml:space="preserve">
+    <value>显示基础点数</value>
+  </data>
+  <data name="Display_TradeSettings_RequestFolderSettingsCategory_EventsFolder" xml:space="preserve">
+    <value>活动文件夹路径</value>
+  </data>
+  <data name="Display_TradeSettings_RequestFolderSettingsCategory_BattleReadyPKMFolder" xml:space="preserve">
+    <value>对战就绪文件夹路径</value>
+  </data>
+  <data name="Display_TradeSettings_ScreenOff" xml:space="preserve">
+    <value>屏幕关闭</value>
+  </data>
+  <data name="Display_TradeSettings_EmitCountsOnStatusCheck" xml:space="preserve">
+    <value>状态检查时发出计数</value>
+  </data>
+  <data name="Display_LegalitySettings_DisallowNonNatives" xml:space="preserve">
+    <value>不允许非本地宝可梦</value>
+  </data>
+  <data name="Display_LegalitySettings_DisallowHomeTracked" xml:space="preserve">
+    <value>不允许已追踪的Home宝可梦</value>
+  </data>
+  <data name="Display_LegalitySettings_DisallowTracked" xml:space="preserve">
+    <value>不允许已追踪的Home宝可梦</value>
+  </data>
+  <data name="Display_QueueSettings_CanDequeueIfProcessing" xml:space="preserve">
+    <value>处理时允许出队</value>
+  </data>
+  <data name="Display_QueueSettings_CanQueue" xml:space="preserve">
+    <value>允许加入队列</value>
+  </data>
+  <data name="Display_QueueSettings_EstimatedDelayFactor" xml:space="preserve">
+    <value>估计延迟因子</value>
+  </data>
+  <data name="Display_QueueSettings_FlexMode" xml:space="preserve">
+    <value>灵活模式</value>
+  </data>
+  <data name="Display_QueueSettings_IntervalCloseFor" xml:space="preserve">
+    <value>关闭间隔（秒）</value>
+  </data>
+  <data name="Display_QueueSettings_IntervalOpenFor" xml:space="preserve">
+    <value>开放间隔（秒）</value>
+  </data>
+  <data name="Display_QueueSettings_MaxQueueCount" xml:space="preserve">
+    <value>最大队列数</value>
+  </data>
+  <data name="Display_QueueSettings_QueueToggleMode" xml:space="preserve">
+    <value>队列切换模式</value>
+  </data>
+  <data name="Display_QueueSettings_NotifyOnQueueClose" xml:space="preserve">
+    <value>队列关闭时通知</value>
+  </data>
+  <data name="Display_QueueSettings_ThresholdLock" xml:space="preserve">
+    <value>阈值锁定</value>
+  </data>
+  <data name="Display_QueueSettings_ThresholdUnlock" xml:space="preserve">
+    <value>阈值解锁</value>
+  </data>
+  <data name="Display_QueueSettings_YieldMultCountClone" xml:space="preserve">
+    <value>克隆队列权重倍数</value>
+  </data>
+  <data name="Display_QueueSettings_YieldMultCountDump" xml:space="preserve">
+    <value>转储队列权重倍数</value>
+  </data>
+  <data name="Display_QueueSettings_YieldMultCountFixOT" xml:space="preserve">
+    <value>FixOT队列权重倍数</value>
+  </data>
+  <data name="Display_QueueSettings_YieldMultCountSeedCheck" xml:space="preserve">
+    <value>种子检查队列权重倍数</value>
+  </data>
+  <data name="Display_QueueSettings_YieldMultCountTrade" xml:space="preserve">
+    <value>交易队列权重倍数</value>
+  </data>
+  <data name="Display_QueueSettings_YieldMultWait" xml:space="preserve">
+    <value>等待权重模式</value>
+  </data>
+  <data name="Display_QueueSettings_YieldMultWaitClone" xml:space="preserve">
+    <value>克隆队列等待权重</value>
+  </data>
+  <data name="Display_QueueSettings_YieldMultWaitDump" xml:space="preserve">
+    <value>转储队列等待权重</value>
+  </data>
+  <data name="Display_QueueSettings_YieldMultWaitFixOT" xml:space="preserve">
+    <value>FixOT队列等待权重</value>
+  </data>
+  <data name="Display_QueueSettings_YieldMultWaitSeedCheck" xml:space="preserve">
+    <value>种子检查队列等待权重</value>
+  </data>
+  <data name="Display_QueueSettings_YieldMultWaitTrade" xml:space="preserve">
+    <value>交易队列等待权重</value>
+  </data>
+  <data name="Display_FolderSettings_DistributeFolder" xml:space="preserve">
+    <value>分发文件夹</value>
+  </data>
+  <data name="Display_FolderSettings_Dump" xml:space="preserve">
+    <value>转储</value>
+  </data>
+  <data name="Display_FolderSettings_DumpFolder" xml:space="preserve">
+    <value>转储文件夹</value>
+  </data>
+  <data name="Display_RecoverySettings_EnableRecovery" xml:space="preserve">
+    <value>启用恢复</value>
+  </data>
+  <data name="Display_RecoverySettings_MaxRecoveryAttempts" xml:space="preserve">
+    <value>最大恢复尝试次数</value>
+  </data>
+  <data name="Display_RecoverySettings_InitialRecoveryDelaySeconds" xml:space="preserve">
+    <value>初始恢复延迟（秒）</value>
+  </data>
+  <data name="Display_RecoverySettings_MaxRecoveryDelaySeconds" xml:space="preserve">
+    <value>最大恢复延迟（秒）</value>
+  </data>
+  <data name="Display_RecoverySettings_BackoffMultiplier" xml:space="preserve">
+    <value>退避倍数</value>
+  </data>
+  <data name="Display_RecoverySettings_CrashHistoryWindowMinutes" xml:space="preserve">
+    <value>崩溃历史窗口（分钟）</value>
+  </data>
+  <data name="Display_RecoverySettings_MaxCrashesInWindow" xml:space="preserve">
+    <value>窗口内最大崩溃数</value>
+  </data>
+  <data name="Display_RecoverySettings_RecoverIntentionalStops" xml:space="preserve">
+    <value>恢复有意停止</value>
+  </data>
+  <data name="Display_RecoverySettings_SuccessfulRecoveryResetDelaySeconds" xml:space="preserve">
+    <value>成功恢复重置延迟（秒）</value>
+  </data>
+  <data name="Display_RecoverySettings_NotifyOnRecoveryAttempt" xml:space="preserve">
+    <value>恢复尝试时通知</value>
+  </data>
+  <data name="Display_RecoverySettings_NotifyOnRecoveryFailure" xml:space="preserve">
+    <value>恢复失败时通知</value>
+  </data>
+  <data name="Display_RecoverySettings_MinimumStableUptimeSeconds" xml:space="preserve">
+    <value>最小稳定运行时间（秒）</value>
+  </data>
+  <data name="Display_PokeTradeHubConfig_BotName" xml:space="preserve">
+    <value>机器人名称</value>
+  </data>
+  <data name="Display_PokeTradeHubConfig_Discord" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="Display_PokeTradeHubConfig_Distribution" xml:space="preserve">
+    <value>分发</value>
+  </data>
+  <data name="Display_PokeTradeHubConfig_Favoritism" xml:space="preserve">
+    <value>偏好</value>
+  </data>
+  <data name="Display_PokeTradeHubConfig_Queues" xml:space="preserve">
+    <value>队列</value>
+  </data>
+  <data name="Display_PokeTradeHubConfig_Stream" xml:space="preserve">
+    <value>流媒体</value>
+  </data>
+  <data name="Display_PokeTradeHubConfig_Timings" xml:space="preserve">
+    <value>时间</value>
+  </data>
+  <data name="Display_PokeTradeHubConfig_Trade" xml:space="preserve">
+    <value>交易</value>
+  </data>
+  <data name="Display_PokeTradeHubConfig_TradeAbuse" xml:space="preserve">
+    <value>交易滥用</value>
+  </data>
+  <data name="Display_PokeTradeHubConfig_Twitch" xml:space="preserve">
+    <value>Twitch</value>
+  </data>
+  <data name="Display_PokeTradeHubConfig_YouTube" xml:space="preserve">
+    <value>YouTube</value>
+  </data>
+  <data name="Display_PokeTradeHubConfig_Recovery" xml:space="preserve">
+    <value>恢复</value>
+  </data>
+  <data name="Display_PokeTradeHubConfig_WebServer" xml:space="preserve">
+    <value>Web服务器</value>
+  </data>
+  <data name="Display_TimingSettings_AvoidSystemUpdate" xml:space="preserve">
+    <value>避免系统更新</value>
+  </data>
+  <data name="Display_TimingSettings_ExtraReconnectDelay" xml:space="preserve">
+    <value>额外重连延迟（毫秒）</value>
+  </data>
+  <data name="Display_TimingSettings_ExtraTimeAddFriend" xml:space="preserve">
+    <value>添加好友额外时间（毫秒）</value>
+  </data>
+  <data name="Display_TimingSettings_ExtraTimeCloseGame" xml:space="preserve">
+    <value>关闭游戏额外时间（毫秒）</value>
+  </data>
+  <data name="Display_TimingSettings_ExtraTimeConnectOnline" xml:space="preserve">
+    <value>连接在线额外时间（毫秒）</value>
+  </data>
+  <data name="Display_TimingSettings_ExtraTimeDeleteFriend" xml:space="preserve">
+    <value>删除好友额外时间（毫秒）</value>
+  </data>
+  <data name="Display_TimingSettings_ExtraTimeEndRaid" xml:space="preserve">
+    <value>结束极巨团体战额外时间（毫秒）</value>
+  </data>
+  <data name="Display_TimingSettings_ExtraTimeJoinUnionRoom" xml:space="preserve">
+    <value>加入联合房间额外时间（毫秒）</value>
+  </data>
+  <data name="Display_TimingSettings_ExtraTimeLeaveUnionRoom" xml:space="preserve">
+    <value>离开联合房间额外时间（毫秒）</value>
+  </data>
+  <data name="Display_TimingSettings_ExtraTimeLoadGame" xml:space="preserve">
+    <value>加载游戏额外时间（毫秒）</value>
+  </data>
+  <data name="Display_TimingSettings_ExtraTimeLoadOverworld" xml:space="preserve">
+    <value>加载世界额外时间（毫秒）</value>
+  </data>
+  <data name="Display_TimingSettings_ExtraTimeLoadPortal" xml:space="preserve">
+    <value>加载门户额外时间（毫秒）</value>
+  </data>
+  <data name="Display_TimingSettings_ProfileSelectionRequired" xml:space="preserve">
+    <value>需要选择配置文件</value>
+  </data>
+  <data name="Display_TimingSettings_ExtraTimeLoadProfile" xml:space="preserve">
+    <value>加载配置文件额外时间（毫秒）</value>
+  </data>
+  <data name="Display_TimingSettings_CheckGameDelay" xml:space="preserve">
+    <value>检查游戏延迟</value>
+  </data>
+  <data name="Display_TimingSettings_ExtraTimeCheckGame" xml:space="preserve">
+    <value>检查游戏额外时间（毫秒）</value>
+  </data>
+  <data name="Display_TimingSettings_ExtraTimeLoadRaid" xml:space="preserve">
+    <value>加载极巨团体战额外时间（毫秒）</value>
+  </data>
+  <data name="Display_TimingSettings_ExtraTimeOpenBox" xml:space="preserve">
+    <value>打开盒子额外时间（毫秒）</value>
+  </data>
+  <data name="Display_TimingSettings_ExtraTimeOpenCodeEntry" xml:space="preserve">
+    <value>打开代码输入额外时间（毫秒）</value>
+  </data>
+  <data name="Display_TimingSettings_ExtraTimeOpenRaid" xml:space="preserve">
+    <value>打开极巨团体战额外时间（毫秒）</value>
+  </data>
+  <data name="Display_TimingSettings_ExtraTimeOpenYMenu" xml:space="preserve">
+    <value>打开Y菜单额外时间（毫秒）</value>
+  </data>
+  <data name="Display_TimingSettings_ExtraTimeReturnHome" xml:space="preserve">
+    <value>返回主页额外时间（毫秒）</value>
+  </data>
+  <data name="Display_TimingSettings_KeypressTime" xml:space="preserve">
+    <value>按键时间（毫秒）</value>
+  </data>
+  <data name="Display_TimingSettings_ReconnectAttempts" xml:space="preserve">
+    <value>重连尝试次数</value>
+  </data>
+  <data name="Display_LegalitySettings_AllowBatchCommands" xml:space="preserve">
+    <value>允许批量命令</value>
+  </data>
+  <data name="Display_LegalitySettings_AllowTrainerDataOverride" xml:space="preserve">
+    <value>允许训练师数据覆盖</value>
+  </data>
+  <data name="Display_LegalitySettings_EnableEasterEggs" xml:space="preserve">
+    <value>启用彩蛋</value>
+  </data>
+  <data name="Display_LegalitySettings_EnableHOMETrackerCheck" xml:space="preserve">
+    <value>启用HOME追踪检查</value>
+  </data>
+  <data name="Display_LegalitySettings_ForceLevel100for50" xml:space="preserve">
+    <value>强制50级为100级</value>
+  </data>
+  <data name="Display_LegalitySettings_ForceSpecifiedBall" xml:space="preserve">
+    <value>强制指定球</value>
+  </data>
+  <data name="Display_LegalitySettings_GenerateLanguage" xml:space="preserve">
+    <value>生成语言</value>
+  </data>
+  <data name="Display_LegalitySettings_GenerateOT" xml:space="preserve">
+    <value>生成训练师名称</value>
+  </data>
+  <data name="Display_LegalitySettings_GeneratePathTrainerInfo" xml:space="preserve">
+    <value>生成训练师信息路径</value>
+  </data>
+  <data name="Display_LegalitySettings_GenerateSID16" xml:space="preserve">
+    <value>生成16位秘密ID</value>
+  </data>
+  <data name="Display_LegalitySettings_GenerateTID16" xml:space="preserve">
+    <value>生成16位训练师ID</value>
+  </data>
+  <data name="Display_LegalitySettings_MGDBPath" xml:space="preserve">
+    <value>MGDB路径</value>
+  </data>
+  <data name="Display_LegalitySettings_PrioritizeEncounters" xml:space="preserve">
+    <value>优先遭遇类型</value>
+  </data>
+  <data name="Display_LegalitySettings_PrioritizeGame" xml:space="preserve">
+    <value>优先游戏版本</value>
+  </data>
+  <data name="Display_LegalitySettings_PriorityOrder" xml:space="preserve">
+    <value>优先顺序</value>
+  </data>
+  <data name="Display_LegalitySettings_SetAllLegalRibbons" xml:space="preserve">
+    <value>设置所有合法缎带</value>
+  </data>
+  <data name="Display_LegalitySettings_SetMatchingBalls" xml:space="preserve">
+    <value>设置匹配球</value>
+  </data>
+  <data name="Display_LegalitySettings_Timeout" xml:space="preserve">
+    <value>超时时间（秒）</value>
+  </data>
+  <data name="Display_LegalitySettings_UseTradePartnerInfo" xml:space="preserve">
+    <value>使用交易伙伴信息</value>
+  </data>
+  <data name="Display_WebServerSettings_ControlPanelPort" xml:space="preserve">
+    <value>控制面板端口</value>
+  </data>
+  <data name="Display_WebServerSettings_EnableWebServer" xml:space="preserve">
+    <value>启用Web服务器</value>
+  </data>
+  <data name="Display_WebServerSettings_AllowExternalConnections" xml:space="preserve">
+    <value>允许外部连接</value>
+  </data>
+  <data name="Display_SeedCheckSettings_ResultDisplayMode" xml:space="preserve">
+    <value>结果显示模式</value>
+  </data>
+  <data name="Display_SeedCheckSettings_ShowAllZ3Results" xml:space="preserve">
+    <value>显示所有Z3结果</value>
+  </data>
+  <data name="Display_StopConditionSettings_CaptureVideoClip" xml:space="preserve">
+    <value>捕获视频片段</value>
+  </data>
+  <data name="Display_StopConditionSettings_ExtraTimeWaitCaptureVideo" xml:space="preserve">
+    <value>捕获视频额外等待时间（毫秒）</value>
+  </data>
+  <data name="Display_StopConditionSettings_MarkOnly" xml:space="preserve">
+    <value>仅标记</value>
+  </data>
+  <data name="Display_StopConditionSettings_MatchFoundEchoMention" xml:space="preserve">
+    <value>匹配找到时回显提及</value>
+  </data>
+  <data name="Display_StopConditionSettings_MatchShinyAndIV" xml:space="preserve">
+    <value>同时匹配闪光和个体值</value>
+  </data>
+  <data name="Display_StopConditionSettings_ShinyTarget" xml:space="preserve">
+    <value>闪光目标</value>
+  </data>
+  <data name="Display_StopConditionSettings_StopOnForm" xml:space="preserve">
+    <value>停止于形态</value>
+  </data>
+  <data name="Display_StopConditionSettings_StopOnSpecies" xml:space="preserve">
+    <value>停止于种类</value>
+  </data>
+  <data name="Display_StopConditionSettings_TargetMaxIVs" xml:space="preserve">
+    <value>目标最大个体值</value>
+  </data>
+  <data name="Display_StopConditionSettings_TargetMinIVs" xml:space="preserve">
+    <value>目标最小个体值</value>
+  </data>
+  <data name="Display_StopConditionSettings_TargetNature" xml:space="preserve">
+    <value>目标性格</value>
+  </data>
+  <data name="Display_StopConditionSettings_UnwantedMarks" xml:space="preserve">
+    <value>不想要的标记</value>
+  </data>
+  <data name="Display_FavoredPrioritySettings_EnableFavoritism" xml:space="preserve">
+    <value>启用偏好</value>
+  </data>
+  <data name="Display_FavoredPrioritySettings_SkipPercentage" xml:space="preserve">
+    <value>跳过百分比</value>
+  </data>
+  <data name="Display_FavoredPrioritySettings_MinimumRegularUsersFirst" xml:space="preserve">
+    <value>最小普通用户优先数</value>
+  </data>
+  <data name="Display_DistributionSettings_DistributeWhileIdle" xml:space="preserve">
+    <value>空闲时分发</value>
+  </data>
+  <data name="Display_DistributionSettings_LedyQuitIfNoMatch" xml:space="preserve">
+    <value>无匹配时退出</value>
+  </data>
+  <data name="Display_DistributionSettings_LedySpecies" xml:space="preserve">
+    <value>Ledy种类</value>
+  </data>
+  <data name="Display_DistributionSettings_RandomCode" xml:space="preserve">
+    <value>随机代码</value>
+  </data>
+  <data name="Display_DistributionSettings_RemainInUnionRoomBDSP" xml:space="preserve">
+    <value>保持在BDSP联合房间</value>
+  </data>
+  <data name="Display_DistributionSettings_Shuffled" xml:space="preserve">
+    <value>随机化</value>
+  </data>
+  <data name="Display_DistributionSettings_SynchronizeBots" xml:space="preserve">
+    <value>同步机器人</value>
+  </data>
+  <data name="Display_DistributionSettings_SynchronizeDelayBarrier" xml:space="preserve">
+    <value>同步延迟屏障（毫秒）</value>
+  </data>
+  <data name="Display_DistributionSettings_SynchronizeTimeout" xml:space="preserve">
+    <value>同步超时（秒）</value>
+  </data>
+  <data name="Display_DistributionSettings_TradeCode" xml:space="preserve">
+    <value>交易代码</value>
+  </data>
+  <data name="Display_DiscordSettings_Token" xml:space="preserve">
+    <value>登录令牌</value>
+  </data>
+  <data name="Display_DiscordSettings_AdditionalEmbedText" xml:space="preserve">
+    <value>附加嵌入文本</value>
+  </data>
+  <data name="Display_DiscordSettings_AllowGlobalSudo" xml:space="preserve">
+    <value>允许全局Sudo</value>
+  </data>
+  <data name="Display_DiscordSettings_AnnouncementChannels" xml:space="preserve">
+    <value>公告频道</value>
+  </data>
+  <data name="Display_DiscordSettings_AbuseLogChannels" xml:space="preserve">
+    <value>滥用日志频道</value>
+  </data>
+  <data name="Display_DiscordSettings_AnnouncementSettings" xml:space="preserve">
+    <value>公告设置</value>
+  </data>
+  <data name="Display_DiscordSettings_BotColorStatusTradeOnly" xml:space="preserve">
+    <value>机器人颜色状态仅交易</value>
+  </data>
+  <data name="Display_DiscordSettings_BotEmbedStatus" xml:space="preserve">
+    <value>机器人嵌入状态</value>
+  </data>
+  <data name="Display_DiscordSettings_BotGameStatus" xml:space="preserve">
+    <value>机器人游戏状态</value>
+  </data>
+  <data name="Display_DiscordSettings_ChannelStatus" xml:space="preserve">
+    <value>频道状态</value>
+  </data>
+  <data name="Display_DiscordSettings_ChannelWhitelist" xml:space="preserve">
+    <value>频道白名单</value>
+  </data>
+  <data name="Display_DiscordSettings_CommandPrefix" xml:space="preserve">
+    <value>命令前缀</value>
+  </data>
+  <data name="Display_DiscordSettings_ConvertPKMReplyAnyChannel" xml:space="preserve">
+    <value>在任何频道回复PKM</value>
+  </data>
+  <data name="Display_DiscordSettings_ConvertPKMToShowdownSet" xml:space="preserve">
+    <value>将PKM转换为Showdown集合</value>
+  </data>
+  <data name="Display_DiscordSettings_GlobalSudoList" xml:space="preserve">
+    <value>全局Sudo列表</value>
+  </data>
+  <data name="Display_DiscordSettings_HelloResponse" xml:space="preserve">
+    <value>问候回复</value>
+  </data>
+  <data name="Display_DiscordSettings_LoggingChannels" xml:space="preserve">
+    <value>日志频道</value>
+  </data>
+  <data name="Display_DiscordSettings_ModuleBlacklist" xml:space="preserve">
+    <value>模块黑名单</value>
+  </data>
+  <data name="Display_DiscordSettings_OfflineEmoji" xml:space="preserve">
+    <value>离线表情符号</value>
+  </data>
+  <data name="Display_DiscordSettings_OnlineEmoji" xml:space="preserve">
+    <value>在线表情符号</value>
+  </data>
+  <data name="Display_DiscordSettings_ReplyCannotUseCommandInChannel" xml:space="preserve">
+    <value>回复无法在频道使用命令</value>
+  </data>
+  <data name="Display_DiscordSettings_ReplyToThanks" xml:space="preserve">
+    <value>回复感谢</value>
+  </data>
+  <data name="Display_DiscordSettings_ReturnPKMs" xml:space="preserve">
+    <value>返回PKM文件</value>
+  </data>
+  <data name="Display_DiscordSettings_MessageDeletionEnabled" xml:space="preserve">
+    <value>启用消息删除</value>
+  </data>
+  <data name="Display_DiscordSettings_ErrorMessageDeleteDelaySeconds" xml:space="preserve">
+    <value>错误消息删除延迟（秒）</value>
+  </data>
+  <data name="Display_DiscordSettings_DeleteUserCommandMessages" xml:space="preserve">
+    <value>删除用户命令消息</value>
+  </data>
+  <data name="Display_DiscordSettings_RoleCanClone" xml:space="preserve">
+    <value>可克隆角色</value>
+  </data>
+  <data name="Display_DiscordSettings_RoleCanDump" xml:space="preserve">
+    <value>可转储角色</value>
+  </data>
+  <data name="Display_DiscordSettings_RoleCanFixOT" xml:space="preserve">
+    <value>可修复OT角色</value>
+  </data>
+  <data name="Display_DiscordSettings_RoleCanSeedCheckorSpecialRequest" xml:space="preserve">
+    <value>可种子检查/特殊请求角色</value>
+  </data>
+  <data name="Display_DiscordSettings_RoleCanTrade" xml:space="preserve">
+    <value>可交易角色</value>
+  </data>
+  <data name="Display_DiscordSettings_RoleFavored" xml:space="preserve">
+    <value>偏好角色</value>
+  </data>
+  <data name="Display_DiscordSettings_RoleRemoteControl" xml:space="preserve">
+    <value>远程控制角色</value>
+  </data>
+  <data name="Display_DiscordSettings_RoleSudo" xml:space="preserve">
+    <value>Sudo角色</value>
+  </data>
+  <data name="Display_DiscordSettings_ServerBlacklist" xml:space="preserve">
+    <value>服务器黑名单</value>
+  </data>
+  <data name="Display_DiscordSettings_TradeStartingChannels" xml:space="preserve">
+    <value>交易开始频道</value>
+  </data>
+  <data name="Display_DiscordSettings_UserBlacklist" xml:space="preserve">
+    <value>用户黑名单</value>
+  </data>
+  <data name="Display_TwitchSettings_AllowCommandsViaChannel" xml:space="preserve">
+    <value>允许通过频道命令</value>
+  </data>
+  <data name="Display_TwitchSettings_AllowCommandsViaWhisper" xml:space="preserve">
+    <value>允许通过私信命令</value>
+  </data>
+  <data name="Display_TwitchSettings_Channel" xml:space="preserve">
+    <value>频道</value>
+  </data>
+  <data name="Display_TwitchSettings_CommandPrefix" xml:space="preserve">
+    <value>命令前缀</value>
+  </data>
+  <data name="Display_TwitchSettings_DiscordLink" xml:space="preserve">
+    <value>Discord链接</value>
+  </data>
+  <data name="Display_TwitchSettings_DistributionCountDown" xml:space="preserve">
+    <value>分发倒计时</value>
+  </data>
+  <data name="Display_TwitchSettings_DonationLink" xml:space="preserve">
+    <value>捐赠链接</value>
+  </data>
+  <data name="Display_TwitchSettings_MessageStart" xml:space="preserve">
+    <value>开始消息</value>
+  </data>
+  <data name="Display_TwitchSettings_NotifyDestination" xml:space="preserve">
+    <value>通知目标</value>
+  </data>
+  <data name="Display_TwitchSettings_SudoList" xml:space="preserve">
+    <value>Sudo列表</value>
+  </data>
+  <data name="Display_TwitchSettings_ThrottleMessages" xml:space="preserve">
+    <value>限制消息数</value>
+  </data>
+  <data name="Display_TwitchSettings_ThrottleSeconds" xml:space="preserve">
+    <value>限制秒数</value>
+  </data>
+  <data name="Display_TwitchSettings_ThrottleWhispers" xml:space="preserve">
+    <value>限制私信数</value>
+  </data>
+  <data name="Display_TwitchSettings_ThrottleWhispersSeconds" xml:space="preserve">
+    <value>限制私信秒数</value>
+  </data>
+  <data name="Display_TwitchSettings_Token" xml:space="preserve">
+    <value>登录令牌</value>
+  </data>
+  <data name="Display_TwitchSettings_TradeCanceledDestination" xml:space="preserve">
+    <value>交易取消目标</value>
+  </data>
+  <data name="Display_TwitchSettings_TradeFinishDestination" xml:space="preserve">
+    <value>交易完成目标</value>
+  </data>
+  <data name="Display_TwitchSettings_TradeSearchDestination" xml:space="preserve">
+    <value>交易搜索目标</value>
+  </data>
+  <data name="Display_TwitchSettings_TradeStartDestination" xml:space="preserve">
+    <value>交易开始目标</value>
+  </data>
+  <data name="Display_TwitchSettings_TutorialLink" xml:space="preserve">
+    <value>教程链接</value>
+  </data>
+  <data name="Display_TwitchSettings_TutorialText" xml:space="preserve">
+    <value>教程文本</value>
+  </data>
+  <data name="Display_TwitchSettings_UserBlacklist" xml:space="preserve">
+    <value>用户黑名单</value>
+  </data>
+  <data name="Display_TwitchSettings_Username" xml:space="preserve">
+    <value>用户名</value>
+  </data>
+  <data name="Display_YouTubeSettings_ChannelID" xml:space="preserve">
+    <value>频道ID</value>
+  </data>
+  <data name="Display_YouTubeSettings_ClientID" xml:space="preserve">
+    <value>客户端ID</value>
+  </data>
+  <data name="Display_YouTubeSettings_ClientSecret" xml:space="preserve">
+    <value>客户端密钥</value>
+  </data>
+  <data name="Display_YouTubeSettings_CommandPrefix" xml:space="preserve">
+    <value>命令前缀</value>
+  </data>
+  <data name="Display_YouTubeSettings_MessageStart" xml:space="preserve">
+    <value>开始消息</value>
+  </data>
+  <data name="Display_YouTubeSettings_SudoList" xml:space="preserve">
+    <value>Sudo列表</value>
+  </data>
+  <data name="Display_YouTubeSettings_UserBlacklist" xml:space="preserve">
+    <value>用户黑名单</value>
+  </data>
+  <data name="Display_DiscordSettings_AnnouncementSettingsCategory_AnnouncementEmbedColor" xml:space="preserve">
+    <value>公告嵌入颜色</value>
+  </data>
+  <data name="Display_DiscordSettings_AnnouncementSettingsCategory_AnnouncementThumbnailOption" xml:space="preserve">
+    <value>公告缩略图选项</value>
+  </data>
+  <data name="Display_DiscordSettings_AnnouncementSettingsCategory_CustomAnnouncementThumbnailUrl" xml:space="preserve">
+    <value>自定义公告缩略图URL</value>
+  </data>
+  <data name="Display_DiscordSettings_AnnouncementSettingsCategory_RandomAnnouncementColor" xml:space="preserve">
+    <value>随机公告颜色</value>
+  </data>
+  <data name="Display_DiscordSettings_AnnouncementSettingsCategory_RandomAnnouncementThumbnail" xml:space="preserve">
+    <value>随机公告缩略图</value>
+  </data>
+  <data name="Display_TradeSettings_TradeSettingsCategory_TradeAnimationMaxDelaySeconds" xml:space="preserve">
+    <value>交易动画最大延迟（秒）</value>
+  </data>
+  <data name="Display_TradeSettings_CountStatsSettingsCategory_CompletedSurprise" xml:space="preserve">
+    <value>已完成惊喜交易</value>
+  </data>
+  <data name="Display_TradeSettings_CountStatsSettingsCategory_CompletedDistribution" xml:space="preserve">
+    <value>已完成分发交易</value>
+  </data>
+  <data name="Display_TradeSettings_CountStatsSettingsCategory_CompletedTrades" xml:space="preserve">
+    <value>已完成交易</value>
+  </data>
+  <data name="Display_TradeSettings_CountStatsSettingsCategory_CompletedFixOTs" xml:space="preserve">
+    <value>已完成FixOT交易</value>
+  </data>
+  <data name="Display_TradeSettings_CountStatsSettingsCategory_CompletedSeedChecks" xml:space="preserve">
+    <value>已完成种子检查</value>
+  </data>
+  <data name="Display_TradeSettings_CountStatsSettingsCategory_CompletedClones" xml:space="preserve">
+    <value>已完成克隆交易</value>
+  </data>
+  <data name="Display_TradeSettings_CountStatsSettingsCategory_CompletedDumps" xml:space="preserve">
+    <value>已完成转储交易</value>
+  </data>
+  <data name="Display_TradeSettings_CountStatsSettingsCategory_EmitCountsOnStatusCheck" xml:space="preserve">
+    <value>状态检查时发出计数</value>
+  </data>
+  <data name="Display_TradeSettings_MoveTypeEmojiInfo_MoveType" xml:space="preserve">
+    <value>招式类型</value>
+  </data>
+  <data name="Display_TradeSettings_MoveTypeEmojiInfo_EmojiCode" xml:space="preserve">
+    <value>表情符号代码</value>
+  </data>
+  <data name="Display_TradeSettings_TeraTypeEmojiInfo_MoveType" xml:space="preserve">
+    <value>太晶类型</value>
+  </data>
+  <data name="Display_TradeSettings_TeraTypeEmojiInfo_EmojiCode" xml:space="preserve">
+    <value>表情符号代码</value>
+  </data>
+  <data name="Display_TradeAbuseSettings_TradeCooldown" xml:space="preserve">
+    <value>交易冷却时间（分钟）</value>
+  </data>
+  <data name="Display_TradeAbuseSettings_EchoNintendoOnlineIDCooldown" xml:space="preserve">
+    <value>冷却时间回显Nintendo在线ID</value>
+  </data>
+  <data name="Display_TradeAbuseSettings_CooldownAbuseEchoMention" xml:space="preserve">
+    <value>冷却时间滥用回显提及</value>
+  </data>
+  <data name="Display_TradeAbuseSettings_TradeAbuseExpiration" xml:space="preserve">
+    <value>交易滥用过期时间（分钟）</value>
+  </data>
+  <data name="Display_TradeAbuseSettings_EchoNintendoOnlineIDMulti" xml:space="preserve">
+    <value>多账户回显Nintendo在线ID</value>
+  </data>
+  <data name="Display_TradeAbuseSettings_EchoNintendoOnlineIDMultiRecipients" xml:space="preserve">
+    <value>多接收者回显Nintendo在线ID</value>
+  </data>
+  <data name="Display_TradeAbuseSettings_TradeAbuseAction" xml:space="preserve">
+    <value>交易滥用操作</value>
+  </data>
+  <data name="Display_TradeAbuseSettings_BanIDWhenBlockingUser" xml:space="preserve">
+    <value>阻止用户时禁止ID</value>
+  </data>
+  <data name="Display_TradeAbuseSettings_MultiAbuseEchoMention" xml:space="preserve">
+    <value>多账户滥用回显提及</value>
+  </data>
+  <data name="Display_TradeAbuseSettings_MultiRecipientEchoMention" xml:space="preserve">
+    <value>多接收者回显提及</value>
+  </data>
+  <data name="Display_TradeAbuseSettings_BannedIDs" xml:space="preserve">
+    <value>已禁止ID列表</value>
+  </data>
+  <data name="Display_TradeAbuseSettings_BlockDetectedBannedUser" xml:space="preserve">
+    <value>阻止检测到的已禁止用户</value>
+  </data>
+  <data name="Display_TradeAbuseSettings_BannedIDMatchEchoMention" xml:space="preserve">
+    <value>已禁止ID匹配回显提及</value>
+  </data>
+  <data name="Display_TradeAbuseSettings_EchoNintendoOnlineIDLedy" xml:space="preserve">
+    <value>Ledy回显Nintendo在线ID</value>
+  </data>
+  <data name="Display_TradeAbuseSettings_LedyAbuseEchoMention" xml:space="preserve">
+    <value>Ledy滥用回显提及</value>
+  </data>
+  <data name="Display_StreamSettings_CompletedTradesFormat" xml:space="preserve">
+    <value>已完成交易格式</value>
+  </data>
+  <data name="Display_StreamSettings_CopyImageFile" xml:space="preserve">
+    <value>复制图像文件</value>
+  </data>
+  <data name="Display_StreamSettings_CreateAssets" xml:space="preserve">
+    <value>创建资源</value>
+  </data>
+  <data name="Display_StreamSettings_CreateCompletedTrades" xml:space="preserve">
+    <value>创建已完成交易</value>
+  </data>
+  <data name="Display_StreamSettings_CreateEstimatedTime" xml:space="preserve">
+    <value>创建估计时间</value>
+  </data>
+  <data name="Display_StreamSettings_CreateOnDeck" xml:space="preserve">
+    <value>创建待命列表</value>
+  </data>
+  <data name="Display_StreamSettings_CreateOnDeck2" xml:space="preserve">
+    <value>创建待命列表#2</value>
+  </data>
+  <data name="Display_StreamSettings_CreateTradeStart" xml:space="preserve">
+    <value>创建交易开始</value>
+  </data>
+  <data name="Display_StreamSettings_CreateTradeStartSprite" xml:space="preserve">
+    <value>创建交易开始精灵</value>
+  </data>
+  <data name="Display_StreamSettings_CreateUserList" xml:space="preserve">
+    <value>创建用户列表</value>
+  </data>
+  <data name="Display_StreamSettings_CreateUsersInQueue" xml:space="preserve">
+    <value>创建队列中用户数</value>
+  </data>
+  <data name="Display_StreamSettings_CreateWaitedTime" xml:space="preserve">
+    <value>创建等待时间</value>
+  </data>
+  <data name="Display_StreamSettings_EstimatedFulfillmentFormat" xml:space="preserve">
+    <value>估计完成时间格式</value>
+  </data>
+  <data name="Display_StreamSettings_EstimatedTimeFormat" xml:space="preserve">
+    <value>估计时间格式</value>
+  </data>
+  <data name="Display_StreamSettings_OnDeckFormat" xml:space="preserve">
+    <value>待命列表格式</value>
+  </data>
+  <data name="Display_StreamSettings_OnDeckFormat2" xml:space="preserve">
+    <value>待命列表#2格式</value>
+  </data>
+  <data name="Display_StreamSettings_OnDeckSeparator" xml:space="preserve">
+    <value>待命列表分隔符</value>
+  </data>
+  <data name="Display_StreamSettings_OnDeckSeparator2" xml:space="preserve">
+    <value>待命列表#2分隔符</value>
+  </data>
+  <data name="Display_StreamSettings_OnDeckSkip" xml:space="preserve">
+    <value>待命列表跳过数</value>
+  </data>
+  <data name="Display_StreamSettings_OnDeckSkip2" xml:space="preserve">
+    <value>待命列表#2跳过数</value>
+  </data>
+  <data name="Display_StreamSettings_OnDeckTake" xml:space="preserve">
+    <value>待命列表显示数</value>
+  </data>
+  <data name="Display_StreamSettings_OnDeckTake2" xml:space="preserve">
+    <value>待命列表#2显示数</value>
+  </data>
+  <data name="Display_StreamSettings_TradeBlockFile" xml:space="preserve">
+    <value>交易阻止文件</value>
+  </data>
+  <data name="Display_StreamSettings_TradeBlockFormat" xml:space="preserve">
+    <value>交易阻止格式</value>
+  </data>
+  <data name="Display_StreamSettings_TrainerTradeStart" xml:space="preserve">
+    <value>训练师交易开始格式</value>
+  </data>
+  <data name="Display_StreamSettings_UserListFormat" xml:space="preserve">
+    <value>用户列表格式</value>
+  </data>
+  <data name="Display_StreamSettings_UserListSeparator" xml:space="preserve">
+    <value>用户列表分隔符</value>
+  </data>
+  <data name="Display_StreamSettings_UserListSkip" xml:space="preserve">
+    <value>用户列表跳过数</value>
+  </data>
+  <data name="Display_StreamSettings_UserListTake" xml:space="preserve">
+    <value>用户列表显示数</value>
+  </data>
+  <data name="Display_StreamSettings_UsersInQueueFormat" xml:space="preserve">
+    <value>队列中用户格式</value>
+  </data>
+  <data name="Display_StreamSettings_WaitedTimeFormat" xml:space="preserve">
+    <value>等待时间格式</value>
+  </data>
+  <data name="Display_TradeSettings_EmojiInfo_EmojiString" xml:space="preserve">
+    <value>表情符号字符串</value>
+  </data>
+  <data name="Display_RemoteControlAccessList_AllowIfEmpty" xml:space="preserve">
+    <value>允许为空</value>
+  </data>
+  <data name="Display_RemoteControlAccessList_List" xml:space="preserve">
+    <value>列表</value>
+  </data>
+</root>

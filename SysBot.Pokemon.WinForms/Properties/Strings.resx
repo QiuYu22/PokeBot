@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title_BotManagement" xml:space="preserve">
+    <value>Bot Management</value>
+  </data>
+  <data name="Title_Configuration" xml:space="preserve">
+    <value>Configuration</value>
+  </data>
+  <data name="Title_SystemLogs" xml:space="preserve">
+    <value>System Logs</value>
+  </data>
+  <data name="Button_Bots" xml:space="preserve">
+    <value>BOTS</value>
+  </data>
+  <data name="Button_Configuration" xml:space="preserve">
+    <value>CONFIGURATION</value>
+  </data>
+  <data name="Button_SystemLogs" xml:space="preserve">
+    <value>SYSTEM LOGS</value>
+  </data>
+  <data name="Button_SendToTray" xml:space="preserve">
+    <value>SEND TO TRAY</value>
+  </data>
+  <data name="Button_Start" xml:space="preserve">
+    <value>START</value>
+  </data>
+  <data name="Button_Stop" xml:space="preserve">
+    <value>STOP</value>
+  </data>
+  <data name="Button_Restart" xml:space="preserve">
+    <value>RESTART</value>
+  </data>
+  <data name="Button_Add" xml:space="preserve">
+    <value>ADD</value>
+  </data>
+  <data name="Button_ClearLogs" xml:space="preserve">
+    <value>Clear Logs</value>
+  </data>
+  <data name="Placeholder_IPAddress" xml:space="preserve">
+    <value>IP Address</value>
+  </data>
+  <data name="Message_Alert" xml:space="preserve">
+    <value>Alert</value>
+  </data>
+  <data name="Message_Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Message_Prompt" xml:space="preserve">
+    <value>Prompt</value>
+  </data>
+  <data name="Message_NoBotsConfigured" xml:space="preserve">
+    <value>No bots configured, but all supporting services have been started.</value>
+  </data>
+  <data name="Message_NothingRunning" xml:space="preserve">
+    <value>Nothing is currently running.</value>
+  </data>
+  <data name="Message_UnableToAddBot" xml:space="preserve">
+    <value>Unable to add bot; ensure details are valid and not duplicate with an already existing bot.</value>
+  </data>
+  <data name="Message_UpdateCheck" xml:space="preserve">
+    <value>Update Check</value>
+  </data>
+  <data name="Message_LatestVersion" xml:space="preserve">
+    <value>You are on the latest version. Would you like to re-download the current version?</value>
+  </data>
+  <data name="Tooltip_ManageBotConnections" xml:space="preserve">
+    <value>Manage bot connections</value>
+  </data>
+  <data name="Tooltip_SystemSettings" xml:space="preserve">
+    <value>System settings</value>
+  </data>
+  <data name="Tooltip_ViewActivityLogs" xml:space="preserve">
+    <value>View activity logs</value>
+  </data>
+  <data name="Tooltip_MinimizeToTray" xml:space="preserve">
+    <value>Minimize to system tray</value>
+  </data>
+  <data name="Message_StartingAllBots" xml:space="preserve">
+    <value>Starting all bots...</value>
+  </data>
+  <data name="Message_AllBotsStopped" xml:space="preserve">
+    <value>All bots have been issued a command to {0}.</value>
+  </data>
+  <data name="Message_NoMatchesFound" xml:space="preserve">
+    <value>No matches found</value>
+  </data>
+  <data name="Message_InvalidRegexPattern" xml:space="preserve">
+    <value>Invalid regex pattern</value>
+  </data>
+  <data name="Message_SearchStatus" xml:space="preserve">
+    <value>{0} of {1}</value>
+  </data>
+  <data name="Message_PokeBotMinimized" xml:space="preserve">
+    <value>PokéBot Minimized</value>
+  </data>
+  <data name="Message_BotsRunning" xml:space="preserve">
+    <value>{0} of {1} bots running</value>
+  </data>
+  <data name="Message_NoBotsConfiguredShort" xml:space="preserve">
+    <value>No bots configured</value>
+  </data>
+</root>
