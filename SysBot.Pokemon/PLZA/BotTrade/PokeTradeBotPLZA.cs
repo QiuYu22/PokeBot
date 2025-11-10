@@ -190,6 +190,25 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
 
         while (elapsed < maxWaitMs)
         {
+            // Safety check: verify we're still in a valid state (not kicked to menu/overworld)
+            var gameState = await GetGameState(token).ConfigureAwait(false);
+            if (gameState != 0x01 && gameState != 0x02)
+            {
+                Log("Connection interrupted. Restarting...");
+                return TradePartnerWaitResult.KickedToMenu;
+            }
+
+            // Additional safety check every 10 seconds: verify link code is still valid
+            if (elapsed % 10_000 < 500)
+            {
+                var currentCode = await GetCurrentLinkCode(token).ConfigureAwait(false);
+                if (currentCode == 0)
+                {
+                    Log("Connection error. Restarting...");
+                    return TradePartnerWaitResult.KickedToMenu;
+                }
+            }
+
             // Check if we've entered the trade box - this confirms a partner is connected
             if (await CheckIfInTradeBox(token).ConfigureAwait(false))
             {
@@ -1279,21 +1298,35 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
         {
             Hub.Config.Stream.StartEnterCode(this);
         }
-
         // Read current code to determine if we need to clear
         var currentCode = await GetCurrentLinkCode(token).ConfigureAwait(false);
 
         // If there's a non-zero code, clear it
         if (currentCode != 0)
         {
+            var formattedCode = $"{currentCode:00000000}";
+            var digitCount = formattedCode.Length;
             await Task.Delay(1_000, token).ConfigureAwait(false);
-            await PressAndHold(B, 4_000, 0, token).ConfigureAwait(false);
+
+            for (int i = 0; i < digitCount; i++)
+                await Click(B, 0, token).ConfigureAwait(false);
+
             await Task.Delay(1_000, token).ConfigureAwait(false);
         }
+
+
 
         // Enter the new code
         await EnterLinkCode(code, Hub.Config, token).ConfigureAwait(false);
         await Click(PLUS, 2_000, token).ConfigureAwait(false);
+
+        // Verify the code was entered correctly (memory updates immediately after PLUS)
+        var verifyCode = await GetCurrentLinkCode(token).ConfigureAwait(false);
+
+        if (verifyCode != code)
+        {
+            return LinkCodeEntryResult.VerificationFailedMismatch;
+        }
 
         return LinkCodeEntryResult.Success;
     }
