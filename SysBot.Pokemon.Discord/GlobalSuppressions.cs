@@ -1,8 +1,0 @@
-﻿// This file is used by Code Analysis to maintain SuppressMessage
-// attributes that are applied to this project.
-// Project-level suppressions either have no target or are given
-// a specific target and scoped to a namespace, type, member, etc.
-
-using System.Diagnostics.CodeAnalysis;
-
-[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "已手动确认平台兼容性", Scope = "member", Target = "~M:SysBot.Pokemon.Discord.DiscordTradeNotifier`1.CreateLGLinkCodeSpriteEmbed(System.Collections.Generic.List{SysBot.Pokemon.Pictocodes})~System.ValueTuple{System.String,Discord.Embed}")]
