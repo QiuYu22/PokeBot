@@ -5,17 +5,20 @@ namespace SysBot.Pokemon;
 
 public class FolderSettings : IDumper
 {
-    private const string FeatureToggle = nameof(FeatureToggle);
+    private const string FeatureToggle = "功能开关";
 
-    private const string Files = nameof(Files);
+    private const string Files = "文件路径";
 
-    [Category(Files), Description("Source folder: where PKM files to distribute are selected from.")]
+    [DisplayName("分发来源目录")]
+    [Category(Files), Description("分发来源目录：用于选择要发送的 PKM 文件。")]
     public string DistributeFolder { get; set; } = string.Empty;
 
-    [Category(FeatureToggle), Description("When enabled, dumps any received PKM files (trade results) to the DumpFolder.")]
+    [DisplayName("保存接收结果")]
+    [Category(FeatureToggle), Description("启用后，将收到的 PKM（交易结果）保存到结果保存目录。")]
     public bool Dump { get; set; }
 
-    [Category(Files), Description("Destination folder: where all received PKM files are dumped to.")]
+    [DisplayName("结果保存目录")]
+    [Category(Files), Description("结果保存目录：保存所有接收的 PKM 文件。")]
     public string DumpFolder { get; set; } = string.Empty;
 
     public void CreateDefaults(string path)
@@ -30,5 +33,5 @@ public class FolderSettings : IDumper
         DistributeFolder = distribute;
     }
 
-    public override string ToString() => "Folder / Dumping Settings";
+    public override string ToString() => "目录与转储设置";
 }

@@ -43,7 +43,7 @@ public class TradeStartModule<T> : ModuleBase<SocketCommandContext> where T : PK
                 AddLogChannel(c, ch.ID);
         }
 
-        LogUtil.LogInfo("Discord", "Added Trade Start Notification to Discord channel(s) on Bot startup.");
+        LogUtil.LogInfo("Discord", "机器人启动时已将交易开始通知添加到 Discord 频道。");
     }
 
     public static bool IsStartChannel(ulong cid)
@@ -53,7 +53,7 @@ public class TradeStartModule<T> : ModuleBase<SocketCommandContext> where T : PK
     }
 
     [Command("startHere")]
-    [Summary("Makes the bot log trade starts to the channel.")]
+    [Summary("在当前频道启用交易开始通知。")]
     [RequireSudo]
     public async Task AddLogAsync()
     {
@@ -61,7 +61,7 @@ public class TradeStartModule<T> : ModuleBase<SocketCommandContext> where T : PK
         var cid = c.Id;
         if (Channels.TryGetValue(cid, out _))
         {
-            await ReplyAsync("Already logging here.").ConfigureAwait(false);
+            await ReplyAsync("该频道已启用交易开始通知。").ConfigureAwait(false);
             return;
         }
 
@@ -69,7 +69,7 @@ public class TradeStartModule<T> : ModuleBase<SocketCommandContext> where T : PK
 
         // Add to discord global loggers (saves on program close)
         SysCordSettings.Settings.TradeStartingChannels.AddIfNew([GetReference(Context.Channel)]);
-        await ReplyAsync("Added Start Notification output to this channel!").ConfigureAwait(false);
+        await ReplyAsync("已在此频道启用交易开始通知！").ConfigureAwait(false);
     }
 
     private static void AddLogChannel(ISocketMessageChannel c, ulong cid)
@@ -81,7 +81,7 @@ public class TradeStartModule<T> : ModuleBase<SocketCommandContext> where T : PK
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
             var user = _discordClient.GetUser(detail.Trainer.ID);
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
-            if (user == null) { Console.WriteLine($"User not found for ID {detail.Trainer.ID}."); return; }
+            if (user == null) { Console.WriteLine($"未找到 ID 为 {detail.Trainer.ID} 的用户。"); return; }
 
             string speciesName = detail.TradeData != null ? GameInfo.Strings.Species[detail.TradeData.Species] : "";
             string ballImgUrl = "https://raw.githubusercontent.com/hexbyt3/sprites/36e891cc02fe283cd70d9fc8fef2f3c490096d6c/imgs/difficulty.png";
@@ -94,12 +94,12 @@ public class TradeStartModule<T> : ModuleBase<SocketCommandContext> where T : PK
                 ballImgUrl = $"https://raw.githubusercontent.com/hexbyt3/sprites/main/AltBallImg/28x28/{ballName}.png";
             }
 
-            string tradeTitle = detail.IsMysteryEgg ? "✨ Mystery Egg" : detail.Type switch
+            string tradeTitle = detail.IsMysteryEgg ? "✨ 神秘蛋" : detail.Type switch
             {
-                PokeTradeType.Clone => "Cloned Pokémon",
-                PokeTradeType.Dump => "Pokémon Dump",
-                PokeTradeType.FixOT => "Cloned Pokémon (Fixing OT Info)",
-                PokeTradeType.Seed => "Cloned Pokémon (Special Request)",
+                PokeTradeType.Clone => "克隆的宝可梦",
+                PokeTradeType.Dump => "宝可梦导出",
+                PokeTradeType.FixOT => "克隆宝可梦（修复 OT 信息）",
+                PokeTradeType.Seed => "克隆宝可梦（特殊请求）",
                 _ => speciesName
             };
 
@@ -115,14 +115,14 @@ public class TradeStartModule<T> : ModuleBase<SocketCommandContext> where T : PK
             var (r, g, b) = await GetDominantColorAsync(embedImageUrl);
 
             string footerText = detail.Type == PokeTradeType.Clone || detail.Type == PokeTradeType.Dump || detail.Type == PokeTradeType.Seed || detail.Type == PokeTradeType.FixOT
-                ? "Initializing trade now."
-                : $"Initializing trade now. Enjoy your {(detail.IsMysteryEgg ? "✨ Mystery Egg" : speciesName)}!";
+                ? "正在初始化交易。"
+                : $"正在初始化交易，祝你享用 {(detail.IsMysteryEgg ? "✨ 神秘蛋" : speciesName)}！";
 
             var embed = new EmbedBuilder()
                 .WithColor(new DiscordColor(r, g, b))
                 .WithThumbnailUrl(embedImageUrl)
-                .WithAuthor($"Up Next: {user.Username}", user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl())
-                .WithDescription($"**Receiving**: {tradeTitle}\n**Trade ID**: {detail.ID}")
+                .WithAuthor($"即将开始：{user.Username}", user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl())
+                .WithDescription($"**将收到**：{tradeTitle}\n**Trade ID**：{detail.ID}")
                 .WithFooter($"{footerText}\u200B", ballImgUrl)
                 .WithTimestamp(DateTime.Now)
                 .Build();
@@ -135,7 +135,7 @@ public class TradeStartModule<T> : ModuleBase<SocketCommandContext> where T : PK
     }
 
     [Command("startInfo")]
-    [Summary("Dumps the Start Notification settings.")]
+    [Summary("列出当前交易开始通知设置。")]
     [RequireSudo]
     public async Task DumpLogInfoAsync()
     {
@@ -144,7 +144,7 @@ public class TradeStartModule<T> : ModuleBase<SocketCommandContext> where T : PK
     }
 
     [Command("startClear")]
-    [Summary("Clears the Start Notification settings in that specific channel.")]
+    [Summary("清除当前频道的交易开始通知设置。")]
     [RequireSudo]
     public async Task ClearLogsAsync()
     {
@@ -152,30 +152,30 @@ public class TradeStartModule<T> : ModuleBase<SocketCommandContext> where T : PK
         if (Channels.TryGetValue(Context.Channel.Id, out var entry))
             Remove(entry);
         cfg.TradeStartingChannels.RemoveAll(z => z.ID == Context.Channel.Id);
-        await ReplyAsync($"Start Notifications cleared from channel: {Context.Channel.Name}").ConfigureAwait(false);
+        await ReplyAsync($"已从频道 {Context.Channel.Name} 清除交易开始通知。").ConfigureAwait(false);
     }
 
     [Command("startClearAll")]
-    [Summary("Clears all the Start Notification settings.")]
+    [Summary("清除所有频道的交易开始通知设置。")]
     [RequireSudo]
     public async Task ClearLogsAllAsync()
     {
         foreach (var l in Channels)
         {
             var entry = l.Value;
-            await ReplyAsync($"Logging cleared from {entry.ChannelName} ({entry.ChannelID}!").ConfigureAwait(false);
+            await ReplyAsync($"已从 {entry.ChannelName}（{entry.ChannelID}）清除交易开始通知！").ConfigureAwait(false);
             SysCord<T>.Runner.Hub.Queues.Forwarders.Remove(entry.Action);
         }
         Channels.Clear();
         SysCordSettings.Settings.TradeStartingChannels.Clear();
-        await ReplyAsync("Start Notifications cleared from all channels!").ConfigureAwait(false);
+        await ReplyAsync("已清除所有频道的交易开始通知！").ConfigureAwait(false);
     }
 
     private RemoteControlAccess GetReference(IChannel channel) => new()
     {
         ID = channel.Id,
         Name = channel.Name,
-        Comment = $"Added by {Context.User.Username} on {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
+        Comment = $"由 {Context.User.Username} 于 {DateTime.Now:yyyy.MM.dd-hh:mm:ss} 添加",
     };
 
     public static async Task<(int R, int G, int B)> GetDominantColorAsync(string imagePath)
@@ -233,7 +233,7 @@ public class TradeStartModule<T> : ModuleBase<SocketCommandContext> where T : PK
         catch (Exception ex)
         {
             // Log or handle exceptions as needed
-            Console.WriteLine($"Error processing image from {imagePath}. Error: {ex.Message}");
+            Console.WriteLine($"处理图片 {imagePath} 时发生错误：{ex.Message}");
             return (255, 255, 255);  // Default to white if an exception occurs
         }
     }

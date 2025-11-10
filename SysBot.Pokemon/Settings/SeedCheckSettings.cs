@@ -4,15 +4,17 @@ namespace SysBot.Pokemon;
 
 public class SeedCheckSettings
 {
-    private const string FeatureToggle = nameof(FeatureToggle);
+    private const string FeatureToggle = "功能设置";
 
-    [Category(FeatureToggle), Description("Allows returning only the closest shiny frame, the first star and square shiny frames, or the first three shiny frames.")]
+    [DisplayName("结果显示模式")]
+    [Category(FeatureToggle), Description("选择返回最近的闪光帧、首个星/方闪光帧，或前三个闪光帧。")]
     public SeedCheckResults ResultDisplayMode { get; set; }
 
-    [Category(FeatureToggle), Description("When enabled, seed checks will return all possible seed results instead of the first valid match.")]
+    [DisplayName("显示全部结果")]
+    [Category(FeatureToggle), Description("启用后，种子检测将返回所有可能的结果，而非仅第一个匹配项。")]
     public bool ShowAllZ3Results { get; set; }
 
-    public override string ToString() => "Seed Check Settings";
+    public override string ToString() => "种子检测设置";
 }
 
 public enum SeedCheckResults

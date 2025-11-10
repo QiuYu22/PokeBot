@@ -130,7 +130,7 @@ public static class Helpers<T> where T : PKM, new()
         {
             return Task.FromResult(new ProcessedPokemonResult<T>
             {
-                Error = "Unable to parse Showdown set. Could not identify the Pokémon species.",
+                Error = "无法解析 Showdown 配置，未能识别宝可梦种类。",
                 ShowdownSet = set
             });
         }
@@ -147,7 +147,7 @@ public static class Helpers<T> where T : PKM, new()
         {
             return Task.FromResult(new ProcessedPokemonResult<T>
             {
-                Error = $"Unable to parse Showdown Set:\n{string.Join("\n", set.InvalidLines)}",
+                Error = $"无法解析 Showdown 配置：\n{string.Join("\n", set.InvalidLines)}",
                 ShowdownSet = set
             });
         }
@@ -174,7 +174,7 @@ public static class Helpers<T> where T : PKM, new()
         {
             return Task.FromResult(new ProcessedPokemonResult<T>
             {
-                Error = "Set took too long to legalize.",
+                Error = "该配置合法化耗时过长。",
                 ShowdownSet = set
             });
         }
@@ -196,7 +196,7 @@ public static class Helpers<T> where T : PKM, new()
             {
                 return Task.FromResult(new ProcessedPokemonResult<T>
                 {
-                    Error = "Mew can **not** be Shiny in LGPE. PoGo Mew does not transfer and Pokeball Plus Mew is shiny locked.",
+                    Error = "梦幻在 LGPE 中无法为闪光。PoGo 梦幻不可传输，精灵球 Plus 梦幻被锁定。",
                     ShowdownSet = set
                 });
             }
@@ -225,7 +225,7 @@ public static class Helpers<T> where T : PKM, new()
             {
                 return Task.FromResult(new ProcessedPokemonResult<T>
                 {
-                    Error = "Detected Adname in the Pokémon's name or trainer name, which is not allowed.",
+                    Error = "检测到宝可梦或训练家名称包含广告内容，不允许交易。",
                     ShowdownSet = set
                 });
             }
@@ -272,9 +272,9 @@ public static class Helpers<T> where T : PKM, new()
     {
         return result switch
         {
-            "Timeout" => $"That {speciesName} set took too long to generate.",
-            "VersionMismatch" => "Request refused: PKHeX and Auto-Legality Mod version mismatch.",
-            _ => $"I wasn't able to create a {speciesName} from that set."
+            "Timeout" => $"该 {speciesName} 配置生成耗时过长。",
+            "VersionMismatch" => "请求被拒：PKHeX 与 Auto-Legality Mod 版本不匹配。",
+            _ => $"无法根据该配置生成 {speciesName}。"
         };
     }
 
@@ -283,7 +283,7 @@ public static class Helpers<T> where T : PKM, new()
         var hint = AutoLegalityWrapper.GetLegalizationHint(template, sav, pkm);
         if (hint.Contains("Requested shiny value (ShinyType."))
         {
-            hint = $"{speciesName} **cannot** be shiny. Please try again.";
+            hint = $"{speciesName} **无法**成为闪光形态，请重新尝试。";
         }
         return hint;
     }
@@ -292,21 +292,21 @@ public static class Helpers<T> where T : PKM, new()
     {
         var spec = result.ShowdownSet != null && result.ShowdownSet.Species > 0
             ? GameInfo.Strings.Species[result.ShowdownSet.Species]
-            : "Unknown";
+            : "未知";
 
         var embedBuilder = new EmbedBuilder()
-            .WithTitle("Trade Creation Failed.")
+            .WithTitle("创建交易失败")
             .WithColor(Color.Red)
-            .AddField("Status", $"Failed to create {spec}.")
-            .AddField("Reason", result.Error ?? "Unknown error");
+            .AddField("状态", $"创建 {spec} 交易失败。")
+            .AddField("原因", result.Error ?? "未知错误");
 
         if (!string.IsNullOrEmpty(result.LegalizationHint))
         {
-            _ = embedBuilder.AddField("Hint", result.LegalizationHint);
+            _ = embedBuilder.AddField("提示", result.LegalizationHint);
         }
 
         string userMention = context.User.Mention;
-        string messageContent = $"{userMention}, here's the report for your request:";
+        string messageContent = $"{userMention}，以下是你的请求报告：";
         var message = await context.Channel.SendMessageAsync(text: messageContent, embed: embedBuilder.Build()).ConfigureAwait(false);
         _ = DeleteMessagesAfterDelayAsync(message, context.Message, 30);
     }
@@ -343,7 +343,7 @@ public static class Helpers<T> where T : PKM, new()
         var attachment = context.Message.Attachments.FirstOrDefault();
         if (attachment == default)
         {
-            _ = await context.Channel.SendMessageAsync("No attachment provided!").ConfigureAwait(false);
+            _ = await context.Channel.SendMessageAsync("未提供附件！").ConfigureAwait(false);
             return null;
         }
 
@@ -352,7 +352,7 @@ public static class Helpers<T> where T : PKM, new()
 
         if (pk == null)
         {
-            _ = await context.Channel.SendMessageAsync("Attachment provided is not compatible with this module!").ConfigureAwait(false);
+            _ = await context.Channel.SendMessageAsync("附件与此模块不兼容！").ConfigureAwait(false);
             return null;
         }
 
@@ -391,7 +391,7 @@ public static class Helpers<T> where T : PKM, new()
 
         if (pk is not null && !pk.CanBeTraded())
         {
-            var reply = await context.Channel.SendMessageAsync("Provided Pokémon content is blocked from trading!").ConfigureAwait(false);
+            var reply = await context.Channel.SendMessageAsync("提供的宝可梦内容已被禁止交换！").ConfigureAwait(false);
             await Task.Delay(6000).ConfigureAwait(false);
             await reply.DeleteAsync().ConfigureAwait(false);
             return;
@@ -405,12 +405,12 @@ public static class Helpers<T> where T : PKM, new()
             if (pk?.IsEgg == true)
             {
                 string speciesName = SpeciesName.GetSpeciesName(pk.Species, (int)LanguageID.English);
-                responseMessage = $"Invalid Showdown Set for the {speciesName} egg. Please review your information and try again.\n\nLegality Report:\n```\n{la.Report()}\n```";
+                responseMessage = $"该 {speciesName} 蛋的 Showdown 配置无效。请检查信息后重新尝试。\n\n合法性报告：\n```\n{la.Report()}\n```";
             }
             else
             {
                 string speciesName = SpeciesName.GetSpeciesName(pk!.Species, (int)LanguageID.English);
-                responseMessage = $"{speciesName} attachment is not legal, and cannot be traded!\n\nLegality Report:\n```\n{la.Report()}\n```";
+                responseMessage = $"{speciesName} 附件不合法，无法进行交换！\n\n合法性报告：\n```\n{la.Report()}\n```";
             }
             var reply = await context.Channel.SendMessageAsync(responseMessage).ConfigureAwait(false);
             await Task.Delay(6000);
@@ -421,14 +421,14 @@ public static class Helpers<T> where T : PKM, new()
         if (Info.Hub.Config.Legality.DisallowNonNatives && isNonNative)
         {
             string speciesName = SpeciesName.GetSpeciesName(pk!.Species, (int)LanguageID.English);
-            _ = await context.Channel.SendMessageAsync($"This **{speciesName}** is not native to this game, and cannot be traded! Trade with the correct bot, then trade to HOME.").ConfigureAwait(false);
+            _ = await context.Channel.SendMessageAsync($"该 **{speciesName}** 并非此游戏原生，无法在此机器人上交换！请使用正确的机器人交换后再转移到 HOME。").ConfigureAwait(false);
             return;
         }
 
         if (Info.Hub.Config.Legality.DisallowTracked && pk is IHomeTrack { HasTracker: true })
         {
             string speciesName = SpeciesName.GetSpeciesName(pk.Species, (int)LanguageID.English);
-            _ = await context.Channel.SendMessageAsync($"This {speciesName} file is tracked by HOME, and cannot be traded!").ConfigureAwait(false);
+            _ = await context.Channel.SendMessageAsync($"该 {speciesName} 文件已被 HOME 追踪，无法进行交换！").ConfigureAwait(false);
             return;
         }
 

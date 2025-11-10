@@ -12,17 +12,17 @@ namespace SysBot.Pokemon.Discord;
 public class BatchEditingModule : ModuleBase<SocketCommandContext>
 {
     [Command("batchInfo"), Alias("bei")]
-    [Summary("Tries to get info about the requested property.")]
+    [Summary("尝试获取所请求属性的信息。")]
     public async Task GetBatchInfo(string propertyName)
     {
         if (BatchEditing.TryGetPropertyType(propertyName, out string? result))
             await ReplyAsync($"{propertyName}: {result}").ConfigureAwait(false);
         else
-            await ReplyAsync($"Unable to find info for {propertyName}.").ConfigureAwait(false);
+            await ReplyAsync($"无法找到 {propertyName} 的相关信息。").ConfigureAwait(false);
     }
 
     [Command("batchValidate"), Alias("bev")]
-    [Summary("Tries to get info about the requested property.")]
+    [Summary("尝试验证所请求属性的信息。")]
     public async Task ValidateBatchInfo(string instructions)
     {
         bool valid = IsValidInstructionSet(instructions, out var invalid);
@@ -30,12 +30,12 @@ public class BatchEditingModule : ModuleBase<SocketCommandContext>
         if (!valid)
         {
             var msg = invalid.Select(z => $"{z.PropertyName}, {z.PropertyValue}");
-            await ReplyAsync($"Invalid Lines Detected:\r\n{Format.Code(string.Join(Environment.NewLine, msg))}")
+            await ReplyAsync($"检测到无效行：\r\n{Format.Code(string.Join(Environment.NewLine, msg))}")
                 .ConfigureAwait(false);
         }
         else
         {
-            await ReplyAsync($"{invalid.Count} line(s) are invalid.").ConfigureAwait(false);
+            await ReplyAsync($"共有 {invalid.Count} 行无效。").ConfigureAwait(false);
         }
     }
 

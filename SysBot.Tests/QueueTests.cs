@@ -28,8 +28,8 @@ public class QueueTests
         var hub = new PokeTradeHub<T>(new PokeTradeHubConfig());
         var info = new TradeQueueInfo<T>(hub);
 
-        Console.WriteLine("=== Testing Concurrent Duplicate Queue Entry Bug ===");
-        Console.WriteLine("Simulating the RACE CONDITION from Discord command flow");
+        Console.WriteLine("=== 正在测试并发重复排队漏洞 ===");
+        Console.WriteLine("模拟来自 Discord 指令流程的竞态条件");
         Console.WriteLine();
 
         const ulong testUserId = 987654321;
@@ -37,18 +37,17 @@ public class QueueTests
 
         // Simulate what happens in Discord: multiple commands execute in parallel
         // Command 1 and Command 2 both check IsUserInQueue before either adds to queue
-        Console.WriteLine("Step 1: Both commands check if user is in queue (both see 'false')");
+        Console.WriteLine("步骤 1：两条指令都检查用户是否在队列中（结果均为 'false'）");
         bool check1 = !info.IsUserInQueue(testUserId);
         bool check2 = !info.IsUserInQueue(testUserId);
-        Console.WriteLine($"  Command 1 check: {check1} (proceed)");
-        Console.WriteLine($"  Command 2 check: {check2} (proceed)");
-        check1.Should().BeTrue("First command sees user not in queue");
-        check2.Should().BeTrue("Second command ALSO sees user not in queue (RACE CONDITION!)");
+        Console.WriteLine($"  指令 1 检查结果: {check1} (继续执行)");
+        Console.WriteLine($"  指令 2 检查结果: {check2} (继续执行)");
+        check1.Should().BeTrue("第一条指令认为用户不在队列中");
+        check2.Should().BeTrue("第二条指令同样认为用户不在队列中（触发竞态条件！）");
         Console.WriteLine();
 
         // Now both commands proceed to add to queue concurrently
-        Console.WriteLine("Step 2: Both commands try to add to queue with different UniqueTradeIDs");
-
+        Console.WriteLine("步骤 2：两条指令尝试使用不同的 UniqueTradeID 将用户加入队列");
         var trade1 = CreateTradeWithUniqueId<T>(info, testUserId, testUserName, 5001);
         var trade2 = CreateTradeWithUniqueId<T>(info, testUserId, testUserName, 5002);
 
@@ -56,14 +55,14 @@ public class QueueTests
         var task1 = Task.Run(() =>
         {
             var result = info.AddToTradeQueue(trade1, testUserId, allowMultiple: false, sudo: false);
-            Console.WriteLine($"  Task 1: UniqueTradeID={trade1.UniqueTradeID}, Result={result}");
+            Console.WriteLine($"  任务 1: UniqueTradeID={trade1.UniqueTradeID}, 结果={result}");
             return result;
         });
 
         var task2 = Task.Run(() =>
         {
             var result = info.AddToTradeQueue(trade2, testUserId, allowMultiple: false, sudo: false);
-            Console.WriteLine($"  Task 2: UniqueTradeID={trade2.UniqueTradeID}, Result={result}");
+            Console.WriteLine($"  任务 2: UniqueTradeID={trade2.UniqueTradeID}, 结果={result}");
             return result;
         });
 
@@ -74,22 +73,22 @@ public class QueueTests
         var result2 = task2.Result;
 
         Console.WriteLine();
-        Console.WriteLine($"Final Queue Count: {info.Count}");
-        Console.WriteLine($"Expected: 1 (only first should be added, second should be blocked)");
+        Console.WriteLine($"最终队列数量: {info.Count}");
+        Console.WriteLine("预期结果: 1（只有第一次加入成功，第二次应被阻止）");
         Console.WriteLine();
 
         // At least one should be Added
         bool oneAdded = result1 == QueueResultAdd.Added || result2 == QueueResultAdd.Added;
-        oneAdded.Should().BeTrue("At least one command should succeed");
+        oneAdded.Should().BeTrue("至少有一条指令应当加入成功");
 
         // At least one should be blocked as AlreadyInQueue
         bool oneBlocked = result1 == QueueResultAdd.AlreadyInQueue || result2 == QueueResultAdd.AlreadyInQueue;
-        oneBlocked.Should().BeTrue("At least one command should be blocked");
+        oneBlocked.Should().BeTrue("至少有一条指令应被阻止");
 
         // THE KEY ASSERTION: Queue should only have 1 entry, not 2!
-        info.Count.Should().Be(1, "User should only be in queue ONCE, even with concurrent requests");
+        info.Count.Should().Be(1, "即便并发请求，用户也只能在队列中出现一次");
 
-        Console.WriteLine("=== Test Complete ===");
+        Console.WriteLine("=== 测试完成 ===");
     }
 
     private static void TestDuplicateQueueEntries<T>() where T : PKM, new()
@@ -98,8 +97,8 @@ public class QueueTests
         var info = new TradeQueueInfo<T>(hub);
         var queue = info.Hub.Queues.GetQueue(PokeRoutineType.LinkTrade);
 
-        Console.WriteLine("=== Testing Duplicate Queue Entry Bug ===");
-        Console.WriteLine("Simulating same user making multiple trade requests (like in Discord)");
+        Console.WriteLine("=== 正在测试重复排队漏洞 ===");
+        Console.WriteLine("模拟同一用户多次发起交易请求的场景（类似 Discord）");
         Console.WriteLine();
 
         const ulong testUserId = 123456789;
@@ -109,12 +108,12 @@ public class QueueTests
         var trade1 = CreateTradeWithUniqueId<T>(info, testUserId, testUserName, 1001);
         var result1 = info.AddToTradeQueue(trade1, testUserId, allowMultiple: false, sudo: false);
 
-        Console.WriteLine($"Request 1: UserID={testUserId}, UniqueTradeID={trade1.UniqueTradeID}");
-        Console.WriteLine($"  Result: {result1}");
-        Console.WriteLine($"  Queue Count: {info.Count}");
-        Console.WriteLine($"  Expected: Added");
-        result1.Should().Be(QueueResultAdd.Added, "First request should be added");
-        info.Count.Should().Be(1, "Queue should have 1 entry after first request");
+        Console.WriteLine($"请求 1: UserID={testUserId}, UniqueTradeID={trade1.UniqueTradeID}");
+        Console.WriteLine($"  结果: {result1}");
+        Console.WriteLine($"  队列数量: {info.Count}");
+        Console.WriteLine("  预期: Added");
+        result1.Should().Be(QueueResultAdd.Added, "第一次请求应当加入队列");
+        info.Count.Should().Be(1, "首个请求后队列应只有 1 条记录");
         Console.WriteLine();
 
         // Small delay to simulate time between requests
@@ -125,14 +124,14 @@ public class QueueTests
         var trade2 = CreateTradeWithUniqueId<T>(info, testUserId, testUserName, 2002);
         var result2 = info.AddToTradeQueue(trade2, testUserId, allowMultiple: false, sudo: false);
 
-        Console.WriteLine($"Request 2: UserID={testUserId}, UniqueTradeID={trade2.UniqueTradeID}");
-        Console.WriteLine($"  Result: {result2}");
-        Console.WriteLine($"  Queue Count: {info.Count}");
-        Console.WriteLine($"  Expected: AlreadyInQueue (user should be blocked!)");
+        Console.WriteLine($"请求 2: UserID={testUserId}, UniqueTradeID={trade2.UniqueTradeID}");
+        Console.WriteLine($"  结果: {result2}");
+        Console.WriteLine($"  队列数量: {info.Count}");
+        Console.WriteLine("  预期: AlreadyInQueue（应阻止再次排队！）");
 
         // THIS IS THE BUG - the user should NOT be able to queue again!
-        result2.Should().Be(QueueResultAdd.AlreadyInQueue, "Same user should NOT be allowed to queue multiple times");
-        info.Count.Should().Be(1, "Queue should still have only 1 entry - duplicate should be blocked");
+        result2.Should().Be(QueueResultAdd.AlreadyInQueue, "同一用户不应允许再次排队");
+        info.Count.Should().Be(1, "队列仍应只有 1 条记录，重复请求必须被拦截");
 
         Console.WriteLine();
 
@@ -141,16 +140,16 @@ public class QueueTests
         var trade3 = CreateTradeWithUniqueId<T>(info, testUserId, testUserName, 3003);
         var result3 = info.AddToTradeQueue(trade3, testUserId, allowMultiple: false, sudo: false);
 
-        Console.WriteLine($"Request 3: UserID={testUserId}, UniqueTradeID={trade3.UniqueTradeID}");
-        Console.WriteLine($"  Result: {result3}");
-        Console.WriteLine($"  Queue Count: {info.Count}");
-        Console.WriteLine($"  Expected: AlreadyInQueue");
+        Console.WriteLine($"请求 3: UserID={testUserId}, UniqueTradeID={trade3.UniqueTradeID}");
+        Console.WriteLine($"  结果: {result3}");
+        Console.WriteLine($"  队列数量: {info.Count}");
+        Console.WriteLine("  预期: AlreadyInQueue");
 
-        result3.Should().Be(QueueResultAdd.AlreadyInQueue, "User should still be blocked on third attempt");
-        info.Count.Should().Be(1, "Queue should still have only 1 entry");
+        result3.Should().Be(QueueResultAdd.AlreadyInQueue, "第三次尝试仍应被阻止");
+        info.Count.Should().Be(1, "队列仍应只有 1 条记录");
 
         Console.WriteLine();
-        Console.WriteLine("=== Test Complete ===");
+        Console.WriteLine("=== 测试完成 ===");
     }
 
     private static TradeEntry<T> CreateTradeWithUniqueId<T>(TradeQueueInfo<T> info, ulong userId, string userName, int uniqueTradeId) where T : PKM, new()

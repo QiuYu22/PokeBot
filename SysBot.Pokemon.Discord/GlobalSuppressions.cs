@@ -5,4 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>", Scope = "member", Target = "~M:SysBot.Pokemon.Discord.DiscordTradeNotifier`1.CreateLGLinkCodeSpriteEmbed(System.Collections.Generic.List{SysBot.Pokemon.Pictocodes})~System.ValueTuple{System.String,Discord.Embed}")]
+[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "已手动确认平台兼容性", Scope = "member", Target = "~M:SysBot.Pokemon.Discord.DiscordTradeNotifier`1.CreateLGLinkCodeSpriteEmbed(System.Collections.Generic.List{SysBot.Pokemon.Pictocodes})~System.ValueTuple{System.String,Discord.Embed}")]

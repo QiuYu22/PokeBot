@@ -11,8 +11,8 @@ using System.Text;
 namespace SysBot.Base;
 
 /// <summary>
-/// Logic wrapper to handle logging (via NLog).
-/// Supports both master log (all bots) and per-bot log files for better organization.
+/// 日志封装工具（基于 NLog）。
+/// 同时支持主日志（所有机器人）与单独的机器人日志文件，方便整理。
 /// </summary>
 public static class LogUtil
 {
@@ -21,11 +21,11 @@ public static class LogUtil
 
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    // Cache of per-bot loggers to avoid recreating them
+    // 缓存各机器人记录器以避免重复创建
     private static readonly ConcurrentDictionary<string, Logger> BotLoggers = new();
 
-    // Buffer for early bot logs before trainer identification
-    // Key: Connection IP/USB identifier, Value: List of buffered log entries
+    // 机器人识别前的日志缓冲
+    // 键：连接 IP/USB 标识；值：缓冲的日志条目集合
     private static readonly ConcurrentDictionary<string, List<BufferedLogEntry>> LogBuffer = new();
 
     private static readonly string WorkingDirectory = Path.GetDirectoryName(Environment.ProcessPath)!;
@@ -40,7 +40,7 @@ public static class LogUtil
         var config = new LoggingConfiguration();
         Directory.CreateDirectory("logs");
 
-        // Master log file (all bots combined) - only if enabled
+        // 主日志文件（汇总所有机器人），仅在启用时生成
         if (LogConfig.EnableMasterLog)
         {
             var masterLogFile = new FileTarget("masterlog")
@@ -82,11 +82,11 @@ public static class LogUtil
             var botLogDir = Path.Combine(WorkingDirectory, "logs", safeBotName);
             Directory.CreateDirectory(botLogDir);
 
-            // Create a unique logger name to avoid conflicts
+            // 创建唯一的记录器名称以避免冲突
             var loggerName = $"BotLogger_{safeBotName}";
             var botLogger = LogManager.GetLogger(loggerName);
 
-            // Configure per-bot log target
+            // 配置每个机器人的日志目标
             var config = LogManager.Configuration ?? new LoggingConfiguration();
 
             var fileName = LogConfig.IncludeTimestampInFilename
@@ -119,15 +119,15 @@ public static class LogUtil
     }
 
     /// <summary>
-    /// Sanitizes bot name for use in file paths
-    /// Creates folders like: logs/HeXbyt3-483256/, logs/A-Z-734959/, logs/System/
+    /// 将机器人名称转换为可用于文件路径的安全格式
+    /// 例如生成目录：logs/HeXbyt3-483256/、logs/A-Z-734959/、logs/System/
     /// </summary>
     private static string SanitizeBotName(string botName)
     {
         if (string.IsNullOrWhiteSpace(botName))
             return "UnknownBot";
 
-        // Check if this is a system component and should be consolidated
+        // 检查是否属于系统组件，需要合并到系统日志目录
         if (LogConfig.ConsolidateSystemLogs)
         {
             foreach (var systemIdentity in LogConfig.SystemIdentities)
@@ -141,12 +141,11 @@ public static class LogUtil
             }
         }
 
-        // Keep the full identifier (e.g., "HeXbyt3-483256", "USB-1")
-        // Just sanitize invalid file system characters
+        // 保留完整的标识（例如 "HeXbyt3-483256"、"USB-1"），仅移除非法字符
         var invalid = Path.GetInvalidFileNameChars();
         var sanitized = string.Join("_", botName.Split(invalid, StringSplitOptions.RemoveEmptyEntries));
 
-        // Remove any trailing/leading whitespace or underscores
+        // 去除首尾的空白符与下划线
         sanitized = sanitized.Trim('_', ' ');
 
         return string.IsNullOrWhiteSpace(sanitized) ? "UnknownBot" : sanitized;
@@ -320,7 +319,7 @@ public static class LogUtil
     }
 
     /// <summary>
-    /// Gets the log file path for a specific bot
+    /// 获取指定机器人的日志文件路径。
     /// </summary>
     public static string GetBotLogPath(string identity)
     {

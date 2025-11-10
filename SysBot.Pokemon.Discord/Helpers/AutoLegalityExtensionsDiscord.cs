@@ -15,7 +15,7 @@ public static class AutoLegalityExtensionsDiscord
     {
         if (set.Species <= 0)
         {
-            await channel.SendMessageAsync("Oops! I wasn't able to interpret your message! If you intended to convert something, please double check what you're pasting!").ConfigureAwait(false);
+            await channel.SendMessageAsync("抱歉！无法解析你的消息。如果你在转换配置，请确认粘贴的内容无误。").ConfigureAwait(false);
             return;
         }
 
@@ -44,20 +44,20 @@ public static class AutoLegalityExtensionsDiscord
             var spec = GameInfo.Strings.Species[template.Species];
             if (!la.Valid)
             {
-                var reason = result == "Timeout" ? $"That {spec} set took too long to generate." : result == "VersionMismatch" ? "Request refused: PKHeX and Auto-Legality Mod version mismatch." : $"I wasn't able to create a {spec} from that set.";
-                var imsg = $"Oops! {reason}";
+                var reason = result == "Timeout" ? $"该 {spec} 配置生成耗时过长。" : result == "VersionMismatch" ? "请求被拒：PKHeX 与 Auto-Legality Mod 版本不匹配。" : $"无法根据该配置生成 {spec}。";
+                var imsg = $"抱歉！{reason}";
                 if (result == "Failed")
                     imsg += $"\n{AutoLegalityWrapper.GetLegalizationHint(template, sav, pkm)}";
                 await channel.SendMessageAsync(imsg).ConfigureAwait(false);
                 return;
             }
-            var msg = $"Here's your ({result}) legalized PKM for {spec} ({la.EncounterOriginal.Name})!";
+            var msg = $"这是你的（{result}）合法化 {spec}（{la.EncounterOriginal.Name}）！";
             await channel.SendPKMAsync(pkm, msg + $"\n{ReusableActions.GetFormattedShowdownText(pkm)}").ConfigureAwait(false);
         }
         catch (Exception ex)
         {
             LogUtil.LogSafe(ex, nameof(AutoLegalityExtensionsDiscord));
-            var msg = $"Oops! An unexpected problem happened with this Showdown Set:\n```{string.Join("\n", set.GetSetLines())}```";
+            var msg = $"抱歉！处理该 Showdown 配置时发生意外问题：\n```{string.Join("\n", set.GetSetLines())}```";
             await channel.SendMessageAsync(msg).ConfigureAwait(false);
         }
     }
@@ -90,20 +90,20 @@ public static class AutoLegalityExtensionsDiscord
         var pkm = download.Data!;
         if (new LegalityAnalysis(pkm).Valid)
         {
-            await channel.SendMessageAsync($"{download.SanitizedFileName}: Already legal.").ConfigureAwait(false);
+            await channel.SendMessageAsync($"{download.SanitizedFileName}：该文件已合法化。").ConfigureAwait(false);
             return;
         }
 
         var legal = pkm.LegalizePokemon();
         if (!new LegalityAnalysis(legal).Valid)
         {
-            await channel.SendMessageAsync($"{download.SanitizedFileName}: Unable to legalize.").ConfigureAwait(false);
+            await channel.SendMessageAsync($"{download.SanitizedFileName}：无法完成合法化。").ConfigureAwait(false);
             return;
         }
 
         legal.RefreshChecksum();
 
-        var msg = $"Here's your legalized PKM for {download.SanitizedFileName}!\n{ReusableActions.GetFormattedShowdownText(legal)}";
+        var msg = $"这是你的合法化 PKM：{download.SanitizedFileName}！\n{ReusableActions.GetFormattedShowdownText(legal)}";
         await channel.SendPKMAsync(legal, msg).ConfigureAwait(false);
     }
 }

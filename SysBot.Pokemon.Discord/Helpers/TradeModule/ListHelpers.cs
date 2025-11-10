@@ -22,7 +22,7 @@ public static class ListHelpers<T> where T : PKM, new()
 
         if (string.IsNullOrEmpty(folderPath))
         {
-            await Helpers<T>.ReplyAndDeleteAsync(context, "This bot does not have this feature set up.", 2);
+            await Helpers<T>.ReplyAndDeleteAsync(context, "该功能尚未在此机器人上配置。", 2);
             return;
         }
 
@@ -41,7 +41,7 @@ public static class ListHelpers<T> where T : PKM, new()
 
         if (filteredFiles.Count == 0)
         {
-            var replyMessage = await context.Channel.SendMessageAsync($"No {itemType} found matching the filter '{filter}'.");
+            var replyMessage = await context.Channel.SendMessageAsync($"没有找到与筛选条件“{filter}”匹配的 {itemType}。");
             _ = Helpers<T>.DeleteMessagesAfterDelayAsync(replyMessage, context.Message, 10);
             return;
         }
@@ -52,14 +52,14 @@ public static class ListHelpers<T> where T : PKM, new()
         var pageItems = filteredFiles.Skip((page - 1) * itemsPerPage).Take(itemsPerPage);
 
         var embed = new EmbedBuilder()
-            .WithTitle($"Available {char.ToUpper(itemType[0]) + itemType[1..]} - Filter: '{filter}'")
-            .WithDescription($"Page {page} of {pageCount}")
+            .WithTitle($"可用的 {char.ToUpper(itemType[0]) + itemType[1..]} - 筛选：“{filter}”")
+            .WithDescription($"第 {page}/{pageCount} 页")
             .WithColor(Color.Blue);
 
         foreach (var item in pageItems)
         {
             var index = allFiles.IndexOf(item) + 1;
-            embed.AddField($"{index}. {item}", $"Use `{botPrefix}{commandPrefix} {index}` to request this {itemType.TrimEnd('s')}.");
+            embed.AddField($"{index}. {item}", $"使用 `{botPrefix}{commandPrefix} {index}` 请求该 {itemType.TrimEnd('s')}。");
         }
 
         await SendDMOrReplyAsync(context, embed.Build());
@@ -75,16 +75,16 @@ public static class ListHelpers<T> where T : PKM, new()
             {
                 var dmChannel = await user.CreateDMChannelAsync();
                 await dmChannel.SendMessageAsync(embed: embed);
-                replyMessage = await context.Channel.SendMessageAsync($"{context.User.Mention}, I've sent you a DM with the list.");
+                replyMessage = await context.Channel.SendMessageAsync($"{context.User.Mention}，已通过私信发送列表。");
             }
             catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.Forbidden)
             {
-                replyMessage = await context.Channel.SendMessageAsync($"{context.User.Mention}, I'm unable to send you a DM. Please check your **Server Privacy Settings**.");
+                replyMessage = await context.Channel.SendMessageAsync($"{context.User.Mention}，无法发送私信，请检查你的**服务器隐私设置**。");
             }
         }
         else
         {
-            replyMessage = await context.Channel.SendMessageAsync("**Error**: Unable to send a DM. Please check your **Server Privacy Settings**.");
+            replyMessage = await context.Channel.SendMessageAsync("**错误**：无法发送私信，请检查你的**服务器隐私设置**。");
         }
 
         _ = Helpers<T>.DeleteMessagesAfterDelayAsync(replyMessage, context.Message, 10);
@@ -97,7 +97,7 @@ public static class ListHelpers<T> where T : PKM, new()
         if (!await Helpers<T>.EnsureUserNotInQueueAsync(userID))
         {
             await Helpers<T>.ReplyAndDeleteAsync(context,
-                "You already have an existing trade in the queue that cannot be cleared. Please wait until it is processed.", 2);
+                "你在队列中已有一个无法清除的交易，请等待处理完成。", 2);
             return;
         }
 
@@ -105,7 +105,7 @@ public static class ListHelpers<T> where T : PKM, new()
         {
             if (string.IsNullOrEmpty(folderPath))
             {
-                await Helpers<T>.ReplyAndDeleteAsync(context, "This bot does not have this feature set up.", 2);
+                await Helpers<T>.ReplyAndDeleteAsync(context, "该功能尚未在此机器人上配置。", 2);
                 return;
             }
 
@@ -118,7 +118,7 @@ public static class ListHelpers<T> where T : PKM, new()
             if (index < 1 || index > files.Count)
             {
                 await Helpers<T>.ReplyAndDeleteAsync(context,
-                    $"Invalid {itemType} index. Please use a valid number from the `.{listCommand}` command.", 2);
+                    $"无效的 {itemType} 索引。请使用 `.{listCommand}` 命令提供的有效编号。", 2);
                 return;
             }
 
@@ -134,7 +134,7 @@ public static class ListHelpers<T> where T : PKM, new()
             if (pk == null)
             {
                 await Helpers<T>.ReplyAndDeleteAsync(context,
-                    $"Failed to convert {itemType} file to the required PKM type.", 2);
+                    $"无法将 {itemType} 文件转换为所需的 PKM 类型。", 2);
                 return;
             }
 
@@ -142,13 +142,13 @@ public static class ListHelpers<T> where T : PKM, new()
             var lgcode = Info.GetRandomLGTradeCode();
             var sig = context.User.GetFavor();
 
-            await context.Channel.SendMessageAsync($"{char.ToUpper(itemType[0]) + itemType[1..]} request added to queue.").ConfigureAwait(false);
+            await context.Channel.SendMessageAsync($"{char.ToUpper(itemType[0]) + itemType[1..]} 请求已加入队列。").ConfigureAwait(false);
             await Helpers<T>.AddTradeToQueueAsync(context, code, context.User.Username, pk, sig,
                 context.User, lgcode: lgcode).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
-            await Helpers<T>.ReplyAndDeleteAsync(context, $"An error occurred: {ex.Message}", 2);
+            await Helpers<T>.ReplyAndDeleteAsync(context, $"发生错误：{ex.Message}", 2);
         }
         finally
         {

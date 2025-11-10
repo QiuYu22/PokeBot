@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace SysBot.Pokemon.Discord;
 
-[Summary("Queues new Dump trades")]
+[Summary("排队新的导出交易")]
 public class DumpModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
 {
     private static TradeQueueInfo<T> Info => SysCord<T>.Runner.Hub.Queues.Info;
 
     [Command("dump")]
     [Alias("d")]
-    [Summary("Dumps the Pokémon you show via Link Trade.")]
+    [Summary("通过联机交换导出你提供的宝可梦。")]
     [RequireQueueRole(nameof(DiscordManager.RolesDump))]
     public async Task DumpAsync(int code)
     {
@@ -23,7 +23,7 @@ public class DumpModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
         // PA9 (Legends Z-A) dump trades are currently disabled
         if (typeof(T) == typeof(PA9))
         {
-            await ReplyAsync("Dump trades are currently disabled for Legends Z-A due to bugs. Please try again later.").ConfigureAwait(false);
+            await ReplyAsync("由于存在漏洞，传说Z-A的导出交易目前已停用。请稍后再试。").ConfigureAwait(false);
             return;
         }
 
@@ -49,9 +49,9 @@ public class DumpModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
 
     [Command("dump")]
     [Alias("d")]
-    [Summary("Dumps the Pokémon you show via Link Trade.")]
+    [Summary("通过联机交换导出你提供的宝可梦。")]
     [RequireQueueRole(nameof(DiscordManager.RolesDump))]
-    public async Task DumpAsync([Summary("Trade Code")][Remainder] string code)
+    public async Task DumpAsync([Summary("交易代码")][Remainder] string code)
     {
         if (await CheckUserInQueueAsync())
             return;
@@ -59,7 +59,7 @@ public class DumpModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
         // PA9 (Legends Z-A) dump trades are currently disabled
         if (typeof(T) == typeof(PA9))
         {
-            await ReplyAsync("Dump trades are currently disabled for Legends Z-A due to bugs. Please try again later.").ConfigureAwait(false);
+            await ReplyAsync("由于存在漏洞，传说Z-A的导出交易目前已停用。请稍后再试。").ConfigureAwait(false);
             return;
         }
 
@@ -70,7 +70,7 @@ public class DumpModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
 
     [Command("dump")]
     [Alias("d")]
-    [Summary("Dumps the Pokémon you show via Link Trade.")]
+    [Summary("通过联机交换导出你提供的宝可梦。")]
     [RequireQueueRole(nameof(DiscordManager.RolesDump))]
     public async Task DumpAsync()
     {
@@ -83,7 +83,7 @@ public class DumpModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
 
     [Command("dumpList")]
     [Alias("dl", "dq")]
-    [Summary("Prints the users in the Dump queue.")]
+    [Summary("显示导出队列中的用户。")]
     [RequireSudo]
     public async Task GetListAsync()
     {
@@ -91,11 +91,11 @@ public class DumpModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
         var embed = new EmbedBuilder();
         embed.AddField(x =>
         {
-            x.Name = "Pending Trades";
+            x.Name = "待处理交易";
             x.Value = msg;
             x.IsInline = false;
         });
-        await ReplyAsync("These are the users who are currently waiting:", embed: embed.Build()).ConfigureAwait(false);
+        await ReplyAsync("以下是当前正在等待的用户：", embed: embed.Build()).ConfigureAwait(false);
     }
 
     private async Task<bool> CheckUserInQueueAsync()
@@ -103,7 +103,7 @@ public class DumpModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
         var userID = Context.User.Id;
         if (Info.IsUserInQueue(userID))
         {
-            await ReplyAsync("You already have an existing trade in the queue. Please wait until it is processed.").ConfigureAwait(false);
+            await ReplyAsync("你在队列中已有一个待处理的交易。请等待其完成后再尝试。").ConfigureAwait(false);
             return true;
         }
         return false;

@@ -36,22 +36,22 @@ public static class DetailsExtractor<T> where T : PKM, new()
     /// <param name="pk">Pokémon data.</param>
     public static void AddNormalTradeFields(EmbedBuilder embedBuilder, EmbedData embedData, string trainerMention, T pk)
     {
-        string leftSideContent = $"**Trainer:** {trainerMention}\n";
+        string leftSideContent = $"**训练家：** {trainerMention}\n";
         leftSideContent +=
-            (pk.Version is GameVersion.SL or GameVersion.VL && SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowTeraType ? $"**Tera Type:** {embedData.TeraType}\n" : "") +
-            (pk.Version is GameVersion.SL or GameVersion.VL && SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowScale ? $"**Scale:** {embedData.Scale.Item1} ({embedData.Scale.Item2})\n" : "") +
-            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowLevel ? $"**Level:** {embedData.Level}\n" : "") +
-            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowMetDate ? $"**Met Date:** {embedData.MetDate}\n" : "") +
-            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowAbility ? $"**Ability:** {embedData.Ability}\n" : "") +
-            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowNature ? $"**Nature**: {embedData.Nature}\n" : "") +
-            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowIVs ? $"**IVs**: {embedData.IVsDisplay}\n" : "") +
-            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowLanguage ? $"**Language**: {embedData.Language}\n" : "") +
-            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowEVs && !string.IsNullOrWhiteSpace(embedData.EVsDisplay) ? $"**EVs**: {embedData.EVsDisplay}\n" : "");
+            (pk.Version is GameVersion.SL or GameVersion.VL && SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowTeraType ? $"**太晶属性：** {embedData.TeraType}\n" : "") +
+            (pk.Version is GameVersion.SL or GameVersion.VL && SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowScale ? $"**体型：** {embedData.Scale.Item1} ({embedData.Scale.Item2})\n" : "") +
+            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowLevel ? $"**等级：** {embedData.Level}\n" : "") +
+            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowMetDate ? $"**相遇日期：** {embedData.MetDate}\n" : "") +
+            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowAbility ? $"**特性：** {embedData.Ability}\n" : "") +
+            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowNature ? $"**性格：** {embedData.Nature}\n" : "") +
+            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowIVs ? $"**个体值：** {embedData.IVsDisplay}\n" : "") +
+            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowLanguage ? $"**语言：** {embedData.Language}\n" : "") +
+            (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.ShowEVs && !string.IsNullOrWhiteSpace(embedData.EVsDisplay) ? $"**努力值：** {embedData.EVsDisplay}\n" : "");
 
         leftSideContent = leftSideContent.TrimEnd('\n');
         embedBuilder.AddField($"**{embedData.SpeciesName}{(string.IsNullOrEmpty(embedData.FormName) ? "" : $"-{embedData.FormName}")} {embedData.SpecialSymbols}**", leftSideContent, inline: true);
         embedBuilder.AddField("\u200B", "\u200B", inline: true);
-        embedBuilder.AddField("**Moves:**", embedData.MovesDisplay, inline: true);
+        embedBuilder.AddField("**招式：**", embedData.MovesDisplay, inline: true);
     }
 
     /// <summary>
@@ -65,8 +65,8 @@ public static class DetailsExtractor<T> where T : PKM, new()
     /// <param name="trainerMention">Discord mention for the trainer.</param>
     public static void AddSpecialTradeFields(EmbedBuilder embedBuilder, bool isMysteryEgg, bool isSpecialRequest, bool isCloneRequest, bool isFixOTRequest, string trainerMention)
     {
-        string specialDescription = $"**Trainer:** {trainerMention}\n" +
-                                    (isMysteryEgg ? "Mystery Egg" : isSpecialRequest ? "Special Request" : isCloneRequest ? "Clone Request" : isFixOTRequest ? "FixOT Request" : "Dump Request");
+        string specialDescription = $"**训练家：** {trainerMention}\n" +
+                                    (isMysteryEgg ? "神秘蛋" : isSpecialRequest ? "特殊请求" : isCloneRequest ? "克隆请求" : isFixOTRequest ? "FixOT 请求" : "导出请求");
         embedBuilder.AddField("\u200B", specialDescription, inline: false);
     }
 
@@ -315,8 +315,8 @@ public static class DetailsExtractor<T> where T : PKM, new()
         string femaleEmojiString = SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.FemaleEmoji.EmojiString;
         string displayGender = genderSymbol switch
         {
-            "M" => !string.IsNullOrEmpty(maleEmojiString) ? maleEmojiString : "(M) ",
-            "F" => !string.IsNullOrEmpty(femaleEmojiString) ? femaleEmojiString : "(F) ",
+            "M" => !string.IsNullOrEmpty(maleEmojiString) ? maleEmojiString : "(公) ",
+            "F" => !string.IsNullOrEmpty(femaleEmojiString) ? femaleEmojiString : "(母) ",
             _ => ""
         };
         string mysteryGiftEmoji = pk.FatefulEncounter ? SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.MysteryGiftEmoji.EmojiString : "";
@@ -344,12 +344,12 @@ public static class DetailsExtractor<T> where T : PKM, new()
     private static string GetTradeTitle(bool isMysteryEgg, bool isCloneRequest, bool isDumpRequest, bool isFixOTRequest, bool isSpecialRequest, bool isBatchTrade, int batchTradeNumber, string pokemonDisplayName, bool isShiny)
     {
         string shinyEmoji = isShiny ? "✨ " : "";
-        return isMysteryEgg ? "✨ Shiny Mystery Egg ✨" :
-               isBatchTrade ? $"Batch Trade #{batchTradeNumber} - {shinyEmoji}{pokemonDisplayName}" :
-               isFixOTRequest ? "FixOT Request" :
-               isSpecialRequest ? "Special Request" :
-               isCloneRequest ? "Clone Pod Activated!" :
-               isDumpRequest ? "Pokémon Dump" :
+        return isMysteryEgg ? "✨ 闪光神秘蛋 ✨" :
+               isBatchTrade ? $"批量交易 #{batchTradeNumber} - {shinyEmoji}{pokemonDisplayName}" :
+               isFixOTRequest ? "FixOT 请求" :
+               isSpecialRequest ? "特殊请求" :
+               isCloneRequest ? "克隆舱已启动！" :
+               isDumpRequest ? "宝可梦导出" :
                "";
     }
 }

@@ -6,83 +6,106 @@ namespace SysBot.Pokemon;
 
 public class TwitchSettings
 {
-    private const string Messages = nameof(Messages);
+    private const string Messages = "消息";
 
-    private const string Operation = nameof(Operation);
+    private const string Operation = "运行";
 
-    private const string Startup = nameof(Startup);
+    private const string Startup = "启动";
 
-    [Category(Operation), Description("When enabled, the bot will process commands sent to the channel.")]
+    [DisplayName("允许频道命令")]
+    [Category(Operation), Description("启用后，机器人处理频道内发送的命令。")]
     public bool AllowCommandsViaChannel { get; set; } = true;
 
-    [Category(Operation), Description("When enabled, the bot will allow users to send command via whisper (bypasses slow mode)")]
+    [DisplayName("允许密语命令")]
+    [Category(Operation), Description("启用后允许用户通过密语发送命令（可绕过慢速模式）。")]
     public bool AllowCommandsViaWhisper { get; set; }
 
-    [Category(Startup), Description("Channel to Send Messages To")]
+    [DisplayName("消息频道")]
+    [Category(Startup), Description("发送消息到的频道名称。")]
     public string Channel { get; set; } = string.Empty;
 
-    [Category(Startup), Description("Bot Command Prefix")]
+    [DisplayName("命令前缀")]
+    [Category(Startup), Description("机器人命令前缀。")]
     public char CommandPrefix { get; set; } = '$';
 
-    [Category(Operation), Description("Discord Server Link.")]
+    [DisplayName("Discord 链接")]
+    [Category(Operation), Description("Discord 服务器链接。")]
     public string DiscordLink { get; set; } = string.Empty;
 
-    [Category(Messages), Description("Toggles whether Distribution trades count down before starting.")]
+    [DisplayName("分发倒计时")]
+    [Category(Messages), Description("控制分发交易开始前是否进行倒计时。")]
     public bool DistributionCountDown { get; set; } = true;
 
-    [Category(Operation), Description("Donation Link.")]
+    [DisplayName("赞助链接")]
+    [Category(Operation), Description("赞助 / 打赏链接。")]
     public string DonationLink { get; set; } = string.Empty;
 
-    [Category(Operation), Description("Message sent when the Barrier is released.")]
+    [DisplayName("开始交易消息")]
+    [Category(Operation), Description("解除屏障（开始交易）时发送的消息。")]
     public string MessageStart { get; set; } = string.Empty;
 
-    [Category(Messages), Description("Determines where generic notifications are sent.")]
+    [DisplayName("普通通知目标")]
+    [Category(Messages), Description("通用通知发送的位置。")]
     public TwitchMessageDestination NotifyDestination { get; set; }
 
-    [Category(Operation), Description("Sudo Usernames")]
+    [DisplayName("Sudo 用户列表")]
+    [Category(Operation), Description("拥有 Sudo 权限的用户名。")]
     public string SudoList { get; set; } = string.Empty;
 
-    [Category(Operation), Description("Throttle the bot from sending messages if X messages have been sent in the past Y seconds.")]
+    [DisplayName("消息限流条数")]
+    [Category(Operation), Description("在过去 Y 秒内发送消息超过 X 条则限流。")]
     public int ThrottleMessages { get; set; } = 100;
 
     // Messaging
-    [Category(Operation), Description("Throttle the bot from sending messages if X messages have been sent in the past Y seconds.")]
+    [DisplayName("消息限流窗口（秒）")]
+    [Category(Operation), Description("在过去 Y 秒内发送消息超过 X 条则限流（秒数）。")]
     public double ThrottleSeconds { get; set; } = 30;
 
-    [Category(Operation), Description("Throttle the bot from sending whispers if X messages have been sent in the past Y seconds.")]
+    [DisplayName("密语限流条数")]
+    [Category(Operation), Description("在过去 Y 秒内发送密语超过 X 条则限流。")]
     public int ThrottleWhispers { get; set; } = 100;
 
-    [Category(Operation), Description("Throttle the bot from sending whispers if X messages have been sent in the past Y seconds.")]
+    [DisplayName("密语限流窗口（秒）")]
+    [Category(Operation), Description("在过去 Y 秒内发送密语超过 X 条则限流（秒数）。")]
     public double ThrottleWhispersSeconds { get; set; } = 60;
 
-    [Category(Startup), Description("Bot Login Token")]
+    [DisplayName("登录 Token")]
+    [Category(Startup), Description("机器人登录 Token。")]
     public string Token { get; set; } = string.Empty;
 
-    [Category(Messages), Description("Determines where TradeCanceled notifications are sent.")]
+    [DisplayName("交易取消通知目标")]
+    [Category(Messages), Description("交易取消通知的发送位置。")]
     public TwitchMessageDestination TradeCanceledDestination { get; set; } = TwitchMessageDestination.Channel;
 
-    [Category(Messages), Description("Determines where TradeFinish notifications are sent.")]
+    [DisplayName("交易完成通知目标")]
+    [Category(Messages), Description("交易完成通知的发送位置。")]
     public TwitchMessageDestination TradeFinishDestination { get; set; }
 
-    [Category(Messages), Description("Determines where TradeSearch notifications are sent.")]
+    [DisplayName("交易搜索通知目标")]
+    [Category(Messages), Description("交易搜索通知的发送位置。")]
     public TwitchMessageDestination TradeSearchDestination { get; set; }
 
     // Message Destinations
-    [Category(Messages), Description("Determines where TradeStart notifications are sent.")]
+    [DisplayName("交易开始通知目标")]
+    [Category(Messages), Description("交易开始通知的发送位置。")]
     public TwitchMessageDestination TradeStartDestination { get; set; } = TwitchMessageDestination.Channel;
 
-    [Category(Operation), Description("Bot usage tutorial Link.")]
+    [DisplayName("使用教程链接")]
+    [Category(Operation), Description("机器人使用教程链接。")]
     public string TutorialLink { get; set; } = string.Empty;
 
-    [Category(Operation), Description("Bot usage tutorial text.")]
+    [DisplayName("使用教程文本")]
+    [Category(Operation), Description("机器人使用教程的文本内容。")]
     public string TutorialText { get; set; } = string.Empty;
 
     // Operation
-    [Category(Operation), Description("Users with these usernames cannot use the bot.")]
+    [DisplayName("黑名单用户")]
+    [Category(Operation), Description("禁止使用机器人的用户名列表。")]
     public string UserBlacklist { get; set; } = string.Empty;
 
     // Startup
-    [Category(Startup), Description("Bot Username")]
+    [DisplayName("机器人用户名")]
+    [Category(Startup), Description("机器人登录的用户名。")]
     public string Username { get; set; } = string.Empty;
 
     public bool IsSudo(string username)
@@ -91,7 +114,7 @@ public class TwitchSettings
         return sudos.Contains(username);
     }
 
-    public override string ToString() => "Twitch Integration Settings";
+    public override string ToString() => "Twitch 集成设置";
 }
 
 public enum TwitchMessageDestination

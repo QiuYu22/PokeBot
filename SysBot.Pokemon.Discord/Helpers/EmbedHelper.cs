@@ -11,7 +11,7 @@ public static class EmbedHelper
     public static async Task SendNotificationEmbedAsync(IUser user, string message)
     {
         var embed = new EmbedBuilder()
-            .WithTitle("Notice")
+            .WithTitle("通知")
             .WithDescription(message)
             .WithTimestamp(DateTimeOffset.Now)
             .WithThumbnailUrl("https://raw.githubusercontent.com/hexbyt3/sprites/main/exclamation.gif")
@@ -24,8 +24,8 @@ public static class EmbedHelper
     public static async Task SendTradeCanceledEmbedAsync(IUser user, string reason)
     {
         var embed = new EmbedBuilder()
-            .WithTitle("Your Trade was Canceled...")
-            .WithDescription($"Your trade was canceled.\nPlease try again. If the issue persists, restart your switch and check your internet connection.\n\n**Reason**: {reason}")
+            .WithTitle("你的交易被取消了…")
+            .WithDescription($"你的交易已被取消。\n请重试。如果问题仍然存在，请重启主机并检查网络连接。\n\n**原因**：{reason}")
             .WithTimestamp(DateTimeOffset.Now)
             .WithThumbnailUrl("https://raw.githubusercontent.com/hexbyt3/sprites/main/dmerror.gif")
             .WithColor(Color.Red)
@@ -37,7 +37,7 @@ public static class EmbedHelper
     public static async Task SendTradeCodeEmbedAsync(IUser user, int code)
     {
         var embed = new EmbedBuilder()
-            .WithTitle("Here's your trade code!")
+            .WithTitle("这是你的交换密码！")
             .WithDescription($"# {code:0000 0000}")
             .WithTimestamp(DateTimeOffset.Now)
             .WithThumbnailUrl("https://raw.githubusercontent.com/hexbyt3/sprites/main/tradecode.gif")
@@ -62,7 +62,7 @@ public static class EmbedHelper
         }
 
         var embed = new EmbedBuilder()
-            .WithTitle("Trade Completed!")
+            .WithTitle("交易完成！")
             .WithDescription(message)
             .WithTimestamp(DateTimeOffset.Now)
             .WithThumbnailUrl(thumbnailUrl)
@@ -76,12 +76,12 @@ public static class EmbedHelper
     {
         if (isMysteryEgg)
         {
-            speciesName = "**Mystery Egg**";
+            speciesName = "**神秘蛋**";
         }
 
         var embed = new EmbedBuilder()
-            .WithTitle("Loading the Trade Portal...")
-            .WithDescription($"**Pokemon**: {speciesName}\n**Trade Code**: {code:0000 0000}")
+            .WithTitle("正在加载交换通道…")
+            .WithDescription($"**宝可梦：** {speciesName}\n**交换密码：** {code:0000 0000}")
             .WithTimestamp(DateTimeOffset.Now)
             .WithThumbnailUrl("https://raw.githubusercontent.com/hexbyt3/sprites/main/initializing.gif")
             .WithColor(Color.Orange);
@@ -98,8 +98,8 @@ public static class EmbedHelper
     public static async Task SendTradeSearchingEmbedAsync(IUser user, string trainerName, string inGameName, string? message = null)
     {
         var embed = new EmbedBuilder()
-            .WithTitle($"Now Searching for You, {trainerName}...")
-            .WithDescription($"**Waiting for**: {trainerName}\n**My IGN**: {inGameName}")
+            .WithTitle($"正在搜索你，{trainerName}…")
+            .WithDescription($"**等待对象：** {trainerName}\n**我的 IGN：** {inGameName}")
             .WithTimestamp(DateTimeOffset.Now)
             .WithThumbnailUrl("https://raw.githubusercontent.com/hexbyt3/sprites/main/searching.gif")
             .WithColor(Color.Green);

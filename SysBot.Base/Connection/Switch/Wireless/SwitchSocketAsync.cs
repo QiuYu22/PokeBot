@@ -11,10 +11,10 @@ using static SysBot.Base.SwitchOffsetTypeUtil;
 namespace SysBot.Base;
 
 /// <summary>
-/// Connection to a Nintendo Switch hosting the sys-module via a socket (Wi-Fi).
+/// 通过套接字（Wi-Fi）连接运行 sys 模块的 Nintendo Switch。
 /// </summary>
 /// <remarks>
-/// Interactions are performed asynchronously.
+/// 所有交互均以异步方式执行。
 /// </remarks>
 public sealed class SwitchSocketAsync : SwitchSocket, ISwitchConnectionAsync
 {
@@ -31,41 +31,41 @@ public sealed class SwitchSocketAsync : SwitchSocket, ISwitchConnectionAsync
     {
         if (Connected)
         {
-            Log("Already connected prior, skipping initial connection.");
+            Log("已存在连接，跳过初始连接流程。");
             return;
         }
 
-        Log("Connecting to device...");
+        Log("正在连接设备…");
         IAsyncResult result = Connection.BeginConnect(Info.IP, Info.Port, null, null);
         bool success = result.AsyncWaitHandle.WaitOne(5000, true);
         if (!success || !Connection.Connected)
         {
             InitializeSocket();
-            throw new Exception("Failed to connect to device.");
+            throw new Exception("连接设备失败。");
         }
         Connection.EndConnect(result);
-        Log("Connected!");
+        Log("已成功连接！");
         Label = Name;
     }
 
     public override void Disconnect()
     {
-        Log("Disconnecting from device...");
+        Log("正在断开设备…");
         IAsyncResult result = Connection.BeginDisconnect(false, null, null);
         bool success = result.AsyncWaitHandle.WaitOne(5000, true);
         if (!success || Connection.Connected)
         {
             InitializeSocket();
-            throw new Exception("Failed to disconnect from device.");
+            throw new Exception("断开设备失败。");
         }
         Connection.EndDisconnect(result);
-        Log("Disconnected! Resetting Socket.");
+        Log("已断开连接，正在重置套接字。");
         InitializeSocket();
     }
 
     public async Task<string> GetBotbaseVersion(CancellationToken token)
     {
-        // Allows up to 9 characters for version, and trims extra '\0' if unused.
+        // 最多允许 9 个字符的版本号，并在未使用时裁剪多余的 '\0'。
         var bytes = await ReadRaw(SwitchCommand.GetBotbaseVersion(), 10, token).ConfigureAwait(false);
         return Encoding.ASCII.GetString(bytes).Trim('\0');
     }
@@ -114,8 +114,8 @@ public sealed class SwitchSocketAsync : SwitchSocket, ISwitchConnectionAsync
         }
         catch (Exception e)
         {
-            LogError($"Malformed screenshot data received: {e.Message}");
-            throw; // Rethrow the exception to the caller
+            LogError($"收到异常的截图数据：{e.Message}");
+            throw; // 将异常重新抛给调用方
         }
     }
 
@@ -172,7 +172,7 @@ public sealed class SwitchSocketAsync : SwitchSocket, ISwitchConnectionAsync
         Connect();
     }
 
-    /// <summary> Only call this if you are sending small commands. </summary>
+    /// <summary> 仅在发送小型命令时调用此方法。 </summary>
     public ValueTask<int> SendAsync(byte[] buffer, CancellationToken token) => Connection.SendAsync(buffer, token);
 
     public async Task SendRaw(byte[] command, CancellationToken token)
@@ -189,7 +189,7 @@ public sealed class SwitchSocketAsync : SwitchSocket, ISwitchConnectionAsync
     private static byte[] DecodeResult(ReadOnlyMemory<byte> buffer, int length)
     {
         var result = new byte[length];
-        var span = buffer.Span[..^1]; // Last byte is always a terminator
+        var span = buffer.Span[..^1]; // 最后一个字节始终为终止符
         Decoder.LoadHexBytesTo(span, result, 2);
         return result;
     }
@@ -216,7 +216,7 @@ public sealed class SwitchSocketAsync : SwitchSocket, ISwitchConnectionAsync
             }
             catch (Exception ex)
             {
-                LogError($"Socket exception thrown while receiving data:\n{ex.Message}");
+                LogError($"接收数据时触发套接字异常：\n{ex.Message}");
                 return Array.Empty<byte>();
             }
 

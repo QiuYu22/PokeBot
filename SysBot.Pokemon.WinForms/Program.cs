@@ -11,7 +11,7 @@ internal static class Program
     public static string ConfigPath { get; private set; } = Path.Combine(WorkingDirectory, "config.json");
 
     /// <summary>
-    ///  The main entry point for the application.
+    /// 应用程序的主要入口点。
     /// </summary>
     [STAThread]
     private static void Main()

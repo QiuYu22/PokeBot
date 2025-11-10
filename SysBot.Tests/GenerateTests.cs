@@ -7,6 +7,7 @@ namespace SysBot.Tests;
 
 public class GenerateTests
 {
+    // 勇士雄鹰对战配置（♀，大师球）
     private const string Braviary =
         @"Braviary (F) @ Master Ball
 Ability: Defiant
@@ -17,6 +18,7 @@ Jolly Nature
 - Tailwind
 - Iron Head";
 
+    // 喷火龙对战配置（选择围巾，太阳之力）
     private const string Charizard4 =
         @"Charizard @ Choice Scarf
 Ability: Solar Power
@@ -29,6 +31,7 @@ Timid Nature
 - Solar Beam
 - Beat Up";
 
+    // 巨龟兽极巨配置（龙化石）
     private const string Drednaw =
         @"Drednaw-Gmax @ Fossilized Drake
 Ability: Shell Armor
@@ -40,6 +43,7 @@ Adamant Nature
 - Swords Dance
 - Head Smash";
 
+    // 耿鬼极巨配置（命玉）
     private const string Gengar =
         @"Gengar-Gmax @ Life Orb
 Ability: Cursed Body
@@ -51,9 +55,10 @@ Timid Nature
 - Giga Impact
 - Headbutt";
 
-    private const string InvalidSpec =
-        "(Pikachu)";
+    // 非法配置：缺少 Showdown 格式要求的内容，只提供了种族名
+    private const string InvalidSpec = "(Pikachu)";
 
+    // 坦克顶配：煤炭龟对战配置（突击背心）
     private const string Torkoal2 =
         @"Torkoal (M) @ Assault Vest
 IVs: 0 Atk

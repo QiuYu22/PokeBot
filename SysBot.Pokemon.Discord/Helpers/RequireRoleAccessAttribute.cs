@@ -23,14 +23,14 @@ public sealed class RequireRoleAccessAttribute(string RoleName) : PreconditionAt
 
         // Check if this user is a Guild User, which is the only context where roles exist
         if (context.User is not SocketGuildUser gUser)
-            return Task.FromResult(PreconditionResult.FromError("You must be sending the message from a guild to run this command."));
+            return Task.FromResult(PreconditionResult.FromError("该命令需要在服务器频道中执行。"));
 
         var roles = gUser.Roles;
         if (mgr.CanUseSudo(roles.Select(z => z.Name)))
             return Task.FromResult(PreconditionResult.FromSuccess());
 
         if (!mgr.GetHasRoleAccess(RoleName, roles.Select(z => z.Name)))
-            return Task.FromResult(PreconditionResult.FromError("You do not have the required role to run this command."));
+            return Task.FromResult(PreconditionResult.FromError("你没有执行此命令所需的角色权限。"));
 
         return Task.FromResult(PreconditionResult.FromSuccess());
     }

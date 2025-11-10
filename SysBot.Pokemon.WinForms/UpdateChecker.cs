@@ -38,8 +38,7 @@ namespace SysBot.Pokemon.WinForms
                 {
                     if (forceShow)
                     {
-                        MessageBox.Show("Failed to fetch release information. Please check your internet connection.",
-                            "Update Check Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("无法获取更新信息，请检查网络连接。", "更新检查失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     return (false, false, string.Empty);
                 }
@@ -60,8 +59,7 @@ namespace SysBot.Pokemon.WinForms
             {
                 if (forceShow)
                 {
-                    MessageBox.Show($"Error checking for updates: {ex.Message}",
-                        "Update Check Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"检查更新时出错：{ex.Message}", "更新检查失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 return (false, false, string.Empty);
             }
@@ -72,11 +70,11 @@ namespace SysBot.Pokemon.WinForms
             try
             {
                 ReleaseInfo? latestRelease = await FetchLatestReleaseAsync();
-                return latestRelease?.Body ?? "Failed to fetch the latest release information.";
+                return latestRelease?.Body ?? "无法获取最新的版本信息。";
             }
             catch (Exception ex)
             {
-                return $"Error fetching changelog: {ex.Message}";
+                return $"获取更新日志失败：{ex.Message}";
             }
         }
 
@@ -87,7 +85,7 @@ namespace SysBot.Pokemon.WinForms
                 ReleaseInfo? latestRelease = await FetchLatestReleaseAsync();
                 if (latestRelease?.Assets == null || !latestRelease.Assets.Any())
                 {
-                    Console.WriteLine("No assets found in the release");
+                    Console.WriteLine("该版本未找到任何资源文件");
                     return null;
                 }
 
@@ -96,23 +94,23 @@ namespace SysBot.Pokemon.WinForms
 
                 if (exeAsset == null)
                 {
-                    Console.WriteLine("No .exe asset found in the release");
+                    Console.WriteLine("该版本未包含 .exe 安装包");
                     return null;
                 }
 
                 // For public repos, use browser_download_url directly
                 if (string.IsNullOrEmpty(exeAsset.BrowserDownloadUrl))
                 {
-                    Console.WriteLine("Download URL is empty");
+                    Console.WriteLine("下载链接为空");
                     return null;
                 }
 
-                Console.WriteLine($"Found download URL: {exeAsset.BrowserDownloadUrl}");
+                Console.WriteLine($"找到下载链接：{exeAsset.BrowserDownloadUrl}");
                 return exeAsset.BrowserDownloadUrl;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error fetching download URL: {ex.Message}");
+                Console.WriteLine($"获取下载链接时出错：{ex.Message}");
                 return null;
             }
         }
@@ -128,57 +126,57 @@ namespace SysBot.Pokemon.WinForms
                 {
                     // Wait before retry (exponential backoff)
                     await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retry)));
-                    Console.WriteLine($"Retrying fetch attempt {retry + 1}/{maxRetries}...");
+                    Console.WriteLine($"第 {retry + 1}/{maxRetries} 次获取重试中...");
                 }
 
                 // Use shared HttpClient instance to prevent memory leaks
                 try
                 {
                     string releasesUrl = $"https://api.github.com/repos/{RepositoryOwner}/{RepositoryName}/releases/latest";
-                    Console.WriteLine($"Fetching from URL: {releasesUrl}");
+                    Console.WriteLine($"正在从地址获取信息：{releasesUrl}");
 
                     HttpResponseMessage response = await _sharedClient.GetAsync(releasesUrl);
                     string responseContent = await response.Content.ReadAsStringAsync();
 
                     if (!response.IsSuccessStatusCode)
                     {
-                        Console.WriteLine($"GitHub API Error: {response.StatusCode} - {responseContent}");
-                        lastException = new HttpRequestException($"GitHub API returned {response.StatusCode}");
+                        Console.WriteLine($"GitHub 接口返回错误：{response.StatusCode} - {responseContent}");
+                        lastException = new HttpRequestException($"GitHub API 返回了 {response.StatusCode}");
                         continue; // Try again
                     }
 
                     var releaseInfo = JsonConvert.DeserializeObject<ReleaseInfo>(responseContent);
                     if (releaseInfo == null)
                     {
-                        Console.WriteLine("Failed to deserialize release info");
-                        lastException = new InvalidOperationException("Failed to deserialize release info");
+                        Console.WriteLine("无法解析版本信息");
+                        lastException = new InvalidOperationException("无法解析版本信息");
                         continue; // Try again
                     }
 
-                    Console.WriteLine($"Successfully fetched release info. Tag: {releaseInfo.TagName}");
+                    Console.WriteLine($"已成功获取版本信息，标签：{releaseInfo.TagName}");
                     return releaseInfo;
                 }
                 catch (TaskCanceledException ex)
                 {
-                    Console.WriteLine($"Request timed out on attempt {retry + 1}: {ex.Message}");
+                    Console.WriteLine($"第 {retry + 1} 次请求超时：{ex.Message}");
                     lastException = ex;
                 }
                 catch (HttpRequestException ex)
                 {
-                    Console.WriteLine($"Network error on attempt {retry + 1}: {ex.Message}");
+                    Console.WriteLine($"第 {retry + 1} 次网络错误：{ex.Message}");
                     lastException = ex;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error on attempt {retry + 1}: {ex.Message}");
+                    Console.WriteLine($"第 {retry + 1} 次尝试发生错误：{ex.Message}");
                     lastException = ex;
                 }
             }
 
             // All retries failed
-            Console.WriteLine($"Failed to fetch release info after {maxRetries} attempts");
+            Console.WriteLine($"连续 {maxRetries} 次尝试后仍无法获取版本信息");
             if (lastException != null)
-                Console.WriteLine($"Last error: {lastException.Message}");
+                Console.WriteLine($"最后一次错误：{lastException.Message}");
 
             return null;
         }

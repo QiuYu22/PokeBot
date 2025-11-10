@@ -1,56 +1,56 @@
 namespace SysBot.Base;
 
 /// <summary>
-/// Configuration for the logging system
+/// 日志系统的配置项。
 /// </summary>
 public static class LogConfig
 {
     /// <summary>
-    /// Enable or disable all logging
+    /// 是否启用所有日志记录。
     /// </summary>
     public static bool LoggingEnabled { get; set; } = true;
 
     /// <summary>
-    /// Number of archived log files to keep (default: 14 days)
+    /// 保留的归档日志文件数量（默认：14 天）。
     /// </summary>
     public static int MaxArchiveFiles { get; set; } = 14;
 
     /// <summary>
-    /// Enable per-bot log files in addition to the master log
-    /// When enabled, each bot will have its own log file: logs/{BotName}/SysBotLog.txt
-    /// DEFAULT: true - each IP gets its own folder with all related logs
+    /// 是否在主日志之外生成每个机器人的独立日志文件。
+    /// 启用后，每个机器人会写入 logs/{BotName}/SysBotLog.txt。
+    /// 默认值：true，按连接创建独立文件夹存放日志。
     /// </summary>
     public static bool EnablePerBotLogging { get; set; } = true;
 
     /// <summary>
-    /// When enabled, the master log file will still contain all bot logs
-    /// When disabled, only per-bot logs are written (saves disk space and improves performance)
-    /// DEFAULT: true - master log contains everything for backward compatibility
+    /// 启用时，主日志文件仍会包含所有机器人的日志。
+    /// 关闭时，仅写入各机器人独立日志（节省空间并提升性能）。
+    /// 默认值：true，主日志保留全部内容以保持兼容性。
     /// </summary>
     public static bool EnableMasterLog { get; set; } = true;
 
     /// <summary>
-    /// Include timestamp in log file names (useful for debugging specific sessions)
-    /// Format: logs/{BotName}/SysBotLog_{yyyy-MM-dd_HH-mm-ss}.txt
+    /// 是否在日志文件名中包含时间戳（便于排查特定会话）。
+    /// 格式：logs/{BotName}/SysBotLog_{yyyy-MM-dd_HH-mm-ss}.txt。
     /// </summary>
     public static bool IncludeTimestampInFilename { get; set; } = false;
 
     /// <summary>
-    /// Maximum size for individual log files before archiving (in bytes)
-    /// Default: 50MB (52428800 bytes)
+    /// 单个日志文件在归档前允许的最大大小（字节）。
+    /// 默认：50MB（52428800 字节）。
     /// </summary>
     public static long MaxLogFileSize { get; set; } = 52428800;
 
     /// <summary>
-    /// System components will log to a single "System" folder instead of individual folders
-    /// Reduces clutter when you have many system services running
-    /// DEFAULT: true - consolidate all system logs into one folder
+    /// 系统组件是否统一记录到 “System” 目录，而非各自独立目录。
+    /// 适用于运行大量系统服务时减少目录数量。
+    /// 默认：true，将所有系统日志集中存放。
     /// </summary>
     public static bool ConsolidateSystemLogs { get; set; } = true;
 
     /// <summary>
-    /// List of identity prefixes that are considered "system" components
-    /// These will all log to the "System" folder if ConsolidateSystemLogs is enabled
+    /// 被视为“系统组件”的身份前缀列表。
+    /// 若启用 ConsolidateSystemLogs，这些身份的日志将写入 “System” 目录。
     /// </summary>
     public static readonly string[] SystemIdentities =
     [

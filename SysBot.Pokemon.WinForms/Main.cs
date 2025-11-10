@@ -127,7 +127,7 @@ namespace SysBot.Pokemon.WinForms
             }
             catch (Exception ex)
             {
-                LogUtil.LogError($"Update check failed: {ex.Message}", "Update");
+                LogUtil.LogError("更新", $"检查更新失败：{ex.Message}");
             }
 
             if (File.Exists(Program.ConfigPath))
@@ -139,7 +139,7 @@ namespace SysBot.Pokemon.WinForms
                     // Check for corrupted file (null bytes)
                     if (string.IsNullOrWhiteSpace(lines) || lines.Contains('\0'))
                     {
-                        throw new JsonException("Config file contains null bytes or is empty");
+                        throw new JsonException("配置文件包含空字节或内容为空");
                     }
 
                     Config = JsonSerializer.Deserialize(lines, ProgramConfigContext.Default.ProgramConfig) ?? new ProgramConfig();
@@ -156,7 +156,7 @@ namespace SysBot.Pokemon.WinForms
                 }
                 catch (Exception ex) when (ex is JsonException || ex is NotSupportedException)
                 {
-                    LogUtil.LogError($"Config file is corrupted: {ex.Message}. Attempting to recover from backup.", "Config");
+                    LogUtil.LogError("配置", $"配置文件损坏：{ex.Message}。正在尝试从备份恢复。");
 
                     // Try to recover from backup
                     var backupPath = Program.ConfigPath + ".bak";
@@ -169,7 +169,7 @@ namespace SysBot.Pokemon.WinForms
 
                             // Restore the main config from backup
                             File.Copy(backupPath, Program.ConfigPath, true);
-                            LogUtil.LogInfo("Config", "Successfully recovered configuration from backup.");
+                            LogUtil.LogInfo("配置", "已从备份成功恢复配置。");
 
                             LogConfig.MaxArchiveFiles = Config.Hub.MaxArchiveFiles;
                             LogConfig.LoggingEnabled = Config.Hub.LoggingEnabled;
@@ -184,13 +184,13 @@ namespace SysBot.Pokemon.WinForms
                         }
                         catch (Exception backupEx)
                         {
-                            LogUtil.LogError("Config", $"Failed to recover from backup: {backupEx.Message}. Creating new configuration.");
+                            LogUtil.LogError("配置", $"从备份恢复失败：{backupEx.Message}。正在创建新的配置。");
                             CreateNewConfig();
                         }
                     }
                     else
                     {
-                        LogUtil.LogError("Config", "No backup file found. Creating new configuration.");
+                        LogUtil.LogError("配置", "未找到备份文件，正在创建新的配置。");
                         CreateNewConfig();
                     }
                 }
@@ -211,7 +211,7 @@ namespace SysBot.Pokemon.WinForms
             UpdateStatusIndicatorColor();
             
             this.ActiveControl = null;
-            LogUtil.LogInfo("System", $"Bot initialization complete");
+            LogUtil.LogInfo("系统", "机器人初始化完成");
             _ = Task.Run(() =>
             {
                 try
@@ -220,7 +220,7 @@ namespace SysBot.Pokemon.WinForms
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.LogError($"Failed to initialize web server: {ex.Message}", "System");
+                    LogUtil.LogError("系统", $"初始化 Web 服务失败：{ex.Message}");
                 }
             });
         }
@@ -288,7 +288,7 @@ namespace SysBot.Pokemon.WinForms
             ProgramMode.SV => new PokeBotRunnerImpl<PK9>(cfg.Hub, new BotFactory9SV(), cfg),
             ProgramMode.LGPE => new PokeBotRunnerImpl<PB7>(cfg.Hub, new BotFactory7LGPE(), cfg),
             ProgramMode.PLZA => new PokeBotRunnerImpl<PA9>(cfg.Hub, new BotFactory9PLZA(), cfg),
-            _ => throw new IndexOutOfRangeException("Unsupported mode."),
+            _ => throw new IndexOutOfRangeException("不受支持的模式。"),
         };
 
         private async Task BotMonitor()
@@ -333,8 +333,8 @@ namespace SysBot.Pokemon.WinForms
                                 // Update tray icon text from UI thread
                                 string botTitle = string.IsNullOrWhiteSpace(Config.Hub.BotName) ? "PokéBot" : Config.Hub.BotName;
                                 trayIcon.Text = totalBots == 0
-                                    ? $"{botTitle} - No bots configured"
-                                    : $"{botTitle} - {runningBots}/{totalBots} bots running";
+                                    ? $"{botTitle} - 未配置机器人"
+                                    : $"{botTitle} - 正在运行 {runningBots}/{totalBots}";
                             }));
                         }
                         else
@@ -344,14 +344,14 @@ namespace SysBot.Pokemon.WinForms
                             
                             string botTitle = string.IsNullOrWhiteSpace(Config.Hub.BotName) ? "PokéBot" : Config.Hub.BotName;
                             trayIcon.Text = totalBots == 0
-                                ? $"{botTitle} - No bots configured"
-                                : $"{botTitle} - {runningBots}/{totalBots} bots running";
+                                ? $"{botTitle} - 未配置机器人"
+                                : $"{botTitle} - 正在运行 {runningBots}/{totalBots}";
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.LogError($"BotMonitor error: {ex.Message}", "Monitor");
+                    LogUtil.LogError("监控", $"机器人监控器出错：{ex.Message}");
                 }
                 await Task.Delay(3_000).ConfigureAwait(false); // Reduced frequency for better performance
             }
@@ -405,7 +405,7 @@ namespace SysBot.Pokemon.WinForms
                     }
                     catch (Exception ex)
                     {
-                        LogUtil.LogError($"Auto-save failed: {ex.Message}", "Config");
+                        LogUtil.LogError("配置", $"自动保存失败：{ex.Message}");
                     }
                 });
             };
@@ -449,12 +449,12 @@ namespace SysBot.Pokemon.WinForms
             {
                 try
                 {
-                    // Clean up logs if they're getting too large
+                    // 当日志输出过多时执行清理
                     if (RTB_Logs.TextLength > RTB_Logs.MaxLength * 0.8)
                     {
-                        LogUtil.LogInfo("Performing automatic log cleanup to maintain performance", "System");
+                        LogUtil.LogInfo("系统", "执行自动日志清理以保持性能");
 
-                        // Keep only the last 25% of logs
+                        // 仅保留最近 25% 的日志内容
                         BeginInvoke((System.Windows.Forms.MethodInvoker)(() =>
                         {
                             var lines = RTB_Logs.Lines;
@@ -464,12 +464,12 @@ namespace SysBot.Pokemon.WinForms
                         }));
                     }
 
-                    // Also clean up old log files on disk
+                    // 同时清理磁盘上的旧日志文件
                     CleanupOldLogFiles();
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.LogError($"Log cleanup failed: {ex.Message}", "System");
+                    LogUtil.LogError("系统", $"日志清理失败：{ex.Message}");
                 }
             };
         }
@@ -478,7 +478,7 @@ namespace SysBot.Pokemon.WinForms
         {
             if (Config == null)
             {
-                throw new InvalidOperationException("Config has not been initialized because a valid license was not entered.");
+                throw new InvalidOperationException("尚未初始化配置，因为未输入有效许可。");
             }
             Config.Bots = [.. Bots];
             return Config;
@@ -488,7 +488,7 @@ namespace SysBot.Pokemon.WinForms
         {
             if (IsUpdating) return;
 
-            // Remove log forwarders to prevent memory leaks
+            // 移除日志转发器以防止内存泄漏
             LogUtil.Forwarders.Remove(_textBoxForwarder);
 
             // Let the form close normally when X button is clicked
@@ -585,7 +585,7 @@ namespace SysBot.Pokemon.WinForms
             }
             catch (Exception ex)
             {
-                LogUtil.LogError($"Failed to save config: {ex.Message}", "Config");
+                LogUtil.LogError("配置", $"保存配置失败：{ex.Message}");
             }
         }
 
@@ -598,7 +598,7 @@ namespace SysBot.Pokemon.WinForms
         {
             SaveCurrentConfig();
 
-            LogUtil.LogInfo("Form", "Starting all bots...");
+        LogUtil.LogInfo("界面", "正在启动所有机器人...");
             RunningEnvironment.InitializeStart();
             SendAll(BotControlCommand.Start);
 
@@ -619,10 +619,10 @@ namespace SysBot.Pokemon.WinForms
 
             // Stay on Bots tab instead of switching to Logs
             TransitionPanels(0);
-            titleLabel.Text = "Bot Management";
+            titleLabel.Text = "机器人管理";
 
             if (Bots.Count == 0)
-                WinFormsUtil.Alert("No bots configured, but all supporting services have been started.");
+                WinFormsUtil.Alert("尚未配置任何机器人，但所有辅助服务已启动。");
         }
 
         private void B_RebootStop_Click(object sender, EventArgs e)
@@ -635,11 +635,11 @@ namespace SysBot.Pokemon.WinForms
             {
                 try
                 {
-                    LogUtil.LogInfo("Form", "Starting reset process...");
+                    LogUtil.LogInfo("界面", "正在开始重置流程...");
                     SaveCurrentConfig();
 
                     // Phase 1: Stop all bots gracefully
-                    LogUtil.LogInfo("Form", "Phase 1: Stopping all bots...");
+                    LogUtil.LogInfo("界面", "阶段 1：正在停止所有机器人...");
                     SendAll(BotControlCommand.Stop);
 
                     // Phase 2: Wait for all bots to fully stop
@@ -648,7 +648,7 @@ namespace SysBot.Pokemon.WinForms
                     {
                         if (AreAllBotsStopped())
                         {
-                            LogUtil.LogInfo("Form", "All bots stopped successfully");
+                            LogUtil.LogInfo("界面", "所有机器人已成功停止");
                             break;
                         }
                         await Task.Delay(500).ConfigureAwait(false);
@@ -656,27 +656,27 @@ namespace SysBot.Pokemon.WinForms
 
                     if (!AreAllBotsStopped())
                     {
-                        LogUtil.LogInfo("Form", "Some bots did not stop in time, forcing stop...");
+                        LogUtil.LogInfo("界面", "部分机器人未及时停止，正在强制停止...");
                         SendAll(BotControlCommand.Stop);
                         await Task.Delay(2000).ConfigureAwait(false);
                     }
 
                     // Phase 3: Stop all services
-                    LogUtil.LogInfo("Form", "Phase 3: Stopping all services...");
+                    LogUtil.LogInfo("界面", "阶段 3：正在停止所有服务...");
                     await Task.Delay(2000).ConfigureAwait(false); // Give services time to fully stop
 
                     // Phase 4: Reinitialize environment
-                    LogUtil.LogInfo("Form", "Phase 4: Reinitializing environment...");
+                    LogUtil.LogInfo("界面", "阶段 4：正在重新初始化环境...");
                     RunningEnvironment.InitializeStart();
                     await Task.Delay(1000).ConfigureAwait(false);
 
                     // Phase 5: Reboot consoles
-                    LogUtil.LogInfo("Form", "Phase 5: Rebooting all consoles...");
+                    LogUtil.LogInfo("界面", "阶段 5：正在重启所有主机...");
                     SendAll(BotControlCommand.RebootAndStop);
                     await Task.Delay(8000).ConfigureAwait(false); // Give consoles time to reboot
 
                     // Phase 6: Restart all bots with staggered timing
-                    LogUtil.LogInfo("Form", "Phase 6: Starting all bots...");
+                    LogUtil.LogInfo("界面", "阶段 6：正在启动所有机器人...");
                     await StartBotsStaggeredAsync();
 
                     BeginInvoke((System.Windows.Forms.MethodInvoker)(() =>
@@ -701,23 +701,23 @@ namespace SysBot.Pokemon.WinForms
                         }
 
                         TransitionPanels(2);
-                        titleLabel.Text = "System Logs";
+                        titleLabel.Text = "系统日志";
                     }));
 
-                    LogUtil.LogInfo("Reset process completed successfully", "Form");
+                    LogUtil.LogInfo("界面", "重置流程已顺利完成");
 
                     if (Bots.Count == 0)
-                        WinFormsUtil.Alert("No bots configured, but all supporting services have been issued the reboot command.");
+                        WinFormsUtil.Alert("尚未配置任何机器人，但所有辅助服务已收到重启指令。");
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.LogError($"Reset process failed: {ex.Message}", "Form");
+                    LogUtil.LogError("界面", $"重置流程失败：{ex.Message}");
                     BeginInvoke((System.Windows.Forms.MethodInvoker)(() =>
                     {
                         SetButtonActiveState(btnReboot, false);
                         SetButtonActiveState(btnStop, false);
                         SetButtonActiveState(btnStart, false);
-                        WinFormsUtil.Error($"Reset failed: {ex.Message}");
+                        WinFormsUtil.Error($"重置失败：{ex.Message}");
                     }));
                 }
             });
@@ -731,8 +731,8 @@ namespace SysBot.Pokemon.WinForms
             if (!updateAvailable)
             {
                 var result = MessageBox.Show(
-                    "You are on the latest version. Would you like to re-download the current version?",
-                    "Update Check",
+                    "当前已是最新版本。需要重新下载吗？",
+                    "更新检查",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
 
@@ -763,7 +763,7 @@ namespace SysBot.Pokemon.WinForms
             foreach (var c in FLP_Bots.Controls.OfType<BotController>())
                 c.SendCommand(cmd, false);
 
-            LogUtil.LogText($"All bots have been issued a command to {cmd}.");
+            LogUtil.LogText($"已向所有机器人发送 {cmd} 命令。");
         }
 
         private void BtnTray_Click(object sender, EventArgs e)
@@ -822,7 +822,7 @@ namespace SysBot.Pokemon.WinForms
             var env = RunningEnvironment;
             if (!env.IsRunning && (ModifierKeys & Keys.Alt) == 0)
             {
-                WinFormsUtil.Alert("Nothing is currently running.");
+                WinFormsUtil.Alert("当前没有正在运行的任务。");
                 return;
             }
 
@@ -832,13 +832,13 @@ namespace SysBot.Pokemon.WinForms
             {
                 if (env.IsRunning)
                 {
-                    WinFormsUtil.Alert("Commanding all bots to Idle.", "Press Stop (without a modifier key) to hard-stop and unlock control, or press Stop with the modifier key again to resume.");
+                    WinFormsUtil.Alert("正在让所有机器人进入待命状态。", "直接按“停止”键可强制停止并解除锁定，再次按住修饰键的“停止”可恢复。");
                     cmd = BotControlCommand.Idle;
                     SetButtonActiveState(btnStop, true);
                 }
                 else
                 {
-                    WinFormsUtil.Alert("Commanding all bots to resume their original task.", "Press Stop (without a modifier key) to hard-stop and unlock control.");
+                    WinFormsUtil.Alert("正在让所有机器人恢复原有任务。", "直接按“停止”键可强制停止并解除控制锁定。");
                     cmd = BotControlCommand.Resume;
                     SetButtonActiveState(btnStop, false);
                 }
@@ -858,7 +858,7 @@ namespace SysBot.Pokemon.WinForms
             var cfg = CreateNewBotConfig();
             if (!AddBot(cfg))
             {
-                WinFormsUtil.Alert("Unable to add bot; ensure details are valid and not duplicate with an already existing bot.");
+                WinFormsUtil.Alert("无法添加机器人；请确认信息有效且未与现有机器人重复。");
                 return;
             }
             System.Media.SystemSounds.Asterisk.Play();
@@ -875,7 +875,7 @@ namespace SysBot.Pokemon.WinForms
             PokeRoutineExecutorBase newBot;
             try
             {
-                LogUtil.LogError("Bot", $"Current Mode ({Config.Mode}) does not support this type of bot ({cfg.CurrentRoutineType}).");
+                LogUtil.LogError("机器人", $"当前模式 ({Config.Mode}) 不支持此类机器人（{cfg.CurrentRoutineType}）。");
                 newBot = RunningEnvironment.CreateBotFromConfig(cfg);
             }
             catch
@@ -1205,10 +1205,10 @@ namespace SysBot.Pokemon.WinForms
             var totalBots = FLP_Bots.Controls.OfType<BotController>().Count();
 
             string message = totalBots == 0
-                ? "No bots configured"
-                : $"{runningBots} of {totalBots} bots running";
+                ? "未配置机器人"
+                : $"正在运行 {runningBots}/{totalBots}";
 
-            trayIcon.ShowBalloonTip(2000, "PokéBot Minimized", message, ToolTipIcon.Info);
+            trayIcon.ShowBalloonTip(2000, "PokéBot 已最小化", message, ToolTipIcon.Info);
         }
 
         private void Main_Resize(object sender, EventArgs e)
@@ -1386,37 +1386,37 @@ namespace SysBot.Pokemon.WinForms
                     .OrderByDescending(f => f.LastWriteTime)
                     .ToList();
 
-                // Keep only the last 7 days of logs
+                // 仅保留最近 7 天的日志
                 var cutoffDate = DateTime.Now.AddDays(-7);
                 foreach (var file in logFiles.Where(f => f.LastWriteTime < cutoffDate))
                 {
                     try
                     {
                         file.Delete();
-                        LogUtil.LogInfo($"Deleted old log file: {file.Name}", "System");
+                        LogUtil.LogInfo("系统", $"已删除旧日志文件：{file.Name}");
                     }
                     catch
                     {
-                        // File might be in use, ignore
+                        // 日志文件可能正在使用，忽略即可
                     }
                 }
 
-                // Also check current log file size
+                // 同时检查当前日志文件大小
                 var currentLogFile = Path.Combine(logDirectory, "SysBotLog.txt");
                 if (File.Exists(currentLogFile))
                 {
                     var fileInfo = new FileInfo(currentLogFile);
-                    // If current log file is over 100MB, force rotation
+                    // 若当前日志文件超过 100MB，则强制轮替
                     if (fileInfo.Length > 100 * 1024 * 1024)
                     {
-                        LogUtil.LogInfo("Current log file exceeds 100MB, forcing rotation", "System");
-                        // NLog will handle the rotation on next write
+                        LogUtil.LogInfo("系统", "当前日志文件超过 100MB，正在强制轮替");
+                        // NLog 会在下一次写入时处理轮替
                     }
                 }
             }
             catch (Exception ex)
             {
-                LogUtil.LogError($"Failed to cleanup old log files: {ex.Message}", "System");
+                LogUtil.LogError("系统", $"清理旧日志文件失败：{ex.Message}");
             }
         }
 
@@ -1463,7 +1463,7 @@ namespace SysBot.Pokemon.WinForms
                 }
             }
 
-            LogUtil.LogText($"Started {controllers.Count} bots in batches");
+            LogUtil.LogText($"已分批启动 {controllers.Count} 个机器人");
         }
 
         #endregion
@@ -1577,16 +1577,16 @@ namespace SysBot.Pokemon.WinForms
                     HighlightAllMatches();
                     _currentIndex = 0;
                     HighlightCurrentMatch();
-                    _statusLabel.Text = $"1 of {_matches.Count}";
+                    _statusLabel.Text = $"1 / {_matches.Count}";
                 }
                 else
                 {
-                    _statusLabel.Text = "No matches found";
+                    _statusLabel.Text = "未找到匹配项";
                 }
             }
             catch (ArgumentException)
             {
-                _statusLabel.Text = "Invalid regex pattern";
+                _statusLabel.Text = "无效的正则表达式";
             }
         }
 
@@ -1641,7 +1641,7 @@ namespace SysBot.Pokemon.WinForms
             _textBox.SelectionBackColor = CurrentHighlightColor;
             _textBox.ScrollToCaret();
 
-            _statusLabel.Text = $"{_currentIndex + 1} of {_matches.Count}";
+            _statusLabel.Text = $"{_currentIndex + 1} / {_matches.Count}";
         }
 
         private void ClearCurrentHighlight()

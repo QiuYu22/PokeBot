@@ -42,7 +42,7 @@ public static class WebApiExtensions
             // Validate port range
             if (_webPort < 1 || _webPort > 65535)
             {
-                LogUtil.LogError("WebServer", $"Invalid web server port {_webPort}. Using default port 8080.");
+                LogUtil.LogError("Web 服务", $"Web 服务器端口 {_webPort} 无效，已回退到默认端口 8080。");
                 _webPort = 8080;
             }
             
@@ -52,11 +52,11 @@ public static class WebApiExtensions
             // Check if web server is enabled
             if (!mainForm.Config.Hub.WebServer.EnableWebServer)
             {
-                LogUtil.LogInfo("WebServer", "Web Control Panel is disabled in settings.");
+                LogUtil.LogInfo("Web 服务", "设置中已禁用 Web 控制面板。");
                 return;
             }
             
-            LogUtil.LogInfo("WebServer", $"Web Control Panel will be hosted on port {_webPort}");
+            LogUtil.LogInfo("Web 服务", $"Web 控制面板将托管在端口 {_webPort}。");
         }
         else
         {
@@ -88,7 +88,7 @@ public static class WebApiExtensions
                     var currentState = UpdateManager.GetCurrentState();
                     if (currentState != null && !currentState.IsComplete)
                     {
-                        LogUtil.LogInfo("WebServer", $"Found incomplete update session {currentState.SessionId}, attempting to resume");
+                        LogUtil.LogInfo("Web 服务", $"发现未完成的更新会话 {currentState.SessionId}，正在尝试继续。");
                         await UpdateManager.StartOrResumeUpdateAsync(mainForm, _tcpPort);
                     }
                 });
@@ -113,7 +113,7 @@ public static class WebApiExtensions
                 var currentState = UpdateManager.GetCurrentState();
                 if (currentState != null && !currentState.IsComplete)
                 {
-                    LogUtil.LogInfo("WebServer", $"Found incomplete update session {currentState.SessionId}, attempting to resume");
+                        LogUtil.LogInfo("Web 服务", $"发现未完成的更新会话 {currentState.SessionId}，正在尝试继续。");
                     await UpdateManager.StartOrResumeUpdateAsync(mainForm, _tcpPort);
                 }
             });
@@ -137,7 +137,7 @@ public static class WebApiExtensions
         }
         catch (Exception ex)
         {
-            LogUtil.LogError("WebServer", $"Failed to initialize web server: {ex.Message}");
+            LogUtil.LogError("Web 服务", $"初始化 Web 服务器失败：{ex.Message}");
         }
     }
 
@@ -198,18 +198,18 @@ public static class WebApiExtensions
                         }
 
                         File.Delete(portFile);
-                        LogUtil.LogInfo("WebServer", $"Cleaned up stale port file: {Path.GetFileName(portFile)}");
+                        LogUtil.LogInfo("Web 服务", $"已清理过期的端口文件：{Path.GetFileName(portFile)}");
                     }
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.LogError("WebServer", $"Error processing port file {portFile}: {ex.Message}");
+                    LogUtil.LogError("Web 服务", $"处理端口文件 {portFile} 时出错：{ex.Message}");
                 }
             }
         }
         catch (Exception ex)
         {
-            LogUtil.LogError("WebServer", $"Failed to cleanup stale port files: {ex.Message}");
+            LogUtil.LogError("Web 服务", $"清理过期端口文件失败：{ex.Message}");
         }
     }
 
@@ -234,7 +234,7 @@ public static class WebApiExtensions
 
                     if (!IsPortInUse(_webPort))
                     {
-                        LogUtil.LogInfo("WebServer", "Master web server is down. Attempting to take over...");
+                        LogUtil.LogInfo("Web 服务", "检测到主 Web 服务离线，正在尝试接管...");
 
                         await Task.Delay(random.Next(1000, 3000));
 
@@ -247,7 +247,7 @@ public static class WebApiExtensions
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)
                 {
-                    LogUtil.LogError("WebServer", $"Error in master monitor: {ex.Message}");
+                    LogUtil.LogError("Web 服务", $"主控监视器发生错误：{ex.Message}");
                 }
             }
         }, _monitorCts.Token);
@@ -265,12 +265,12 @@ public static class WebApiExtensions
             _monitorCts?.Cancel();
             _monitorCts = null;
 
-            LogUtil.LogInfo("WebServer", $"Successfully took over as master web server on port {_webPort}");
-            LogUtil.LogInfo("WebServer", $"Web interface is now available at http://localhost:{_webPort}");
+            LogUtil.LogInfo("Web 服务", $"已成功接管主 Web 服务，当前端口：{_webPort}");
+            LogUtil.LogInfo("Web 服务", $"Web 控制台现可通过 http://localhost:{_webPort} 访问。");
         }
         catch (Exception ex)
         {
-            LogUtil.LogError("WebServer", $"Failed to take over as master: {ex.Message}");
+            LogUtil.LogError("Web 服务", $"接管主 Web 服务失败：{ex.Message}");
             StartMasterMonitor();
         }
     }
@@ -321,7 +321,7 @@ public static class WebApiExtensions
         catch (Exception ex) when (ex.Message.Contains("conflicts with an existing registration"))
         {
             // Another instance became master first - gracefully become a slave
-            LogUtil.LogInfo("WebServer", $"Port {_webPort} conflict during startup, starting as slave");
+            LogUtil.LogInfo("Web 服务", $"启动时检测到端口 {_webPort} 冲突，正在作为从属实例运行。");
             StartTcpOnly();  // This will create the port file as a slave
         }
     }
@@ -344,14 +344,14 @@ public static class WebApiExtensions
                 _tcp = new TcpListener(System.Net.IPAddress.Loopback, _tcpPort);
                 _tcp.Start();
                 
-                LogUtil.LogInfo("TCP", $"TCP listener started successfully on port {_tcpPort}");
+                LogUtil.LogInfo("TCP 服务", $"TCP 监听已在端口 {_tcpPort} 成功启动。");
                 
                 await AcceptClientsAsync(cancellationToken);
                 break;
             }
             catch (SocketException ex) when (ex.SocketErrorCode == SocketError.AddressAlreadyInUse && retry < maxRetries - 1)
             {
-                LogUtil.LogInfo("TCP", $"TCP port {_tcpPort} in use, finding new port (attempt {retry + 1}/{maxRetries})");
+                LogUtil.LogInfo("TCP 服务", $"TCP 端口 {_tcpPort} 已被占用，正在寻找新端口（第 {retry + 1}/{maxRetries} 次尝试）。");
                 await Task.Delay(random.Next(500, 1500), cancellationToken);
                 
                 lock (_portLock)
@@ -369,12 +369,12 @@ public static class WebApiExtensions
             }
             catch (Exception ex) when (!cancellationToken.IsCancellationRequested)
             {
-                LogUtil.LogError("TCP", $"TCP listener error: {ex.Message}");
+                LogUtil.LogError("TCP 服务", $"TCP 监听器出现错误：{ex.Message}");
                 
                 if (retry == maxRetries - 1)
                 {
-                    LogUtil.LogError("TCP", $"Failed to start TCP listener after {maxRetries} attempts");
-                    throw new InvalidOperationException("Unable to find available TCP port");
+                    LogUtil.LogError("TCP 服务", $"尝试 {maxRetries} 次后仍无法启动 TCP 监听器。");
+                    throw new InvalidOperationException("无法找到可用的 TCP 端口。");
                 }
             }
         }
@@ -412,7 +412,7 @@ public static class WebApiExtensions
         }
         catch (Exception ex)
         {
-            LogUtil.LogError("TCP", $"Unhandled error in HandleClient: {ex.Message}");
+            LogUtil.LogError("TCP 服务", $"处理客户端时发生未处理异常：{ex.Message}");
         }
     }
 
@@ -448,7 +448,7 @@ public static class WebApiExtensions
         }
         catch (Exception ex)
         {
-            LogUtil.LogError("TCP", $"Error handling TCP client: {ex.Message}");
+            LogUtil.LogError("TCP 服务", $"处理 TCP 客户端时出错：{ex.Message}");
         }
     }
     
@@ -460,7 +460,7 @@ public static class WebApiExtensions
     private static string ProcessCommand(string command)
     {
         if (_main == null)
-            return "ERROR: Main form not initialized";
+            return "ERROR: 主窗体尚未初始化";
 
         var parts = command.Split(':');
         var cmd = parts[0].ToUpperInvariant();
@@ -486,7 +486,7 @@ public static class WebApiExtensions
             "RESTARTSCHEDULE" => GetRestartSchedule(),
             "REMOTE_BUTTON" => HandleRemoteButton(parts),
             "REMOTE_MACRO" => HandleRemoteMacro(parts),
-            _ => $"ERROR: Unknown command '{cmd}'"
+            _ => $"ERROR: 未知指令 '{cmd}'"
         };
     }
 
@@ -501,8 +501,8 @@ public static class WebApiExtensions
             {
                 if (_updateInProgress)
                 {
-                    LogUtil.LogInfo("WebApiExtensions", "Update already in progress - ignoring duplicate request");
-                    return "Update already in progress";
+                    LogUtil.LogInfo("Web API", "已有更新正在进行，忽略重复请求。");
+                    return "OK: 更新已在进行中";
                 }
                 _updateInProgress = true;
             }
@@ -510,10 +510,10 @@ public static class WebApiExtensions
             if (_main == null)
             {
                 lock (_updateLock) { _updateInProgress = false; }
-                return "ERROR: Main form not initialized";
+                return "ERROR: 主窗体尚未初始化";
             }
 
-            LogUtil.LogInfo("WebApiExtensions", $"Update triggered for instance on port {_tcpPort}");
+            LogUtil.LogInfo("Web API", $"已为端口 {_tcpPort} 的实例触发更新。");
 
             _main.BeginInvoke((System.Windows.Forms.MethodInvoker)(async () =>
             {
@@ -528,11 +528,11 @@ public static class WebApiExtensions
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.LogError("WebApiExtensions", $"Error during update: {ex.Message}");
+                    LogUtil.LogError("Web API", $"执行更新时出错：{ex.Message}");
                 }
             }));
 
-            return "OK: Update triggered";
+            return "OK: 已触发更新";
         }
         catch (Exception ex)
         {
@@ -546,7 +546,7 @@ public static class WebApiExtensions
         try
         {
             if (_main == null)
-                return "ERROR: Main form not initialized";
+                return "ERROR: 主窗体尚未初始化";
 
             Task.Run(async () =>
             {
@@ -557,7 +557,7 @@ public static class WebApiExtensions
                 }));
             });
 
-            return "OK: Restart triggered";
+            return "OK: 已触发重启";
         }
         catch (Exception ex)
         {
@@ -592,11 +592,11 @@ public static class WebApiExtensions
         try
         {
             ExecuteMainFormMethod("SendAll", command);
-            return $"OK: {command} command sent to all bots";
+            return $"OK: 已向所有机器人发送 {command} 指令";
         }
         catch (Exception ex)
         {
-            return $"ERROR: Failed to execute {command} - {ex.Message}";
+            return $"ERROR: 执行 {command} 指令失败：{ex.Message}";
         }
     }
     
@@ -665,8 +665,8 @@ public static class WebApiExtensions
         }
         catch (Exception ex)
         {
-            LogUtil.LogError("WebAPI", $"GetBotsList error: {ex.Message}");
-            return $"ERROR: Failed to get bots list - {ex.Message}";
+            LogUtil.LogError("Web API", $"获取机器人列表时出错：{ex.Message}");
+            return $"ERROR: 获取机器人列表失败：{ex.Message}";
         }
     }
 
@@ -692,11 +692,11 @@ public static class WebApiExtensions
             var botController = controllers.FirstOrDefault(c =>
                 $"{c.State.Connection.IP}:{c.State.Connection.Port}" == botId);
 
-            return botController?.ReadBotState() ?? "ERROR: Bot not found";
+            return botController?.ReadBotState() ?? "ERROR: 未找到指定机器人";
         }
         catch (Exception ex)
         {
-            return $"ERROR: Failed to get status - {ex.Message}";
+            return $"ERROR: 获取机器人状态失败：{ex.Message}";
         }
     }
 
@@ -737,7 +737,7 @@ public static class WebApiExtensions
         }
         catch (Exception ex)
         {
-            return $"ERROR: Failed to get instance info - {ex.Message}";
+            return $"ERROR: 获取实例信息失败：{ex.Message}";
         }
     }
     
@@ -746,39 +746,39 @@ public static class WebApiExtensions
         try
         {
             if (parts.Length < 3)
-                return "ERROR: Invalid command format. Expected REMOTE_BUTTON:button:botIndex";
+                return "ERROR: 命令格式无效，应为 REMOTE_BUTTON:按键:机器人索引";
                 
             var button = parts[1];
             if (!int.TryParse(parts[2], out var botIndex))
-                return "ERROR: Invalid bot index";
+                return "ERROR: 机器人索引无效";
                 
             var controllers = GetBotControllers();
             if (botIndex < 0 || botIndex >= controllers.Count)
-                return $"ERROR: Bot index {botIndex} out of range";
+                return $"ERROR: 机器人索引 {botIndex} 超出范围";
                 
             var botController = controllers[botIndex];
             var botSource = botController.GetBot();
             
             if (botSource?.Bot == null)
-                return $"ERROR: Bot at index {botIndex} not available";
+                return $"ERROR: 索引 {botIndex} 对应的机器人不可用";
                 
             if (!botSource.IsRunning)
-                return $"ERROR: Bot at index {botIndex} is not running";
+                return $"ERROR: 索引 {botIndex} 对应的机器人未在运行";
                 
             var bot = botSource.Bot;
             if (bot.Connection is not ISwitchConnectionAsync connection)
-                return "ERROR: Bot connection not available";
+                return "ERROR: 机器人连接不可用";
             
             var switchButton = MapButtonToSwitch(button);
             if (switchButton == null)
-                return $"ERROR: Invalid button: {button}";
+                return $"ERROR: 按键无效：{button}";
             
             var cmd = SwitchCommand.Click(switchButton.Value);
             
             // Execute the command synchronously since we're already in a background thread
             Task.Run(async () => await connection.SendAsync(cmd, CancellationToken.None)).Wait();
             
-            return $"OK: Button {button} pressed on bot {botIndex}";
+            return $"OK: 已在机器人 {botIndex} 上按下 {button} 按键";
         }
         catch (Exception ex)
         {
@@ -791,27 +791,27 @@ public static class WebApiExtensions
         try
         {
             if (parts.Length < 3)
-                return "ERROR: Invalid command format. Expected REMOTE_MACRO:macro:botIndex";
+                return "ERROR: 命令格式无效，应为 REMOTE_MACRO:宏名:机器人索引";
                 
             var macro = parts[1];
             if (!int.TryParse(parts[2], out var botIndex))
-                return "ERROR: Invalid bot index";
+                return "ERROR: 机器人索引无效";
                 
             var controllers = GetBotControllers();
             if (botIndex < 0 || botIndex >= controllers.Count)
-                return $"ERROR: Bot index {botIndex} out of range";
+                return $"ERROR: 机器人索引 {botIndex} 超出范围";
                 
             var botController = controllers[botIndex];
             var botSource = botController.GetBot();
             
             if (botSource?.Bot == null)
-                return $"ERROR: Bot at index {botIndex} not available";
+                return $"ERROR: 索引 {botIndex} 对应的机器人不可用";
                 
             if (!botSource.IsRunning)
-                return $"ERROR: Bot at index {botIndex} is not running";
+                return $"ERROR: 索引 {botIndex} 对应的机器人未在运行";
                 
             // For now, just return success - macro implementation can be added later
-            return $"OK: Macro {macro} executed on bot {botIndex}";
+            return $"OK: 已在机器人 {botIndex} 上执行宏 {macro}";
         }
         catch (Exception ex)
         {
@@ -913,7 +913,7 @@ public static class WebApiExtensions
         }
         catch (Exception ex)
         {
-            LogUtil.LogError("WebServer", $"Failed to create port file: {ex.Message}");
+            LogUtil.LogError("Web 服务", $"创建端口文件失败：{ex.Message}");
         }
     }
 
@@ -930,7 +930,7 @@ public static class WebApiExtensions
         }
         catch (Exception ex)
         {
-            LogUtil.LogError("WebServer", $"Failed to cleanup port file: {ex.Message}");
+            LogUtil.LogError("Web 服务", $"清理端口文件失败：{ex.Message}");
         }
     }
 
@@ -982,7 +982,7 @@ public static class WebApiExtensions
                 }
             }
         }
-        throw new InvalidOperationException("No available ports found");
+        throw new InvalidOperationException("未找到可用端口。");
     }
 
     private static bool IsPortInUse(int port)
@@ -1034,7 +1034,7 @@ public static class WebApiExtensions
         }
         catch (Exception ex)
         {
-            LogUtil.LogError("WebServer", $"Error stopping web server: {ex.Message}");
+            LogUtil.LogError("Web 服务", $"停止 Web 服务器时出错：{ex.Message}");
         }
     }
 
@@ -1054,8 +1054,9 @@ public static class WebApiExtensions
 
             string operation = isPostRestart ? "restart" : "update";
             string logSource = isPostRestart ? "RestartManager" : "UpdateManager";
+            string operationLabel = operation == "restart" ? "重启" : "更新";
             
-            LogUtil.LogInfo($"Post-{operation} startup detected. Waiting for all instances to come online...", logSource);
+            LogUtil.LogInfo(logSource, $"检测到 {operationLabel} 后的启动，正在等待所有实例上线...");
 
             if (isPostRestart) File.Delete(restartFlagPath);
             if (isPostUpdate) File.Delete(updateFlagPath);
@@ -1064,7 +1065,7 @@ public static class WebApiExtensions
         }
         catch (Exception ex)
         {
-            LogUtil.LogError("StartupManager", $"Error checking post-restart/update startup: {ex.Message}");
+            LogUtil.LogError("启动管理器", $"检查重启/更新后的启动状态时出错：{ex.Message}");
         }
     }
     
@@ -1073,30 +1074,31 @@ public static class WebApiExtensions
         await Task.Delay(5000);
         
         const int maxAttempts = 12;
+        var operationLabel = operation == "restart" ? "重启" : "更新";
         for (int attempt = 0; attempt < maxAttempts; attempt++)
         {
             try
             {
-                LogUtil.LogInfo($"Post-{operation} check attempt {attempt + 1}/{maxAttempts}", logSource);
+                LogUtil.LogInfo(logSource, $"{operationLabel} 后第 {attempt + 1}/{maxAttempts} 次检查。");
                 
                 // Start local bots
                 ExecuteMainFormMethod("SendAll", BotControlCommand.Start);
-                LogUtil.LogInfo("Start All command sent to local bots", logSource);
+                LogUtil.LogInfo(logSource, "已向本地机器人发送全体启动指令。");
                 
                 // Start remote instances
                 var instances = GetAllRunningInstances(0);
                 if (instances.Count > 0)
                 {
-                    LogUtil.LogInfo($"Found {instances.Count} remote instances online. Sending Start All command...", logSource);
+                    LogUtil.LogInfo(logSource, $"检测到 {instances.Count} 个远程实例在线，正在发送全体启动指令...");
                     await SendStartCommandsToRemoteInstancesAsync(instances, logSource);
                 }
                 
-                LogUtil.LogInfo($"Post-{operation} Start All commands completed successfully", logSource);
+                LogUtil.LogInfo(logSource, $"{operationLabel} 后的全体启动指令已成功完成。");
                 break;
             }
             catch (Exception ex)
             {
-                LogUtil.LogError($"Error during post-{operation} startup attempt {attempt + 1}: {ex.Message}", logSource);
+                LogUtil.LogError(logSource, $"{operationLabel} 后的启动第 {attempt + 1} 次尝试失败：{ex.Message}");
                 if (attempt < maxAttempts - 1)
                     await Task.Delay(5000);
             }
@@ -1110,11 +1112,11 @@ public static class WebApiExtensions
             try
             {
                 var response = BotServer.QueryRemote(instance.Port, "STARTALL");
-                LogUtil.LogInfo($"Start command sent to port {instance.Port}: {response}", logSource);
+                LogUtil.LogInfo(logSource, $"已向端口 {instance.Port} 发送启动指令，响应：{response}");
             }
             catch (Exception ex)
             {
-                LogUtil.LogError($"Failed to send start command to port {instance.Port}: {ex.Message}", logSource);
+                LogUtil.LogError(logSource, $"向端口 {instance.Port} 发送启动指令失败：{ex.Message}");
             }
         }));
         

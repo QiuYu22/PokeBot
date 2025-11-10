@@ -16,7 +16,7 @@ public abstract class PokeRoutineExecutorBase(IConsoleBotManaged<IConsoleConnect
 
     public LanguageID GameLang { get; private set; }
 
-    public string InGameName { get; private set; } = "Shinypkm.com";
+    public string InGameName { get; private set; } = "闪光宝可梦";
 
     public GameVersion Version { get; private set; }
 
@@ -36,8 +36,8 @@ public abstract class PokeRoutineExecutorBase(IConsoleBotManaged<IConsoleConnect
         // Use TrainerLabel if available (shows in-game name), otherwise use Connection.Name (IP/USB)
         var displayLabel = !string.IsNullOrEmpty(TrainerLabel) ? TrainerLabel : Connection.Name;
         if (current == initial)
-            return $"{displayLabel} - {initial}";
-        return $"{displayLabel} - {initial} ({current})";
+            return $"{displayLabel} - 初始例程 {initial}";
+        return $"{displayLabel} - 初始例程 {initial}（当前：{current}）";
     }
 
     public Task SetStick(SwitchStick stick, short x, short y, int delayMin, int delayMax, CancellationToken token) =>
@@ -62,7 +62,7 @@ public abstract class PokeRoutineExecutorBase(IConsoleBotManaged<IConsoleConnect
         // Flush any buffered logs to the trainer folder
         LogUtil.FlushBufferedLogs(earlyIdentifier, TrainerLabel);
 
-        Log($"{Connection.Name} identified as {TrainerLabel}, using {GameLang}.");
+        Log($"{Connection.Name} 已识别为 {TrainerLabel}，当前语言 {GameLang}。");
     }
 
     protected bool IsValidTrainerData() => GameLang is > 0 and <= LanguageID.SpanishL && InGameName.Length > 0 && Version > 0;

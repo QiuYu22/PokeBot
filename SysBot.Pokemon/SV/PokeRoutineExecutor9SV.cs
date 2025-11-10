@@ -25,7 +25,7 @@ public abstract class PokeRoutineExecutor9SV : PokeRoutineExecutor<PK9>
     public async Task CleanExit(CancellationToken token)
     {
         await SetScreen(ScreenState.On, token).ConfigureAwait(false);
-        Log("Detaching controllers on routine exit.");
+        Log("流程结束时断开控制器。");
         await DetachController(token).ConfigureAwait(false);
     }
 
@@ -44,7 +44,7 @@ public abstract class PokeRoutineExecutor9SV : PokeRoutineExecutor<PK9>
         await Click(HOME, 2_000 + timing.ExtraTimeReturnHome, token).ConfigureAwait(false);
         await Click(X, 1_000, token).ConfigureAwait(false);
         await Click(A, 5_000 + timing.ExtraTimeCloseGame, token).ConfigureAwait(false);
-        Log("Closed out of the game!");
+        Log("已退出游戏！");
     }
 
     public async Task<byte> GetCurrentBox(CancellationToken token)
@@ -118,15 +118,15 @@ public abstract class PokeRoutineExecutor9SV : PokeRoutineExecutor<PK9>
 
     public async Task InitializeHardware(IBotStateSettings settings, CancellationToken token)
     {
-        Log("Detaching on startup.");
+        Log("启动时执行断开操作。");
         await DetachController(token).ConfigureAwait(false);
         if (settings.ScreenOff)
         {
-            Log("Turning off screen.");
+            Log("正在关闭屏幕。");
             await SetScreen(ScreenState.Off, token).ConfigureAwait(false);
         }
         await SetController(ControllerType.ProController, token);
-        Log("Setting SV-specific hid waits");
+        Log("正在设置 SV 专用 HID 延迟");
         await Connection.SendAsync(SwitchCommand.Configure(SwitchConfigureParameter.keySleepTime, KeyboardPressTime), token).ConfigureAwait(false);
         await Connection.SendAsync(SwitchCommand.Configure(SwitchConfigureParameter.pollRate, HidWaitTime), token).ConfigureAwait(false);
     }
@@ -188,7 +188,7 @@ public abstract class PokeRoutineExecutor9SV : PokeRoutineExecutor<PK9>
 
     public async Task ReOpenGame(PokeTradeHubConfig config, CancellationToken token)
     {
-        Log("Error detected, restarting the game!!");
+        Log("检测到错误，正在重新启动游戏！");
         await CloseGame(config, token).ConfigureAwait(false);
         await StartGame(config, token).ConfigureAwait(false);
     }
@@ -240,7 +240,7 @@ public abstract class PokeRoutineExecutor9SV : PokeRoutineExecutor<PK9>
         }
 
 
-        Log("Restarting the game!");
+        Log("正在重新启动游戏！");
 
         // Switch Logo and game load screen
         await Task.Delay(15_000 + timing.ExtraTimeLoadGame, token).ConfigureAwait(false);
@@ -259,7 +259,7 @@ public abstract class PokeRoutineExecutor9SV : PokeRoutineExecutor<PK9>
             // Don't risk it if hub is set to avoid updates.
             if (timer <= 0 && !timing.AvoidSystemUpdate)
             {
-                Log("Still not in the game, initiating rescue protocol!");
+                Log("仍未进入游戏，启动救援流程！");
                 while (!await IsOnOverworldTitle(token).ConfigureAwait(false))
                 {
                     await Click(A, 6_000, token).ConfigureAwait(false);
@@ -270,7 +270,7 @@ public abstract class PokeRoutineExecutor9SV : PokeRoutineExecutor<PK9>
         }
 
         await Task.Delay(5_000 + timing.ExtraTimeLoadOverworld, token).ConfigureAwait(false);
-        Log("Back in the overworld!");
+        Log("已返回主世界！");
     }
 
     protected virtual async Task EnterLinkCode(int code, PokeTradeHubConfig config, CancellationToken token)

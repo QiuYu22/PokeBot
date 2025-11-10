@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace SysBot.Pokemon.Discord;
 
-[Summary("Distribution Pool Module")]
+[Summary("配布池模块")]
 public class PoolModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
 {
     [Command("pool")]
-    [Summary("Displays the details of Pokémon files in the random pool.")]
+    [Summary("显示随机池中的宝可梦文件详情。")]
     public async Task DisplayPoolCountAsync()
     {
         var me = SysCord<T>.Runner;
@@ -25,20 +25,20 @@ public class PoolModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
             var embed = new EmbedBuilder();
             embed.AddField(x =>
             {
-                x.Name = $"Count: {count}";
+                x.Name = $"数量：{count}";
                 x.Value = msg;
                 x.IsInline = false;
             });
-            await ReplyAsync("Pool Details", embed: embed.Build()).ConfigureAwait(false);
+            await ReplyAsync("随机池详情", embed: embed.Build()).ConfigureAwait(false);
         }
         else
         {
-            await ReplyAsync($"Pool Count: {count}").ConfigureAwait(false);
+            await ReplyAsync($"随机池数量：{count}").ConfigureAwait(false);
         }
     }
 
     [Command("poolReload")]
-    [Summary("Reloads the bot pool from the setting's folder.")]
+    [Summary("从配置文件夹重新加载机器人配布池。")]
     [RequireSudo]
     public async Task ReloadPoolAsync()
     {
@@ -47,8 +47,8 @@ public class PoolModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
 
         var pool = hub.Ledy.Pool.Reload(hub.Config.Folder.DistributeFolder);
         if (!pool)
-            await ReplyAsync("Failed to reload from folder.").ConfigureAwait(false);
+            await ReplyAsync("从文件夹重新加载失败。").ConfigureAwait(false);
         else
-            await ReplyAsync($"Reloaded from folder. Pool count: {hub.Ledy.Pool.Count}").ConfigureAwait(false);
+            await ReplyAsync($"已从文件夹重新加载，当前数量：{hub.Ledy.Pool.Count}").ConfigureAwait(false);
     }
 }
