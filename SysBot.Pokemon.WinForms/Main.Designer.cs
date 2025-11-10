@@ -191,9 +191,9 @@ namespace SysBot.Pokemon.WinForms
             EnableDoubleBuffering(navButtonsPanel);
 
             // Configure Cuztom-style nav buttons with neon accents
-            ConfigureNavButton(btnNavBots, Helpers.LocalizationHelper.GetString("Button_Bots", "BOTS"), 0, Helpers.LocalizationHelper.GetString("Tooltip_ManageBotConnections", "Manage bot connections"), Color.FromArgb(57, 255, 221)); // Neon cyan
-            ConfigureNavButton(btnNavHub, Helpers.LocalizationHelper.GetString("Button_Configuration", "CONFIGURATION"), 1, Helpers.LocalizationHelper.GetString("Tooltip_SystemSettings", "System settings"), Color.FromArgb(255, 0, 255)); // Neon magenta
-            ConfigureNavButton(btnNavLogs, Helpers.LocalizationHelper.GetString("Button_SystemLogs", "SYSTEM LOGS"), 2, Helpers.LocalizationHelper.GetString("Tooltip_ViewActivityLogs", "View activity logs"), Color.FromArgb(255, 165, 0)); // Neon orange
+            ConfigureNavButton(btnNavBots, "BOTS", 0, "Manage bot connections", Color.FromArgb(57, 255, 221)); // Neon cyan
+            ConfigureNavButton(btnNavHub, "CONFIGURATION", 1, "System settings", Color.FromArgb(255, 0, 255)); // Neon magenta
+            ConfigureNavButton(btnNavLogs, "SYSTEM LOGS", 2, "View activity logs", Color.FromArgb(255, 165, 0)); // Neon orange
 
             var separator = new Panel();
             separator.BackColor = Color.FromArgb(32, 38, 48);
@@ -202,7 +202,7 @@ namespace SysBot.Pokemon.WinForms
             navButtonsPanel.Controls.Add(separator);
 
             var btnTray = new Button();
-            ConfigureNavButton(btnTray, Helpers.LocalizationHelper.GetString("Button_SendToTray", "SEND TO TRAY"), 3, Helpers.LocalizationHelper.GetString("Tooltip_MinimizeToTray", "Minimize to system tray"), Color.FromArgb(102, 192, 244));
+            ConfigureNavButton(btnTray, "SEND TO TRAY", 3, "Minimize to system tray", Color.FromArgb(102, 192, 244));
             btnTray.Click += BtnTray_Click;
             navButtonsPanel.Controls.Add(btnTray);
 
@@ -292,7 +292,7 @@ namespace SysBot.Pokemon.WinForms
             titleLabel.Location = new Point(20, 18);
             titleLabel.Name = "titleLabel";
             titleLabel.TabIndex = 0;
-            titleLabel.Text = Helpers.LocalizationHelper.GetString("Title_BotManagement", "Bot Management");
+            titleLabel.Text = "Bot Management";
             titleLabel.MaximumSize = new Size(350, 35);
             titleLabel.AutoEllipsis = true;
 
@@ -311,9 +311,9 @@ namespace SysBot.Pokemon.WinForms
             controlButtonsPanel.WrapContents = false;
 
             // Modern control buttons with clean design
-            ConfigureEnhancedControlButton(btnStart, Helpers.LocalizationHelper.GetString("Button_Start", "START"), Color.FromArgb(90, 186, 71), "▶");
-            ConfigureEnhancedControlButton(btnStop, Helpers.LocalizationHelper.GetString("Button_Stop", "STOP"), Color.FromArgb(236, 98, 95), "■");
-            ConfigureEnhancedControlButton(btnReboot, Helpers.LocalizationHelper.GetString("Button_Restart", "RESTART"), Color.FromArgb(102, 192, 244), "↻");
+            ConfigureEnhancedControlButton(btnStart, "START", Color.FromArgb(90, 186, 71), "▶");
+            ConfigureEnhancedControlButton(btnStop, "STOP", Color.FromArgb(236, 98, 95), "■");
+            ConfigureEnhancedControlButton(btnReboot, "RESTART", Color.FromArgb(102, 192, 244), "↻");
 
             btnStart.Click += B_Start_Click;
             btnStop.Click += B_Stop_Click;
@@ -365,7 +365,7 @@ namespace SysBot.Pokemon.WinForms
             TB_IP.ForeColor = Color.FromArgb(239, 239, 239);
             TB_IP.Location = new Point(15, 18);
             TB_IP.Name = "TB_IP";
-            TB_IP.PlaceholderText = Helpers.LocalizationHelper.GetString("Placeholder_IPAddress", "IP Address");
+            TB_IP.PlaceholderText = "IP Address";
             TB_IP.Size = new Size(110, 23);
             TB_IP.TabIndex = 0;
             TB_IP.Text = "192.168.0.1";
@@ -395,7 +395,7 @@ namespace SysBot.Pokemon.WinForms
             B_New.Name = "B_New";
             B_New.Size = new Size(85, 28);
             B_New.TabIndex = 4;
-            B_New.Text = Helpers.LocalizationHelper.GetString("Button_Add", "ADD");
+            B_New.Text = "ADD BOT";
             B_New.UseVisualStyleBackColor = false;
             B_New.Click += B_New_Click;
             B_New.Cursor = Cursors.Hand;
@@ -570,7 +570,7 @@ namespace SysBot.Pokemon.WinForms
             btnClearLogs.Name = "btnClearLogs";
             btnClearLogs.Size = new Size(75, 23);
             btnClearLogs.TabIndex = 3;
-            btnClearLogs.Text = Helpers.LocalizationHelper.GetString("Button_ClearLogs", "Clear Logs");
+            btnClearLogs.Text = "CLEAR";
             btnClearLogs.UseVisualStyleBackColor = false;
             btnClearLogs.Cursor = Cursors.Hand;
             btnClearLogs.Click += BtnClearLogs_Click;
@@ -843,9 +843,9 @@ namespace SysBot.Pokemon.WinForms
 
                 titleLabel.Text = index switch
                 {
-                    0 => Helpers.LocalizationHelper.GetString("Title_BotManagement", "Bot Management"),
-                    1 => Helpers.LocalizationHelper.GetString("Title_Configuration", "Configuration"),
-                    2 => Helpers.LocalizationHelper.GetString("Title_SystemLogs", "System Logs"),
+                    0 => "Bot Management",
+                    1 => "Configuration",
+                    2 => "System Logs",
                     _ => "PokéBot"
                 };
             };

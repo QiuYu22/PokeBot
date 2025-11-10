@@ -5,11 +5,9 @@ using SysBot.Pokemon.Helpers;
 using SysBot.Pokemon.WinForms.Properties;
 using SysBot.Pokemon.WinForms.Helpers;
 using SysBot.Pokemon.Z3;
-using SysBot.Pokemon;
-using System.ComponentModel;
-using static SysBot.Pokemon.WinForms.Helpers.LocalizationHelper;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
@@ -86,12 +84,7 @@ namespace SysBot.Pokemon.WinForms
             // Apply dark mode to the main window
             DarkModeHelper.SetDarkMode(this.Handle);
             
-            Load += async (sender, e) =>
-            {
-                LocalizationHelper.Initialize();
-                ConfigLocalizationHelper.Initialize();
-                await InitializeAsync();
-            };
+            Load += async (sender, e) => await InitializeAsync();
 
             TC_Main = new TabControl { Visible = false };
             Tab_Bots = new TabPage();
@@ -211,7 +204,6 @@ namespace SysBot.Pokemon.WinForms
             LoadControls();
             Text = $"{(string.IsNullOrEmpty(Config.Hub.BotName) ? "GenPKM.com" : Config.Hub.BotName)} {PokeBot.Version} ({Config.Mode})";
             trayIcon.Text = Text;
-            ApplyLocalization();
             _ = Task.Run(BotMonitor);
             InitUtil.InitializeStubs(Config.Mode);
             _isFormLoading = false;
@@ -396,62 +388,7 @@ namespace SysBot.Pokemon.WinForms
 
         private void LoadControls()
         {
-            // 初始化配置本地化
-            ConfigLocalizationHelper.Initialize();
-            
-            // 为所有配置相关类型添加本地化支持（全局，适用于所有实例）
-            var configTypes = new[]
-            {
-                typeof(PokeTradeHubConfig),
-                typeof(BaseConfig),
-                typeof(QueueSettings),
-                typeof(TimingSettings),
-                typeof(RecoverySettings),
-                typeof(FolderSettings),
-                typeof(LegalitySettings),
-                typeof(DistributionSettings),
-                typeof(TradeSettings),
-                typeof(TradeAbuseSettings),
-                typeof(DiscordSettings),
-                typeof(FavoredPrioritySettings),
-                typeof(StreamSettings),
-                typeof(TwitchSettings),
-                typeof(YouTubeSettings),
-                typeof(SeedCheckSettings),
-                typeof(StopConditionSettings),
-                typeof(WebServerSettings),
-            };
-            
-            foreach (var type in configTypes)
-            {
-                TypeDescriptor.AddProvider(new LocalizedTypeDescriptionProvider(type), type);
-            }
-            
-            // 为嵌套类也添加本地化支持
-            var nestedTypes = new[]
-            {
-                typeof(TradeSettings.TradeSettingsCategory),
-                typeof(TradeSettings.TradeEmbedSettingsCategory),
-                typeof(TradeSettings.RequestFolderSettingsCategory),
-                typeof(TradeSettings.CountStatsSettingsCategory),
-                typeof(TradeSettings.EmojiInfo),
-                typeof(TradeSettings.MoveTypeEmojiInfo),
-                typeof(TradeSettings.TeraTypeEmojiInfo),
-                typeof(DiscordSettings.AnnouncementSettingsCategory),
-            };
-            
-            foreach (var type in nestedTypes)
-            {
-                TypeDescriptor.AddProvider(new LocalizedTypeDescriptionProvider(type), type);
-            }
-            
-            // 为RemoteControlAccessList添加本地化支持
-            TypeDescriptor.AddProvider(new LocalizedTypeDescriptionProvider(typeof(RemoteControlAccessList)), typeof(RemoteControlAccessList));
-            
-            // 为配置对象添加本地化支持
-            var config = RunningEnvironment.Config;
-            
-            PG_Hub.SelectedObject = config;
+            PG_Hub.SelectedObject = RunningEnvironment.Config;
             _autoSaveTimer = new System.Windows.Forms.Timer
             {
                 Interval = 10_000,
@@ -682,10 +619,10 @@ namespace SysBot.Pokemon.WinForms
 
             // Stay on Bots tab instead of switching to Logs
             TransitionPanels(0);
-            titleLabel.Text = GetString("Title_BotManagement", "Bot Management");
+            titleLabel.Text = "Bot Management";
 
             if (Bots.Count == 0)
-                WinFormsUtil.Alert(GetString("Message_NoBotsConfigured", "No bots configured, but all supporting services have been started."));
+                WinFormsUtil.Alert("No bots configured, but all supporting services have been started.");
         }
 
         private void B_RebootStop_Click(object sender, EventArgs e)
@@ -764,13 +701,13 @@ namespace SysBot.Pokemon.WinForms
                         }
 
                         TransitionPanels(2);
-                        titleLabel.Text = GetString("Title_SystemLogs", "System Logs");
+                        titleLabel.Text = "System Logs";
                     }));
 
                     LogUtil.LogInfo("Reset process completed successfully", "Form");
 
                     if (Bots.Count == 0)
-                        WinFormsUtil.Alert(GetString("Message_NoBotsConfigured", "No bots configured, but all supporting services have been issued the reboot command."));
+                        WinFormsUtil.Alert("No bots configured, but all supporting services have been issued the reboot command.");
                 }
                 catch (Exception ex)
                 {
@@ -794,8 +731,8 @@ namespace SysBot.Pokemon.WinForms
             if (!updateAvailable)
             {
                 var result = MessageBox.Show(
-                    GetString("Message_LatestVersion", "You are on the latest version. Would you like to re-download the current version?"),
-                    GetString("Message_UpdateCheck", "Update Check"),
+                    "You are on the latest version. Would you like to re-download the current version?",
+                    "Update Check",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
 
@@ -826,7 +763,7 @@ namespace SysBot.Pokemon.WinForms
             foreach (var c in FLP_Bots.Controls.OfType<BotController>())
                 c.SendCommand(cmd, false);
 
-            LogUtil.LogText(GetFormattedString("Message_AllBotsStopped", cmd.ToString()));
+            LogUtil.LogText($"All bots have been issued a command to {cmd}.");
         }
 
         private void BtnTray_Click(object sender, EventArgs e)
@@ -885,7 +822,7 @@ namespace SysBot.Pokemon.WinForms
             var env = RunningEnvironment;
             if (!env.IsRunning && (ModifierKeys & Keys.Alt) == 0)
             {
-                WinFormsUtil.Alert(GetString("Message_NothingRunning", "Nothing is currently running."));
+                WinFormsUtil.Alert("Nothing is currently running.");
                 return;
             }
 
@@ -921,7 +858,7 @@ namespace SysBot.Pokemon.WinForms
             var cfg = CreateNewBotConfig();
             if (!AddBot(cfg))
             {
-                WinFormsUtil.Alert(GetString("Message_UnableToAddBot", "Unable to add bot; ensure details are valid and not duplicate with an already existing bot."));
+                WinFormsUtil.Alert("Unable to add bot; ensure details are valid and not duplicate with an already existing bot.");
                 return;
             }
             System.Media.SystemSounds.Asterisk.Play();
@@ -1268,10 +1205,10 @@ namespace SysBot.Pokemon.WinForms
             var totalBots = FLP_Bots.Controls.OfType<BotController>().Count();
 
             string message = totalBots == 0
-                ? GetString("Message_NoBotsConfiguredShort", "No bots configured")
-                : GetFormattedString("Message_BotsRunning", runningBots, totalBots);
+                ? "No bots configured"
+                : $"{runningBots} of {totalBots} bots running";
 
-            trayIcon.ShowBalloonTip(2000, GetString("Message_PokeBotMinimized", "PokéBot Minimized"), message, ToolTipIcon.Info);
+            trayIcon.ShowBalloonTip(2000, "PokéBot Minimized", message, ToolTipIcon.Info);
         }
 
         private void Main_Resize(object sender, EventArgs e)
@@ -1530,67 +1467,6 @@ namespace SysBot.Pokemon.WinForms
         }
 
         #endregion
-
-        #region Localization
-
-        /// <summary>
-        /// 应用本地化字符串到UI控件
-        /// </summary>
-        private void ApplyLocalization()
-        {
-            try
-            {
-                // 更新导航按钮文本
-                if (btnNavBots != null)
-                {
-                    var navState = btnNavBots.Tag as NavButtonState;
-                    if (navState != null && navState.Index == 0)
-                    {
-                        btnNavBots.Text = GetString("Button_Bots", "BOTS");
-                    }
-                }
-                if (btnNavHub != null)
-                {
-                    var navState = btnNavHub.Tag as NavButtonState;
-                    if (navState != null && navState.Index == 1)
-                    {
-                        btnNavHub.Text = GetString("Button_Configuration", "CONFIGURATION");
-                    }
-                }
-                if (btnNavLogs != null)
-                {
-                    var navState = btnNavLogs.Tag as NavButtonState;
-                    if (navState != null && navState.Index == 2)
-                    {
-                        btnNavLogs.Text = GetString("Button_SystemLogs", "SYSTEM LOGS");
-                    }
-                }
-
-                // 更新控制按钮文本
-                if (btnStart != null)
-                    btnStart.Text = GetString("Button_Start", "START");
-                if (btnStop != null)
-                    btnStop.Text = GetString("Button_Stop", "STOP");
-                if (btnReboot != null)
-                    btnReboot.Text = GetString("Button_Restart", "RESTART");
-
-                // 更新其他控件文本
-                if (B_New != null)
-                    B_New.Text = GetString("Button_Add", "ADD");
-                if (btnClearLogs != null)
-                    btnClearLogs.Text = GetString("Button_ClearLogs", "Clear Logs");
-                if (TB_IP != null)
-                    TB_IP.PlaceholderText = GetString("Placeholder_IPAddress", "IP Address");
-                if (titleLabel != null)
-                    titleLabel.Text = GetString("Title_BotManagement", "Bot Management");
-            }
-            catch (Exception ex)
-            {
-                LogUtil.LogError($"Failed to apply localization: {ex.Message}", "Localization");
-            }
-        }
-
-        #endregion
     }
 
     public sealed class SearchManager
@@ -1701,16 +1577,16 @@ namespace SysBot.Pokemon.WinForms
                     HighlightAllMatches();
                     _currentIndex = 0;
                     HighlightCurrentMatch();
-                    _statusLabel.Text = GetFormattedString("Message_SearchStatus", 1, _matches.Count);
+                    _statusLabel.Text = $"1 of {_matches.Count}";
                 }
                 else
                 {
-                    _statusLabel.Text = GetString("Message_NoMatchesFound", "No matches found");
+                    _statusLabel.Text = "No matches found";
                 }
             }
             catch (ArgumentException)
             {
-                _statusLabel.Text = GetString("Message_InvalidRegexPattern", "Invalid regex pattern");
+                _statusLabel.Text = "Invalid regex pattern";
             }
         }
 
@@ -1765,7 +1641,7 @@ namespace SysBot.Pokemon.WinForms
             _textBox.SelectionBackColor = CurrentHighlightColor;
             _textBox.ScrollToCaret();
 
-            _statusLabel.Text = GetFormattedString("Message_SearchStatus", _currentIndex + 1, _matches.Count);
+            _statusLabel.Text = $"{_currentIndex + 1} of {_matches.Count}";
         }
 
         private void ClearCurrentHighlight()

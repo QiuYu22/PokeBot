@@ -438,23 +438,7 @@ public class TradeSettings : IBotStateSettings, ICountSettings
 
         public override PropertyDescriptorCollection GetProperties(ITypeDescriptorContext? context, object value, Attribute[]? attributes) => TypeDescriptor.GetProperties(typeof(T));
 
-        public override bool CanConvertTo(ITypeDescriptorContext? context, Type? destinationType) => destinationType == typeof(string) || base.CanConvertTo(context, destinationType);
-
-        public override object? ConvertTo(ITypeDescriptorContext? context, System.Globalization.CultureInfo? culture, object? value, Type destinationType)
-        {
-            if (destinationType == typeof(string) && value != null)
-            {
-                // 获取对象的类型名称
-                var typeName = value.GetType().Name;
-                
-                // 尝试从资源文件中获取本地化的显示名称
-                var displayName = ConfigLocalizationHelper.GetDisplayName(typeName, value.ToString() ?? typeName);
-                
-                return displayName;
-            }
-            
-            return base.ConvertTo(context, culture, value, destinationType);
-        }
+        public override bool CanConvertTo(ITypeDescriptorContext? context, Type? destinationType) => destinationType != typeof(string) && base.CanConvertTo(context, destinationType);
     }
 
     public enum ImageSize

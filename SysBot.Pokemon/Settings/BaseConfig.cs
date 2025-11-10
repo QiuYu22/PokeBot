@@ -18,11 +18,11 @@ public abstract class BaseConfig
     public bool AntiIdle { get; set; }
 
     [Category(Operation)]
-    [TypeConverter(typeof(LocalizedExpandableObjectConverter))]
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public FolderSettings Folder { get; set; } = new();
 
     [Category(Operation)]
-    [TypeConverter(typeof(LocalizedExpandableObjectConverter))]
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public LegalitySettings Legality { get; set; } = new();
 
     [Category(FeatureToggle), Description("Enables text logs. Restart to apply changes.")]
