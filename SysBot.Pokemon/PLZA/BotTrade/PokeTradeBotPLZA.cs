@@ -664,6 +664,13 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
         return data[0];
     }
 
+    private async Task<int> GetCurrentLinkCode(CancellationToken token)
+    {
+        var offset = await SwitchConnection.PointerAll(Offsets.LinkCodeTradePointer, token).ConfigureAwait(false);
+        var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, 4, token).ConfigureAwait(false);
+        return BitConverter.ToInt32(data, 0);
+    }
+
     private async Task<bool> CheckIfInTradeBox(CancellationToken token)
     {
         var offset = await SwitchConnection.PointerAll(Offsets.TradeBoxStatusPointer, token).ConfigureAwait(false);
@@ -1273,10 +1280,16 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             Hub.Config.Stream.StartEnterCode(this);
         }
 
-        // Clear any existing code by holding B for 4 seconds
-        await Task.Delay(1_000, token).ConfigureAwait(false);
-        await PressAndHold(B, 4_000, 0, token).ConfigureAwait(false);
-        await Task.Delay(1_000, token).ConfigureAwait(false);
+        // Read current code to determine if we need to clear
+        var currentCode = await GetCurrentLinkCode(token).ConfigureAwait(false);
+
+        // If there's a non-zero code, clear it
+        if (currentCode != 0)
+        {
+            await Task.Delay(1_000, token).ConfigureAwait(false);
+            await PressAndHold(B, 4_000, 0, token).ConfigureAwait(false);
+            await Task.Delay(1_000, token).ConfigureAwait(false);
+        }
 
         // Enter the new code
         await EnterLinkCode(code, Hub.Config, token).ConfigureAwait(false);
