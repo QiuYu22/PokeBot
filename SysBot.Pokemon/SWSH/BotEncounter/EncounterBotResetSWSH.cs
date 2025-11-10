@@ -25,7 +25,7 @@ public sealed class EncounterBotResetSWSH(PokeBotState Config, PokeTradeHub<PK8>
         {
             PK8? pknew;
 
-            Log("Looking for a Pokémon...");
+            Log("正在寻找宝可梦...");
             do
             {
                 await DoExtraCommands(Hub.Config.EncounterSWSH.EncounteringType, token).ConfigureAwait(false);
@@ -35,7 +35,7 @@ public sealed class EncounterBotResetSWSH(PokeBotState Config, PokeTradeHub<PK8>
             if (await HandleEncounter(pknew, token).ConfigureAwait(false))
                 return;
 
-            Log("No match, resetting the game...");
+            Log("未找到目标，正在重置游戏...");
             await CloseGame(Hub.Config, token).ConfigureAwait(false);
             await StartGame(Hub.Config, token).ConfigureAwait(false);
         }

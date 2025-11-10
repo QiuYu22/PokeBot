@@ -170,7 +170,7 @@ public static class QueueHelper<T> where T : PKM, new()
         if (added == QueueResultAdd.NotAllowedItem)
         {
             var held = pk.HeldItem;
-            var itemName = held > 0 ? PKHeX.Core.GameInfo.GetStrings("en").Item[held] : "(无)";
+            var itemName = held > 0 ? PKHeX.Core.GameInfo.GetStrings("zh").Item[held] : "(无)";
             await context.Channel.SendMessageAsync($"{trader.Mention} - 交易被阻止：道具“{itemName}”无法在 PLZA 中交换。").ConfigureAwait(false);
             return new TradeQueueResult(false);
         }
@@ -265,7 +265,7 @@ public static class QueueHelper<T> where T : PKM, new()
                 var embed = embedBuilder.Build();
                 if (embed == null)
                 {
-                    Console.WriteLine("Error: Embed is null.");
+                    Console.WriteLine("错误：Embed 为空。");
                     await context.Channel.SendMessageAsync("准备交易详情时发生错误。");
                     return new TradeQueueResult(false);
                 }
@@ -359,7 +359,7 @@ public static class QueueHelper<T> where T : PKM, new()
         if (added == QueueResultAdd.NotAllowedItem)
         {
             var held = firstTrade.HeldItem;
-            var itemName = held > 0 ? PKHeX.Core.GameInfo.GetStrings("en").Item[held] : "(无)";
+            var itemName = held > 0 ? PKHeX.Core.GameInfo.GetStrings("zh").Item[held] : "(无)";
             await context.Channel.SendMessageAsync($"{trader.Mention} - 交易被阻止：道具“{itemName}”无法在 PLZA 中交换。").ConfigureAwait(false);
             return;
         }
@@ -533,7 +533,7 @@ public static class QueueHelper<T> where T : PKM, new()
             embedImageUrl = speciesImageUrl;
         }
 
-        var strings = GameInfo.GetStrings("en");
+        var strings = GameInfo.GetStrings("zh");
         string ballName = strings.balllist[pk.Ball];
         if (ballName.Contains("(LA)"))
         {

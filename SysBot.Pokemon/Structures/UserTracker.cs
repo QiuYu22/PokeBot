@@ -28,7 +28,7 @@ public class TrackedUserLog
     public IEnumerable<string> Summarize()
     {
         lock (_sync)
-            return Users.FindAll(z => z.NetworkID != 0).ConvertAll(z => $"{z.Name}, ID: {z.NetworkID}, Remote ID: {z.RemoteID}");
+            return Users.FindAll(z => z.NetworkID != 0).ConvertAll(z => $"{z.Name}，ID：{z.NetworkID}，远程 ID：{z.RemoteID}");
     }
 
     public TrackedUser? TryGetPreviousNID(ulong trainerNid)

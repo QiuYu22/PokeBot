@@ -224,7 +224,7 @@ public abstract class SwitchUSB : IConsoleConnection
     private int SendInternal(byte[] buffer)
     {
         if (writer == null)
-            throw new Exception("USB device not found or not connected.");
+            throw new Exception("未找到 USB 设备或设备未连接。");
 
         uint pack = (uint)buffer.Length + 2;
         var ec = writer.Write(BitConverter.GetBytes(pack), 2000, out _);

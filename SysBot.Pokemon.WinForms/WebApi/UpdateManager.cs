@@ -74,7 +74,7 @@ public static class UpdateManager
         public string TargetVersion { get; set; } = string.Empty;
         public string CurrentVersion { get; set; } = string.Empty;
         public UpdatePhase Phase { get; set; } = UpdatePhase.Checking;
-        public string Message { get; set; } = "Initializing...";
+        public string Message { get; set; } = "正在初始化...";
         public List<Instance> Instances { get; set; } = [];
         public bool IsComplete { get; set; }
         public bool Success { get; set; }
@@ -115,7 +115,7 @@ public static class UpdateManager
     public class InstanceIdleStatus
     {
         public int TcpPort { get; set; }
-        public string Name => IsMaster ? "Master" : $"Instance {TcpPort}";
+        public string Name => IsMaster ? "主实例" : $"实例 {TcpPort}";
         public bool IsMaster { get; set; }
         public int TotalBots { get; set; }
         public int IdleBots { get; set; }
@@ -169,7 +169,7 @@ public static class UpdateManager
     {
         if (port < 1 || port > 65535)
         {
-            LogUtil.LogError($"Invalid web port {port}. Using default 8080.", "UpdateManager");
+            LogUtil.LogError($"Web 端口 {port} 无效，已回退为默认端口 8080。", "UpdateManager");
             port = 8080;
         }
         _configuredWebPort = port;
@@ -198,7 +198,7 @@ public static class UpdateManager
                 // Limit file size to prevent DoS attacks
                 if (json.Length > 1024 * 1024) // 1MB limit
                 {
-                    LogUtil.LogError("State file too large, potential DoS attack", "UpdateManager");
+                    LogUtil.LogError("状态文件过大，疑似受到 DoS 攻击。", "UpdateManager");
                     try { File.Delete(safePath); } catch { }
                     return null;
                 }
@@ -208,9 +208,9 @@ public static class UpdateManager
                 // Check if state is stale
                 if (_state?.IsStale == true)
                 {
-                    LogUtil.LogInfo($"Found stale update state from {_state.StartTime:u}, marking as failed", "UpdateManager");
+                    LogUtil.LogInfo($"检测到 {_state.StartTime:u} 开始的陈旧更新状态，已标记为失败。", "UpdateManager");
                     _state.Phase = UpdatePhase.Complete;
-                    _state.Message = "Update timed out";
+                    _state.Message = "更新已超时";
                     _state.IsComplete = true;
                     _state.Success = false;
                     SaveState();
@@ -220,7 +220,7 @@ public static class UpdateManager
             }
             catch (Exception ex)
             {
-                LogUtil.LogError($"Failed to load update state: {ex.Message}", "UpdateManager");
+                LogUtil.LogError($"加载更新状态失败：{ex.Message}", "UpdateManager");
                 try { File.Delete(safePath); } catch { }
                 return null;
             }
@@ -239,10 +239,10 @@ public static class UpdateManager
         // Validate input parameters
         if (currentTcpPort <= 0 || currentTcpPort > 65535)
         {
-            throw new ArgumentOutOfRangeException(nameof(currentTcpPort), "Port must be between 1 and 65535");
+            throw new ArgumentOutOfRangeException(nameof(currentTcpPort), "端口号必须介于 1 到 65535 之间。");
         }
 
-        LogUtil.LogInfo("Starting update process", "UpdateManager");
+        LogUtil.LogInfo("正在启动更新流程。", "UpdateManager");
         
         // Check for existing state with proper locking
         UpdateState? existingState;
@@ -251,7 +251,7 @@ public static class UpdateManager
             existingState = GetCurrentState();
             if (existingState != null && !existingState.IsComplete)
             {
-                LogUtil.LogInfo($"Resuming existing update session {existingState.SessionId}", "UpdateManager");
+                LogUtil.LogInfo($"正在恢复现有更新会话 {existingState.SessionId}。", "UpdateManager");
                 // Return existing state immediately - background task will handle resume
                 _ = Task.Run(async () => 
                 {
@@ -261,8 +261,8 @@ public static class UpdateManager
                     }
                     catch (Exception ex)
                     {
-                        LogUtil.LogError($"Failed to resume update: {ex.Message}", "UpdateManager");
-                        CompleteUpdate(existingState, false, $"Resume failed: {ex.Message}");
+                        LogUtil.LogError($"恢复更新失败：{ex.Message}", "UpdateManager");
+                        CompleteUpdate(existingState, false, $"恢复更新失败：{ex.Message}");
                     }
                 }, cancellationToken);
                 return Task.FromResult(existingState);
@@ -286,8 +286,8 @@ public static class UpdateManager
             }
             catch (Exception ex)
             {
-                LogUtil.LogError($"Failed to execute update: {ex.Message}", "UpdateManager");
-                CompleteUpdate(state, false, $"Update failed: {ex.Message}");
+                LogUtil.LogError($"执行更新失败：{ex.Message}", "UpdateManager");
+                CompleteUpdate(state, false, $"更新失败：{ex.Message}");
             }
         }, cancellationToken);
         return Task.FromResult(state);
@@ -304,11 +304,11 @@ public static class UpdateManager
         // Validate port range
         if (instancePort <= 0 || instancePort > 65535)
         {
-            LogUtil.LogError($"Invalid port number: {instancePort}", "UpdateManager");
+            LogUtil.LogError($"端口号 {instancePort} 无效。", "UpdateManager");
             return false;
         }
 
-        LogUtil.LogInfo($"Starting single instance update for port {instancePort}", "UpdateManager");
+        LogUtil.LogInfo($"正在启动端口 {instancePort} 的单实例更新。", "UpdateManager");
         
         CancellationTokenSource? cts = null;
         try
@@ -321,7 +321,7 @@ public static class UpdateManager
             var (updateAvailable, _, latestVersion) = await UpdateChecker.CheckForUpdatesAsync(false);
             if (!updateAvailable)
             {
-                LogUtil.LogInfo("No updates available", "UpdateManager");
+                LogUtil.LogInfo("未检测到可用更新。", "UpdateManager");
                 return false;
             }
 
@@ -353,12 +353,12 @@ public static class UpdateManager
         }
         catch (OperationCanceledException)
         {
-            LogUtil.LogError($"Single instance update timed out for port {instancePort}", "UpdateManager");
+            LogUtil.LogError($"端口 {instancePort} 的单实例更新已超时。", "UpdateManager");
             return false;
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Single instance update failed: {ex.Message}", "UpdateManager");
+            LogUtil.LogError($"单实例更新失败：{ex.Message}", "UpdateManager");
             return false;
         }
         finally
@@ -381,7 +381,7 @@ public static class UpdateManager
         {
             // Phase 1: Check for updates and discover instances
             state.Phase = UpdatePhase.Checking;
-            state.Message = "Checking for updates and discovering instances...";
+            state.Message = "正在检查更新并扫描实例...";
             SaveState();
 
             // Check for updates with timeout
@@ -402,7 +402,7 @@ public static class UpdateManager
             
             if (!forceUpdate && !updateAvailable)
             {
-                CompleteUpdate(state, true, "No updates available");
+                CompleteUpdate(state, true, "未检测到可用更新");
                 return;
             }
 
@@ -414,7 +414,7 @@ public static class UpdateManager
 
             // Phase 2: Idle all bots
             state.Phase = UpdatePhase.Idling;
-            state.Message = "Idling bots on all instances...";
+            state.Message = "正在让所有实例的机器人进入待命状态...";
             state.IdleProgress = new IdleProgress();
             SaveState();
 
@@ -423,7 +423,7 @@ public static class UpdateManager
 
             // Phase 3: Update all instances
             state.Phase = UpdatePhase.Updating;
-            state.Message = "Updating instances...";
+            state.Message = "正在更新各实例...";
             state.IdleProgress = null; // Clear idle progress
             SaveState();
 
@@ -432,15 +432,15 @@ public static class UpdateManager
             var master = state.Instances.FirstOrDefault(i => i.IsMaster);
             
             // Log the update order for debugging
-            LogUtil.LogInfo($"Update order - Slaves: {string.Join(", ", slaves.Select(s => s.TcpPort))}, Master: {master?.TcpPort ?? 0}", "UpdateManager");
+            LogUtil.LogInfo($"更新顺序——从属端口：{string.Join(", ", slaves.Select(s => s.TcpPort))}，主端口：{master?.TcpPort ?? 0}。", "UpdateManager");
 
             // Update all slave instances first
             foreach (var slave in slaves)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                state.CurrentUpdatingInstance = $"Instance {slave.TcpPort}";
-                state.Message = $"Updating slave instance on port {slave.TcpPort}...";
-                LogUtil.LogInfo($"Updating slave instance on port {slave.TcpPort}", "UpdateManager");
+                state.CurrentUpdatingInstance = $"实例 {slave.TcpPort}";
+                state.Message = $"正在更新端口 {slave.TcpPort} 的从属实例...";
+                LogUtil.LogInfo($"正在更新从属实例（端口 {slave.TcpPort}）。", "UpdateManager");
                 SaveState();
                 await UpdateInstanceAsync(mainForm, slave, state.TargetVersion, cancellationToken);
             }
@@ -448,9 +448,9 @@ public static class UpdateManager
             // Update master last - this will trigger a restart
             if (master != null)
             {
-                state.CurrentUpdatingInstance = "Master";
-                state.Message = "Updating master instance (will restart)...";
-                LogUtil.LogInfo($"Updating master instance on port {master.TcpPort} - this will restart the application", "UpdateManager");
+                state.CurrentUpdatingInstance = "主实例";
+                state.Message = "正在更新主实例（完成后将重启应用）...";
+                LogUtil.LogInfo($"正在更新主实例（端口 {master.TcpPort}），应用即将重启。", "UpdateManager");
                 SaveState();
                 await UpdateInstanceAsync(mainForm, master, state.TargetVersion, cancellationToken);
                 // Master update triggers restart - state will be resumed
@@ -459,22 +459,22 @@ public static class UpdateManager
 
             // Phase 3: Verify updates
             state.Phase = UpdatePhase.Verifying;
-            state.Message = "Verifying updates...";
+            state.Message = "正在验证更新结果...";
             SaveState();
             
             await Task.Delay(3000, cancellationToken); // Let system stabilize
             
             var allSuccess = state.Instances.All(i => i.Status == InstanceStatus.Completed);
-            CompleteUpdate(state, allSuccess, allSuccess ? "Update completed successfully" : "Update completed with errors");
+            CompleteUpdate(state, allSuccess, allSuccess ? "更新已成功完成" : "更新已完成但存在错误");
         }
         catch (OperationCanceledException)
         {
-            CompleteUpdate(state, false, "Update cancelled");
+            CompleteUpdate(state, false, "更新已取消");
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Update failed: {ex}", "UpdateManager");
-            CompleteUpdate(state, false, $"Update failed: {ex.Message}");
+            LogUtil.LogError($"更新失败：{ex}", "UpdateManager");
+            CompleteUpdate(state, false, $"更新失败：{ex.Message}");
         }
     }
 
@@ -489,7 +489,7 @@ public static class UpdateManager
     {
         try
         {
-            LogUtil.LogInfo($"Resuming update from phase {state.Phase}", "UpdateManager");
+            LogUtil.LogInfo($"正在从阶段“{GetPhaseDisplay(state.Phase)}”恢复更新。", "UpdateManager");
 
             // Check if we just restarted after master update
             if (state.Phase == UpdatePhase.Updating)
@@ -499,7 +499,7 @@ public static class UpdateManager
                 {
                     // Always check master version after restart
                     var currentVersion = GetCurrentVersion();
-                    LogUtil.LogInfo($"Checking master after restart: current={currentVersion}, target={state.TargetVersion}, master status={master.Status}", "UpdateManager");
+                    LogUtil.LogInfo($"重启后检查主实例：当前版本={currentVersion}，目标版本={state.TargetVersion}，状态={GetInstanceStatusDisplay(master.Status)}。", "UpdateManager");
                     
                     // If we're running and the version matches target, the update was successful
                     if (currentVersion == state.TargetVersion)
@@ -509,7 +509,7 @@ public static class UpdateManager
                             master.Status = InstanceStatus.Completed;
                             master.Version = currentVersion;
                             master.UpdateEndTime = DateTime.UtcNow;
-                            LogUtil.LogInfo($"Master update verified successfully: now running {currentVersion}", "UpdateManager");
+                            LogUtil.LogInfo($"主实例更新验证成功，当前运行版本为 {currentVersion}。", "UpdateManager");
                             SaveState();
                         }
                     }
@@ -517,8 +517,8 @@ public static class UpdateManager
                     {
                         // Master hasn't updated yet - this shouldn't happen after restart
                         master.Status = InstanceStatus.Failed;
-                        master.Error = $"Version mismatch after restart: expected {state.TargetVersion}, got {currentVersion}";
-                        LogUtil.LogError($"Master update failed: expected {state.TargetVersion}, got {currentVersion}", "UpdateManager");
+                        master.Error = $"重启后版本不匹配：期望 {state.TargetVersion}，实际 {currentVersion}";
+                        LogUtil.LogError($"主实例更新失败：期望版本 {state.TargetVersion}，实际版本 {currentVersion}。", "UpdateManager");
                         SaveState();
                     }
                 }
@@ -529,7 +529,7 @@ public static class UpdateManager
             foreach (var instance in pending)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                state.Message = $"Updating instance on port {instance.TcpPort}...";
+                state.Message = $"正在更新端口 {instance.TcpPort} 的实例...";
                 SaveState();
                 await UpdateInstanceAsync(mainForm, instance, state.TargetVersion, cancellationToken);
             }
@@ -539,12 +539,12 @@ public static class UpdateManager
             await Task.Delay(3000, cancellationToken);
             
             var allSuccess = state.Instances.All(i => i.Status == InstanceStatus.Completed);
-            CompleteUpdate(state, allSuccess, allSuccess ? "Update resumed and completed" : "Update resumed with errors");
+            CompleteUpdate(state, allSuccess, allSuccess ? "更新已恢复并成功完成" : "更新已恢复但存在错误");
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Resume failed: {ex}", "UpdateManager");
-            CompleteUpdate(state, false, $"Resume failed: {ex.Message}");
+            LogUtil.LogError($"恢复更新失败：{ex}", "UpdateManager");
+            CompleteUpdate(state, false, $"恢复更新失败：{ex.Message}");
         }
     }
 
@@ -608,9 +608,9 @@ public static class UpdateManager
                                         using var doc = JsonDocument.Parse(response);
                                         var root = doc.RootElement;
 
-                                        var version = "Unknown";
+                                        var version = "未知";
                                         if (root.TryGetProperty("Version", out var versionProp))
-                                            version = versionProp.GetString() ?? "Unknown";
+                                            version = versionProp.GetString() ?? "未知";
 
                                         // Try to find the process ID for this port
                                         int processId = 0;
@@ -652,7 +652,7 @@ public static class UpdateManager
                                     }
                                     catch (Exception ex)
                                     {
-                                        LogUtil.LogError($"Failed to parse INFO response from port {portToScan}: {ex.Message}", "UpdateManager");
+                                        LogUtil.LogError($"解析来自端口 {portToScan} 的 INFO 响应失败：{ex.Message}", "UpdateManager");
                                     }
                                 }
                             }
@@ -726,7 +726,7 @@ public static class UpdateManager
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Error discovering local instances: {ex.Message}", "UpdateManager");
+            LogUtil.LogError($"扫描本地实例时出错：{ex.Message}", "UpdateManager");
         }
 
         // After discovering all instances, determine which is the master
@@ -741,7 +741,7 @@ public static class UpdateManager
                 if (masterInstance != null)
                 {
                     masterInstance.IsMaster = true;
-                    LogUtil.LogInfo($"Identified master instance on TCP port {masterPort} (hosting web server)", "UpdateManager");
+                    LogUtil.LogInfo($"已识别托管 Web 服务的主实例，TCP 端口 {masterPort}。", "UpdateManager");
                 }
             }
         }
@@ -753,17 +753,17 @@ public static class UpdateManager
             if (defaultMaster != null)
             {
                 defaultMaster.IsMaster = true;
-                LogUtil.LogInfo($"Using default master on TCP port {Config.MasterTcpPort}", "UpdateManager");
+                LogUtil.LogInfo($"使用默认主实例 TCP 端口 {Config.MasterTcpPort}。", "UpdateManager");
             }
         }
 
         // Discovery complete - log instance details
         if (instances.Count > 0)
         {
-            LogUtil.LogInfo($"Discovered {instances.Count} instance(s):", "UpdateManager");
+            LogUtil.LogInfo($"已发现 {instances.Count} 个实例：", "UpdateManager");
             foreach (var inst in instances)
             {
-                LogUtil.LogInfo($"  - Port {inst.TcpPort}: IsMaster={inst.IsMaster}, Version={inst.Version}", "UpdateManager");
+                LogUtil.LogInfo($"  - 端口 {inst.TcpPort}：是否主实例={ToYesOrNo(inst.IsMaster)}，版本={inst.Version}", "UpdateManager");
             }
         }
         return instances;
@@ -780,7 +780,7 @@ public static class UpdateManager
         var timeout = TimeSpan.FromMinutes(Config.StopBotsTimeoutMinutes);
         var endTime = DateTime.UtcNow.Add(timeout);
 
-        LogUtil.LogInfo($"Stopping all bots (timeout: {timeout.TotalMinutes} minutes)", "UpdateManager");
+        LogUtil.LogInfo($"正在停止所有机器人（超时时间：{timeout.TotalMinutes} 分钟）。", "UpdateManager");
 
         // Initialize idle progress tracking
         if (_state?.IdleProgress != null)
@@ -815,7 +815,7 @@ public static class UpdateManager
             }
             catch (Exception ex)
             {
-                LogUtil.LogError($"Failed to stop bots on port {instance.TcpPort}: {ex.Message}", "UpdateManager");
+                LogUtil.LogError($"停止端口 {instance.TcpPort} 的机器人失败：{ex.Message}", "UpdateManager");
             }
         }
 
@@ -840,7 +840,7 @@ public static class UpdateManager
                     }
                 }
 
-                _state.Message = $"Waiting for bots to idle: {_state.IdleProgress.IdleBots}/{_state.IdleProgress.TotalBots} idle";
+                _state.Message = $"正在等待机器人待命：{_state.IdleProgress.IdleBots}/{_state.IdleProgress.TotalBots} 已待命";
                 SaveState();
             }
             else
@@ -858,10 +858,10 @@ public static class UpdateManager
 
             if (allStopped)
             {
-                LogUtil.LogInfo("All bots stopped successfully", "UpdateManager");
+                LogUtil.LogInfo("所有机器人均已成功停止。", "UpdateManager");
                 if (_state != null)
                 {
-                    _state.Message = "All bots idled successfully";
+                    _state.Message = "所有机器人已成功进入待命状态";
                     SaveState();
                 }
                 return;
@@ -870,10 +870,10 @@ public static class UpdateManager
             await Task.Delay(Config.ProcessCheckDelayMs, cancellationToken);
         }
 
-        LogUtil.LogError("Bot stop timeout reached - proceeding anyway", "UpdateManager");
+        LogUtil.LogError("等待机器人停止超时，将继续后续流程。", "UpdateManager");
         if (_state != null)
         {
-            _state.Message = "Bot idle timeout reached - forcing update";
+            _state.Message = "等待机器人待命超时，正在强制继续更新";
             SaveState();
         }
     }
@@ -920,8 +920,8 @@ public static class UpdateManager
                                 else
                                 {
                                     // Try to get bot name
-                                    var botName = $"Bot {controllers.IndexOf(controller) + 1}";
-                                    idleStatus.NonIdleBots.Add($"{botName}: {state}");
+                                    var botName = $"机器人 {controllers.IndexOf(controller) + 1}";
+                                    idleStatus.NonIdleBots.Add($"{botName}：{state}");
                                 }
                             }
                             idleStatus.IdleBots = idleCount;
@@ -956,8 +956,8 @@ public static class UpdateManager
                                 else
                                 {
                                     var botName = bot.TryGetValue("Name", out var name) ? name?.ToString() : null;
-                                    botName ??= $"Bot {i + 1}";
-                                    idleStatus.NonIdleBots.Add($"{botName}: {status}");
+                                    botName ??= $"机器人 {i + 1}";
+                                    idleStatus.NonIdleBots.Add($"{botName}：{status}");
                                 }
                             }
                         }
@@ -968,7 +968,7 @@ public static class UpdateManager
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Failed to update idle status for instance {instance.TcpPort}: {ex.Message}", "UpdateManager");
+            LogUtil.LogError($"更新实例 {instance.TcpPort} 的空闲状态失败：{ex.Message}", "UpdateManager");
             // Assume idle on error
             idleStatus.TotalBots = 0;
             idleStatus.IdleBots = 0;
@@ -1001,7 +1001,7 @@ public static class UpdateManager
         // Validate port range
         if (port <= 0 || port > 65535)
         {
-            throw new ArgumentOutOfRangeException(nameof(port), "Port must be between 1 and 65535");
+            throw new ArgumentOutOfRangeException(nameof(port), "端口号必须介于 1 到 65535 之间");
         }
 
         CancellationTokenSource? cts = null;
@@ -1099,7 +1099,7 @@ public static class UpdateManager
                 instance.Status = InstanceStatus.Updating;
                 SaveState();
 
-                LogUtil.LogInfo($"Updating instance on port {instance.TcpPort} (attempt {retry + 1}/{Config.MaxRetryCount})", "UpdateManager");
+                LogUtil.LogInfo($"正在更新端口 {instance.TcpPort} 的实例（第 {retry + 1}/{Config.MaxRetryCount} 次尝试）。", "UpdateManager");
 
                 if (instance.IsMaster)
                 {
@@ -1138,7 +1138,7 @@ public static class UpdateManager
                     var response = await Task.Run(() => BotServer.QueryRemote(instance.TcpPort, "UPDATE"), cancellationToken);
                     if (response.StartsWith("ERROR", StringComparison.Ordinal))
                     {
-                        throw new Exception($"Update command failed: {response}");
+                        throw new Exception($"更新指令执行失败：{response}");
                     }
 
                     // Wait for process restart
@@ -1150,12 +1150,12 @@ public static class UpdateManager
                 instance.Version = targetVersion;
                 SaveState();
                 
-                LogUtil.LogInfo($"Instance on port {instance.TcpPort} updated successfully", "UpdateManager");
+                LogUtil.LogInfo($"端口 {instance.TcpPort} 的实例更新成功。", "UpdateManager");
                 return;
             }
             catch (Exception ex)
             {
-                LogUtil.LogError($"Update attempt {retry + 1} failed: {ex.Message}", "UpdateManager");
+                LogUtil.LogError($"第 {retry + 1} 次更新失败：{ex.Message}", "UpdateManager");
                 
                 if (retry == Config.MaxRetryCount - 1)
                 {
@@ -1207,14 +1207,14 @@ public static class UpdateManager
             
             if (IsPortResponding(instance.TcpPort))
             {
-                LogUtil.LogInfo($"New process started on port {instance.TcpPort}", "UpdateManager");
+                LogUtil.LogInfo($"端口 {instance.TcpPort} 上的新进程已启动。", "UpdateManager");
                 return;
             }
             
             await Task.Delay(2000, cancellationToken);
         }
         
-        throw new TimeoutException("New process did not start within timeout");
+        throw new TimeoutException("新进程未在超时时间内启动");
     }
 
     /// <summary>
@@ -1242,7 +1242,7 @@ public static class UpdateManager
     /// </summary>
     private static void CompleteUpdate(UpdateState state, bool success, string message)
     {
-        LogUtil.LogInfo($"Update complete: {message}", "UpdateManager");
+        LogUtil.LogInfo($"更新完成：{message}", "UpdateManager");
         
         state.Phase = UpdatePhase.Complete;
         state.Message = message;
@@ -1297,7 +1297,7 @@ public static class UpdateManager
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Failed to save update state: {ex.Message}", "UpdateManager");
+            LogUtil.LogError($"保存更新状态失败：{ex.Message}", "UpdateManager");
         }
     }
 
@@ -1340,11 +1340,11 @@ public static class UpdateManager
                 try
                 {
                     File.Delete(StateFilePath);
-                    LogUtil.LogInfo("Update session cleared", "UpdateManager");
+                    LogUtil.LogInfo("更新会话已被清除。", "UpdateManager");
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.LogError($"Failed to delete state file: {ex.Message}", "UpdateManager");
+                    LogUtil.LogError($"删除状态文件失败：{ex.Message}", "UpdateManager");
                 }
             }
         }
@@ -1362,7 +1362,7 @@ public static class UpdateManager
             {
                 // Check actual current version
                 var currentVersion = GetCurrentVersion();
-                LogUtil.LogInfo($"Force completing update: current version={currentVersion}, target={state.TargetVersion}", "UpdateManager");
+                LogUtil.LogInfo($"正在强制完成更新：当前版本={currentVersion}，目标版本={state.TargetVersion}。", "UpdateManager");
                 
                 // Fix master instance status based on actual version
                 var master = state.Instances.FirstOrDefault(i => i.IsMaster);
@@ -1373,13 +1373,13 @@ public static class UpdateManager
                         master.Status = InstanceStatus.Completed;
                         master.Version = currentVersion;
                         master.UpdateEndTime = DateTime.UtcNow;
-                        LogUtil.LogInfo("Master instance marked as completed based on version check", "UpdateManager");
+                        LogUtil.LogInfo("根据版本检查结果将主实例标记为已完成。", "UpdateManager");
                     }
                     else
                     {
                         master.Status = InstanceStatus.Failed;
-                        master.Error = $"Version mismatch: expected {state.TargetVersion}, got {currentVersion}";
-                        LogUtil.LogError($"Master instance marked as failed: {master.Error}", "UpdateManager");
+                        master.Error = $"版本不匹配：期望 {state.TargetVersion}，实际 {currentVersion}";
+                        LogUtil.LogError($"将主实例标记为失败：{master.Error}", "UpdateManager");
                     }
                 }
                 
@@ -1390,11 +1390,11 @@ public static class UpdateManager
                 state.Phase = UpdatePhase.Complete;
                 state.IsComplete = true;
                 state.Success = allSuccess;
-                state.Message = allSuccess ? "Update completed successfully (forced)" : "Update completed with errors (forced)";
+                state.Message = allSuccess ? "已强制完成更新并全部成功" : "已强制完成更新但存在错误";
                 state.LastModified = DateTime.UtcNow;
                 
                 SaveState();
-                LogUtil.LogInfo($"Update session force completed: success={allSuccess}", "UpdateManager");
+                LogUtil.LogInfo($"已强制结束更新会话，成功状态：{ToYesOrNo(allSuccess)}。", "UpdateManager");
             }
         }
     }
@@ -1413,11 +1413,11 @@ public static class UpdateManager
             try
             {
                 var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-                return assembly.GetName().Version?.ToString() ?? "Unknown";
+                return assembly.GetName().Version?.ToString() ?? "未知";
             }
             catch
             {
-                return "Unknown";
+                return "未知";
             }
         }
     }
@@ -1479,7 +1479,7 @@ public static class UpdateManager
             // Ensure the path is within the expected directory
             if (!fullPath.StartsWith(basePath, StringComparison.OrdinalIgnoreCase))
             {
-                LogUtil.LogError($"Path traversal attempt detected: {path}", "UpdateManager");
+                LogUtil.LogError($"检测到路径遍历尝试：{path}", "UpdateManager");
                 return null;
             }
 
@@ -1487,7 +1487,7 @@ public static class UpdateManager
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Path validation failed for {path}: {ex.Message}", "UpdateManager");
+            LogUtil.LogError($"路径 {path} 验证失败：{ex.Message}", "UpdateManager");
             return null;
         }
     }
@@ -1509,6 +1509,27 @@ public static class UpdateManager
 
         return string.IsNullOrEmpty(sanitized) ? "latest" : sanitized;
     }
+
+    private static string GetPhaseDisplay(UpdatePhase phase) => phase switch
+    {
+        UpdatePhase.Checking => "检查更新",
+        UpdatePhase.Idling => "等待待命",
+        UpdatePhase.Updating => "执行更新",
+        UpdatePhase.Verifying => "验证结果",
+        UpdatePhase.Complete => "流程完成",
+        _ => phase.ToString()
+    };
+
+    private static string GetInstanceStatusDisplay(InstanceStatus status) => status switch
+    {
+        InstanceStatus.Pending => "待处理",
+        InstanceStatus.Updating => "更新中",
+        InstanceStatus.Completed => "已完成",
+        InstanceStatus.Failed => "失败",
+        _ => status.ToString()
+    };
+
+    private static string ToYesOrNo(bool value) => value ? "是" : "否";
 
 
     /// <summary>
@@ -1591,7 +1612,7 @@ public static class UpdateManager
         }
         catch (Exception ex)
         {
-            LogUtil.LogInfo($"Could not determine master port via API: {ex.Message}", "UpdateManager");
+            LogUtil.LogInfo($"无法通过 API 确定主实例端口：{ex.Message}", "UpdateManager");
         }
         
         return 0; // Not found

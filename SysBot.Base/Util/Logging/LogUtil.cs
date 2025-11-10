@@ -125,7 +125,7 @@ public static class LogUtil
     private static string SanitizeBotName(string botName)
     {
         if (string.IsNullOrWhiteSpace(botName))
-            return "UnknownBot";
+            return "未知机器人";
 
         // 检查是否属于系统组件，需要合并到系统日志目录
         if (LogConfig.ConsolidateSystemLogs)
@@ -148,7 +148,7 @@ public static class LogUtil
         // 去除首尾的空白符与下划线
         sanitized = sanitized.Trim('_', ' ');
 
-        return string.IsNullOrWhiteSpace(sanitized) ? "UnknownBot" : sanitized;
+        return string.IsNullOrWhiteSpace(sanitized) ? "未知机器人" : sanitized;
     }
 
     /// <summary>
@@ -255,13 +255,13 @@ public static class LogUtil
     {
         // Log to master log
         if (LogConfig.EnableMasterLog)
-            Logger.Log(LogLevel.Warn, $"[SECURITY] {identity} {message}");
+            Logger.Log(LogLevel.Warn, $"[安全] {identity} {message}");
 
         // Log to per-bot log
         if (LogConfig.EnablePerBotLogging)
         {
             var botLogger = GetOrCreateBotLogger(identity);
-            botLogger.Log(LogLevel.Warn, $"[SECURITY] {message}");
+            botLogger.Log(LogLevel.Warn, $"[安全] {message}");
         }
 
         // Forward to external listeners (Discord, etc.)
@@ -269,7 +269,7 @@ public static class LogUtil
         {
             try
             {
-                fwd.Forward($"[SECURITY] {message}", identity);
+                fwd.Forward($"[安全] {message}", identity);
             }
             catch { }
         }
@@ -280,7 +280,7 @@ public static class LogUtil
         // Log to master log
         if (LogConfig.EnableMasterLog)
         {
-            Logger.Log(LogLevel.Error, $"Exception from {identity}:");
+            Logger.Log(LogLevel.Error, $"来自 {identity} 的异常：");
             Logger.Log(LogLevel.Error, exception);
         }
 
@@ -288,7 +288,7 @@ public static class LogUtil
         if (LogConfig.EnablePerBotLogging)
         {
             var botLogger = GetOrCreateBotLogger(identity);
-            botLogger.Log(LogLevel.Error, "Exception occurred:");
+            botLogger.Log(LogLevel.Error, "发生异常：");
             botLogger.Log(LogLevel.Error, exception);
         }
 
@@ -341,7 +341,7 @@ public static class LogUtil
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, $"Failed to forward log from {identity} - {message}");
+                Logger.Log(LogLevel.Error, $"转发来自 {identity} 的日志失败 - {message}");
                 Logger.Log(LogLevel.Error, ex);
             }
         }

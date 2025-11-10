@@ -75,10 +75,10 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
 
         if (string.IsNullOrEmpty(fullResourceName))
         {
-            throw new FileNotFoundException($"Embedded resource '{resourceName}' not found. Available resources: {string.Join(", ", assembly.GetManifestResourceNames())}");
+            throw new FileNotFoundException($"未找到嵌入资源 '{resourceName}'。可用资源列表：{string.Join(", ", assembly.GetManifestResourceNames())}");
         }
 
-        using var stream = assembly.GetManifestResourceStream(fullResourceName) ?? throw new FileNotFoundException($"Could not load embedded resource '{fullResourceName}'");
+        using var stream = assembly.GetManifestResourceStream(fullResourceName) ?? throw new FileNotFoundException($"无法加载嵌入资源 '{fullResourceName}'");
         using var reader = new StreamReader(stream);
         return reader.ReadToEnd();
     }
@@ -91,10 +91,10 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
 
         if (string.IsNullOrEmpty(fullResourceName))
         {
-            throw new FileNotFoundException($"Embedded resource '{resourceName}' not found. Available resources: {string.Join(", ", assembly.GetManifestResourceNames())}");
+            throw new FileNotFoundException($"未找到嵌入资源 '{resourceName}'。可用资源列表：{string.Join(", ", assembly.GetManifestResourceNames())}");
         }
 
-        using var stream = assembly.GetManifestResourceStream(fullResourceName) ?? throw new FileNotFoundException($"Could not load embedded resource '{fullResourceName}'");
+        using var stream = assembly.GetManifestResourceStream(fullResourceName) ?? throw new FileNotFoundException($"无法加载嵌入资源 '{fullResourceName}'");
         using var memoryStream = new MemoryStream();
         stream.CopyTo(memoryStream);
         return memoryStream.ToArray();
@@ -233,7 +233,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
             }
             else
             {
-                var responseContent = content?.ToString() ?? "Not Found";
+                var responseContent = content?.ToString() ?? "未找到资源";
                 if (request.Url?.LocalPath?.Contains("/bots") == true)
                 {
                     LogUtil.LogInfo("Web API", $"Bots API 返回内容：{responseContent[..Math.Min(200, responseContent.Length)]}");
@@ -244,7 +244,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
         catch (Exception ex)
         {
             LogUtil.LogError("Web 服务", $"处理请求时出错：{ex.Message}");
-            await TrySendErrorResponseAsync(response, 500, "Internal Server Error");
+            await TrySendErrorResponseAsync(response, 500, "服务器内部错误");
         }
     }
     
@@ -754,7 +754,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                 nonIdleBots.Add(new NonIdleBot
                 {
                     Name = GetBotName(controller.State, config),
-                    Status = status ?? "Unknown"
+                    Status = status ?? "未知"
                 });
             }
         }
@@ -801,7 +801,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                                 {
                                     nonIdleBots.Add(new NonIdleBot
                                     {
-                                        Name = bot.TryGetValue("Name", out var name) ? name?.ToString() ?? "Unknown" : "Unknown",
+                                        Name = bot.TryGetValue("Name", out var name) ? name?.ToString() ?? "未知" : "未知",
                                         Status = statusStr
                                     });
                                 }
@@ -835,7 +835,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
             
             var response = new UpdateCheckResponse
             {
-                Version = latestVersion ?? "Unknown",
+                Version = latestVersion ?? "未知",
                 Changelog = changelog,
                 Available = updateAvailable
             };
@@ -846,8 +846,8 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
         {
             var response = new UpdateCheckResponse
             {
-                Version = "Unknown",
-                Changelog = "Unable to fetch update information",
+                Version = "未知",
+                Changelog = "无法获取更新信息",
                 Available = false,
                 Error = ex.Message
             };
@@ -903,7 +903,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
         var config = GetConfig();
         var controllers = GetBotControllers();
 
-        var mode = config?.Mode.ToString() ?? "Unknown";
+        var mode = config?.Mode.ToString() ?? "未知";
         var name = config?.Hub?.BotName ?? "PokeBot";
 
         var version = SysBot.Pokemon.Helpers.PokeBot.Version;
@@ -989,8 +989,8 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                             Name = "PokeBot",
                             Port = capturedPort,
                             WebPort = 8080,
-                            Version = "Unknown",
-                            Mode = "Unknown",
+                            Version = "未知",
+                            Mode = "未知",
                             BotCount = 0,
                             IsOnline = true,
                             IsMaster = false, // Will be determined by who's hosting web server
@@ -1056,8 +1056,8 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                         Name = "PokeBot",
                         Port = port,
                         WebPort = 8080,
-                        Version = "Unknown",
-                        Mode = "Unknown",
+                        Version = "未知",
+                        Mode = "未知",
                         BotCount = 0,
                         IsOnline = isOnline,
                         ProcessPath = exePath
@@ -1146,10 +1146,10 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                 var root = doc.RootElement;
 
                 if (root.TryGetProperty("Version", out var version))
-                    instance.Version = version.GetString() ?? "Unknown";
+                    instance.Version = version.GetString() ?? "未知";
 
                 if (root.TryGetProperty("Mode", out var mode))
-                    instance.Mode = mode.GetString() ?? "Unknown";
+                    instance.Mode = mode.GetString() ?? "未知";
 
                 if (root.TryGetProperty("Name", out var name))
                     instance.Name = name.GetString() ?? "PokeBot";
@@ -1224,17 +1224,17 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                 };
 
                 var json = JsonSerializer.Serialize(response, JsonOptions);
-                LogUtil.LogInfo($"GetBots returning {json.Length} bytes for port {port}", "WebAPI");
+                LogUtil.LogInfo($"GetBots 返回的内容大小为 {json.Length} 字节（端口 {port}）", "WebAPI");
                 return json;
             }
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Error in GetBots for port {port}: {ex.Message}", "WebAPI");
+            LogUtil.LogError($"获取端口 {port} 的机器人列表时出错：{ex.Message}", "WebAPI");
             return JsonSerializer.Serialize(new BotsResponse 
             { 
                 Bots = [],
-                Error = $"Error getting bots: {ex.Message}"
+                Error = $"获取机器人列表时发生错误：{ex.Message}"
             }, JsonOptions);
         }
 
@@ -1447,19 +1447,19 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
             // Validate inputs
             if (port <= 0 || port > 65535)
             {
-                return "ERROR: Invalid port number";
+                return "ERROR: 端口号无效";
             }
 
             if (string.IsNullOrWhiteSpace(command) || command.Length > 1000)
             {
-                return "ERROR: Invalid command";
+                return "ERROR: 指令无效";
             }
 
             // Sanitize command to prevent injection
             var sanitizedCommand = SanitizeCommand(command);
             if (sanitizedCommand == null)
             {
-                return "ERROR: Command contains invalid characters";
+                return "ERROR: 指令包含非法字符";
             }
 
             using var client = new TcpClient();
@@ -1469,7 +1469,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
             var connectTask = client.ConnectAsync("127.0.0.1", port);
             if (!connectTask.Wait(5000))
             {
-                return "ERROR: Connection timeout";
+                return "ERROR: 连接超时";
             }
 
             using var stream = client.GetStream();
@@ -1485,7 +1485,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                 response = string.Concat(response.AsSpan(0, 10000), "... [truncated]");
             }
             
-            return response ?? "ERROR: No response";
+            return response ?? "ERROR: 无任何响应";
         }
         catch (Exception ex)
         {

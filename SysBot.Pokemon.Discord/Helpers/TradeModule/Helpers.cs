@@ -206,7 +206,7 @@ public static class Helpers<T> where T : PKM, new()
         if (pkm is not T pk || !la.Valid)
         {
             var reason = GetFailureReason(result, spec);
-            var hint = result == "Failed" ? GetLegalizationHint(template, sav, pkm, spec) : null;
+            var hint = result == "失败" ? GetLegalizationHint(template, sav, pkm, spec) : null;
             return Task.FromResult(new ProcessedPokemonResult<T>
             {
                 Error = reason,
@@ -272,8 +272,8 @@ public static class Helpers<T> where T : PKM, new()
     {
         return result switch
         {
-            "Timeout" => $"该 {speciesName} 配置生成耗时过长。",
-            "VersionMismatch" => "请求被拒：PKHeX 与 Auto-Legality Mod 版本不匹配。",
+            "超时" => $"该 {speciesName} 配置生成耗时过长。",
+            "版本不匹配" => "请求被拒：PKHeX 与 Auto-Legality Mod 版本不匹配。",
             _ => $"无法根据该配置生成 {speciesName}。"
         };
     }

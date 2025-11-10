@@ -94,12 +94,12 @@ public abstract class PokeRoutineExecutor9SV : PokeRoutineExecutor<PK9>
         // Check title so we can warn if mode is incorrect.
         string title = await SwitchConnection.GetTitleID(token).ConfigureAwait(false);
         if (title is not (ScarletID or VioletID))
-            throw new Exception($"{title} is not a valid SV title. Is your mode correct?");
+            throw new Exception($"{title} 不是有效的朱紫标题。请检查运行模式是否正确。");
 
         // Verify the game version.
         var game_version = await SwitchConnection.GetGameInfo("version", token).ConfigureAwait(false);
         if (!game_version.SequenceEqual(SVGameVersion))
-            throw new Exception($"Game version is not supported. Expected version {SVGameVersion}, and current game version is {game_version}.");
+            throw new Exception($"游戏版本不受支持。期望版本为 {SVGameVersion}，当前版本为 {game_version}。");
 
         var sav = await GetFakeTrainerSAV(token).ConfigureAwait(false);
         InitSaveData(sav);
@@ -107,11 +107,11 @@ public abstract class PokeRoutineExecutor9SV : PokeRoutineExecutor<PK9>
         if (!IsValidTrainerData())
         {
             await CheckForRAMShiftingApps(token).ConfigureAwait(false);
-            throw new Exception("Refer to the SysBot.NET wiki (https://github.com/kwsch/SysBot.NET/wiki/Troubleshooting) for more information.");
+            throw new Exception("训练家数据无效。请参考 SysBot.NET Wiki（https://github.com/kwsch/SysBot.NET/wiki/Troubleshooting）获取更多信息。");
         }
 
         if (await GetTextSpeed(token).ConfigureAwait(false) < TextSpeedOption.Fast)
-            throw new Exception("Text speed should be set to FAST. Fix this for correct operation.");
+            throw new Exception("文本速度必须设置为“快速”。请调整后再继续。");
 
         return sav;
     }

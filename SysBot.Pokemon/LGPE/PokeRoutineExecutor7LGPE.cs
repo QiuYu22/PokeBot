@@ -89,15 +89,15 @@ public abstract class PokeRoutineExecutor7LGPE : PokeRoutineExecutor<PB7>
         // Check title so we can warn if mode is incorrect.
         string title = await SwitchConnection.GetTitleID(token).ConfigureAwait(false);
         if (title != LetsGoEeveeID && title != LetsGoPikachuID)
-            throw new Exception($"{title} is not a valid Pokémon: Let's Go title. Is your mode correct?");
+            throw new Exception($"{title} 不是有效的《精灵宝可梦 Let's Go》标题。请检查运行模式是否正确。");
 
         var sav = await GetFakeTrainerSAV(token).ConfigureAwait(false);
         InitSaveData(sav);
 
         if (!IsValidTrainerData())
-            throw new Exception("Trainer data is not valid. Refer to the SysBot.NET wiki for bad or no trainer data.");
+            throw new Exception("训练家数据无效。请参考 SysBot.NET Wiki 获取相关排查信息。");
         if (await GetTextSpeed(token).ConfigureAwait(false) < TextSpeedOption.Fast)
-            throw new Exception("Text speed should be set to FAST. Fix this for correct operation.");
+            throw new Exception("文本速度必须设置为“快速”。请调整后再继续。");
 
         return sav;
     }
@@ -181,8 +181,8 @@ public abstract class PokeRoutineExecutor7LGPE : PokeRoutineExecutor<PB7>
 
     public async Task SetLure(bool activate, CancellationToken token)
     {
-        var msg = activate ? "Activating" : "Deactivating";
-        Log($"{msg} Max Lure.");
+        var msg = activate ? "正在启用" : "正在停用";
+        Log($"{msg}极限药水。");
 
         var lure_type = activate ? 902 : 0; // Max Lure
         var data = BitConverter.GetBytes(lure_type);

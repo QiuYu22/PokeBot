@@ -71,7 +71,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             Hub.Queues.Info.CleanStuckTrades();
             await InitializeHardware(Hub.Config.Trade, token).ConfigureAwait(false);
 
-            Log("Connecting to console...");
+            Log("正在连接主机...");
             var sav = await IdentifyTrainer(token).ConfigureAwait(false);
             OT = sav.OT;
             DisplaySID = sav.DisplaySID;
@@ -81,24 +81,24 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
 
             StartFromOverworld = true;
 
-            Log("Initializing bot...");
+            Log("正在初始化机器人...");
             if (!await CheckIfOnOverworld(token).ConfigureAwait(false))
             {
                 if (!await RecoverToOverworld(token).ConfigureAwait(false))
                 {
-                    Log("Restarting game...");
+                    Log("正在重新启动游戏...");
                     await RestartGamePLZA(token).ConfigureAwait(false);
                     await Task.Delay(5_000, token).ConfigureAwait(false);
 
                     if (!await CheckIfOnOverworld(token).ConfigureAwait(false))
                     {
-                        Log("Failed to start. Please restart the bot.");
-                        throw new Exception("Unable to reach overworld. Bot cannot start trading.");
+                        Log("启动失败。请重新启动机器人。");
+                        throw new Exception("无法返回主世界，机器人无法开始交易。");
                     }
                 }
             }
 
-            Log("Bot ready. Waiting for trades...");
+            Log("机器人已就绪，等待交易...");
             await InnerLoop(sav, token).ConfigureAwait(false);
         }
         catch (Exception e)
@@ -107,7 +107,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             throw;
         }
 
-        Log($"Ending {nameof(PokeTradeBotPLZA)} loop.");
+        Log($"结束 {nameof(PokeTradeBotPLZA)} 循环。");
         await HardStop().ConfigureAwait(false);
     }
 
@@ -121,7 +121,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
         await Task.Delay(2_000, t).ConfigureAwait(false);
         if (!t.IsCancellationRequested)
         {
-            Log("Restarting the main loop.");
+            Log("正在重新启动主循环。");
             await MainLoop(t).ConfigureAwait(false);
         }
     }
@@ -180,7 +180,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
     // Upon connecting, their Nintendo ID will instantly update.
     protected virtual async Task<TradePartnerWaitResult> WaitForTradePartner(CancellationToken token)
     {
-        Log("Waiting for trainer...");
+        Log("正在等待交易伙伴...");
 
         // Initial delay to let the game populate NID pointer in memory
         await Task.Delay(3_000, token).ConfigureAwait(false);
@@ -190,29 +190,10 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
 
         while (elapsed < maxWaitMs)
         {
-            // Safety check: verify we're still in a valid state (not kicked to menu/overworld)
-            var gameState = await GetGameState(token).ConfigureAwait(false);
-            if (gameState != 0x01 && gameState != 0x02)
-            {
-                Log("Connection interrupted. Restarting...");
-                return TradePartnerWaitResult.KickedToMenu;
-            }
-
-            // Additional safety check every 10 seconds: verify link code is still valid
-            if (elapsed % 10_000 < 500)
-            {
-                var currentCode = await GetCurrentLinkCode(token).ConfigureAwait(false);
-                if (currentCode == 0)
-                {
-                    Log("Connection error. Restarting...");
-                    return TradePartnerWaitResult.KickedToMenu;
-                }
-            }
-
             // Check if we've entered the trade box - this confirms a partner is connected
             if (await CheckIfInTradeBox(token).ConfigureAwait(false))
             {
-                Log("Trade partner detected!");
+                Log("已检测到交易伙伴！");
                 _wasConnectedToPartner = true; // Mark that we've connected to a partner
                 return TradePartnerWaitResult.Success;
             }
@@ -221,7 +202,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             elapsed += 500;
         }
 
-        Log("Timed out waiting for trade partner.");
+        Log("等待交易伙伴超时。");
         return TradePartnerWaitResult.Timeout;
     }
 
@@ -369,15 +350,15 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             // Check if partner disconnected (NID = 0)
             if (!await IsPartnerStillConnected(token).ConfigureAwait(false))
             {
-                Log("Trade partner disconnected (NID = 0). Exiting trade.");
-                detail.SendNotification(this, "Trade partner disconnected.");
+                Log("交易伙伴已断开（NID = 0），正在退出交易。");
+                detail.SendNotification(this, "交易伙伴已断开连接。");
                 return PokeTradeResult.TrainerTooSlow;
             }
 
             // Send warning 10 seconds before timeout
             if (!warningSent && i == maxTime - 10 && maxTime >= 10)
             {
-                detail.SendNotification(this, "Hey! Pick a Pokemon to trade or I am leaving!");
+                detail.SendNotification(this, "快点选择要交换的宝可梦，否则我就要离开了！");
                 warningSent = true;
             }
 
@@ -395,7 +376,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
                 var currentGameState = await GetGameState(token).ConfigureAwait(false);
                 if (currentGameState == 0x02)
                 {
-                    Log("Trade started! Waiting for completion...");
+                    Log("交易已开始！等待完成...");
                     return PokeTradeResult.Success;
                 }
             }
@@ -415,7 +396,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             // B1S1 changed means BOTH players confirmed the trade
             // Give additional time for the game state to transition to trade animation (0x02)
             // This prevents disconnecting during an active trade that's about to start
-            Log("Trade confirmed by both players. Waiting for trade animation to start...");
+            Log("双方已确认交易，等待交易动画开始...");
 
             int additionalWaitSeconds = 15; // Give 15 extra seconds for animation to start
             for (int i = 0; i < additionalWaitSeconds; i++)
@@ -423,14 +404,14 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
                 var currentGameState = await GetGameState(token).ConfigureAwait(false);
                 if (currentGameState == 0x02)
                 {
-                    Log("Trade started! Waiting for completion...");
+                    Log("交易已开始！等待完成...");
                     return PokeTradeResult.Success;
                 }
                 await Task.Delay(1_000, token).ConfigureAwait(false);
             }
 
             // If we still haven't entered trade animation after 15 seconds, something is wrong
-            Log("Trade was confirmed but animation never started. Possible connection issue.");
+            Log("交易已确认但动画未启动，可能存在连接问题。");
         }
 
         return PokeTradeResult.TrainerTooSlow;
@@ -474,13 +455,13 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
                 if (++attempts > 30)
                 {
                     _consecutiveConnectionFailures++;
-                    Log($"Failed to connect online. Consecutive failures: {_consecutiveConnectionFailures}");
+                    Log($"连接网络失败。连续失败次数：{_consecutiveConnectionFailures}");
 
                     if (_consecutiveConnectionFailures >= 3)
                     {
-                        Log("Soft ban detected (3 consecutive connection failures). Waiting 30 minutes...");
+                        Log("检测到软封禁（连续 3 次连接失败）。等待 30 分钟...");
                         await Task.Delay(30 * 60 * 1000, token).ConfigureAwait(false);
-                        Log("30 minute wait complete. Resuming operations.");
+                        Log("30 分钟等待结束，恢复运行。");
                         _consecutiveConnectionFailures = 0;
                     }
 
@@ -488,7 +469,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
                 }
             }
             await Task.Delay(8_000 + Hub.Config.Timings.ExtraTimeConnectOnline, token).ConfigureAwait(false);
-            Log("Connected online.");
+            Log("已连接至网络。");
             _consecutiveConnectionFailures = 0;
 
             await Click(A, 1_000, token).ConfigureAwait(false);
@@ -505,7 +486,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
 
     private async Task DoNothing(CancellationToken token)
     {
-        Log("Waiting for trade requests...");
+        Log("正在等待交易请求...");
         while (!token.IsCancellationRequested && Config.NextRoutineType == PokeRoutineType.Idle)
             await Task.Delay(1_000, token).ConfigureAwait(false);
     }
@@ -525,7 +506,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             waitCounter = 0;
 
             detail.IsProcessing = true;
-            Log($"Processing trade request...");
+            Log("正在处理交易请求...");
             Hub.Config.Stream.StartTrade(this, detail, Hub);
             Hub.Queues.StartTrade(this, detail);
 
@@ -539,7 +520,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
 
     private async Task DisconnectFromTrade(CancellationToken token)
     {
-        Log("Disconnecting from trade...");
+        Log("正在断开交易连接...");
         await Click(B, 0_500, token).ConfigureAwait(false);
         await Click(B, 0_500, token).ConfigureAwait(false);
         await Click(B, 0_500, token).ConfigureAwait(false);
@@ -549,7 +530,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
     private async Task ExitTradeToOverworld(bool unexpected, CancellationToken token)
     {
         if (unexpected)
-            Log("Unexpected behavior, recovering to overworld.");
+            Log("检测到异常行为，正在恢复至主世界。");
 
         // Wait 3 seconds after trade completes before attempting to disconnect
         await Task.Delay(3_000, token).ConfigureAwait(false);
@@ -576,7 +557,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
                 // Check if we've reached overworld
                 if (await CheckIfOnOverworld(token).ConfigureAwait(false))
                 {
-                    Log("Returned to overworld.");
+                    Log("已返回主世界。");
                     StartFromOverworld = true;
                     _wasConnectedToPartner = false; // Reset flag when successfully back to overworld
                     return;
@@ -588,7 +569,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             }
 
             // Failed to return to overworld - restart the game
-            Log("Failed to return to overworld after 30 seconds. Restarting game...");
+            Log("30 秒内未返回主世界，正在重新启动游戏...");
             await RestartGamePLZA(token).ConfigureAwait(false);
             StartFromOverworld = true;
             return;
@@ -604,7 +585,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
                 // Check if we've reached overworld
                 if (await CheckIfOnOverworld(token).ConfigureAwait(false))
                 {
-                    Log("Returned to overworld.");
+                    Log("已返回主世界。");
                     StartFromOverworld = true;
                     _wasConnectedToPartner = false; // Reset flag when successfully back to overworld
                     return;
@@ -636,7 +617,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             }
 
             // Failed to exit properly - restart the game
-            Log("Failed to exit trade after 30 seconds. Restarting game...");
+            Log("30 秒内未退出交易，正在重新启动游戏...");
             await RestartGamePLZA(token).ConfigureAwait(false);
             StartFromOverworld = true;
         }
@@ -683,13 +664,6 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
         return data[0];
     }
 
-    private async Task<int> GetCurrentLinkCode(CancellationToken token)
-    {
-        var offset = await SwitchConnection.PointerAll(Offsets.LinkCodeTradePointer, token).ConfigureAwait(false);
-        var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, 4, token).ConfigureAwait(false);
-        return BitConverter.ToInt32(data, 0);
-    }
-
     private async Task<bool> CheckIfInTradeBox(CancellationToken token)
     {
         var offset = await SwitchConnection.PointerAll(Offsets.TradeBoxStatusPointer, token).ConfigureAwait(false);
@@ -711,11 +685,11 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
         {
             detail.IsRetry = true;
             Hub.Queues.Enqueue(type, detail, Math.Min(priority, PokeTradePriorities.Tier2));
-            detail.SendNotification(this, "Oops! Something happened. I'll requeue you for another attempt.");
+            detail.SendNotification(this, "糟糕！发生了异常，我会重新为你排队再试一次。");
         }
         else
         {
-            detail.SendNotification(this, $"Oops! Something happened. Canceling the trade: {result}.");
+            detail.SendNotification(this, $"糟糕！发生了异常。正在取消本次交易：{result}。");
             detail.TradeCanceled(this, result);
         }
     }
@@ -746,7 +720,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
 
                 // Invalidate cached pointers after reconnection - game state may have changed
                 _cachedBoxOffset = null;
-                Log("Reconnected - cached pointers invalidated.");
+                Log("已重新连接，缓存指针已失效。");
             }
         }
     }
@@ -786,25 +760,25 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             var allReceived = BatchTracker.GetReceivedPokemon(originalTrainerID);
             if (allReceived.Count > 0)
             {
-                poke.SendNotification(this, $"Sending you the {allReceived.Count} Pokémon you traded to me before the interruption.");
+                poke.SendNotification(this, $"正在将你中断前交易给我的 {allReceived.Count} 只宝可梦发送给你。");
 
-                Log($"Returning {allReceived.Count} Pokémon to trainer {originalTrainerID}.");
+                Log($"正在归还训练家 {originalTrainerID} 的 {allReceived.Count} 只宝可梦。");
 
                 // Send each Pokemon directly instead of calling TradeFinished
                 for (int j = 0; j < allReceived.Count; j++)
                 {
                     var pokemon = allReceived[j];
                     var speciesName = SpeciesName.GetSpeciesName(pokemon.Species, 2);
-                    Log($"Returning: {speciesName}");
+                    Log($"归还：{speciesName}");
 
                     // Send the Pokemon directly to the notifier
-                    poke.SendNotification(this, pokemon, $"Pokémon you traded to me: {speciesName}");
+                    poke.SendNotification(this, pokemon, $"你交易给我的宝可梦：{speciesName}");
                     Thread.Sleep(500);
                 }
             }
             else
             {
-                Log($"No Pokémon found to return for trainer {originalTrainerID}.");
+                Log($"未找到可归还给训练家 {originalTrainerID} 的宝可梦。");
             }
 
             BatchTracker.ClearReceivedPokemon(originalTrainerID);
@@ -824,7 +798,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             ulong boxOffset;
             if (currentTradeIndex > 0)
             {
-                poke.SendNotification(this, $"Trade {completedTrades} completed! Ready for trade {currentTradeIndex + 1}/{totalBatchTrades}.");
+                poke.SendNotification(this, $"第 {completedTrades} 次交易已完成！准备进行第 {currentTradeIndex + 1}/{totalBatchTrades} 次交易。");
                 await Task.Delay(3_000, token).ConfigureAwait(false);
             }
 
@@ -844,7 +818,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
                 {
                     StartFromOverworld = true;
                     await ExitTradeToOverworld(false, token).ConfigureAwait(false);
-                    poke.SendNotification(this, "Canceling the batch trades. The routine has been interrupted.");
+                    poke.SendNotification(this, "批量交易已取消，流程被中断。");
                     SendCollectedPokemonAndCleanup();
                     return PokeTradeResult.RoutineCancel;
                 }
@@ -853,7 +827,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
                 {
                     // Partner never showed up - their fault, don't requeue
                     poke.IsProcessing = false;
-                    poke.SendNotification(this, "No trading partner found. Canceling the batch trades.");
+                    poke.SendNotification(this, "未找到交易伙伴，正在取消批量交易。");
                     poke.TradeCanceled(this, PokeTradeResult.NoTrainerFound);
                     SendCollectedPokemonAndCleanup();
 
@@ -864,7 +838,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
                 if (partnerWaitResult == TradePartnerWaitResult.KickedToMenu)
                 {
                     // Bot got kicked to menu - our fault, trigger requeue
-                    Log("Connection error. Retrying...");
+                    Log("连接出错，正在重试...");
                     SendCollectedPokemonAndCleanup();
                     await RecoverToOverworld(token).ConfigureAwait(false);
                     return PokeTradeResult.RecoverStart;
@@ -873,14 +847,14 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
                 Hub.Config.Stream.EndEnterCode(this);
 
                 // Wait until we're in the trade box
-                Log("Searching for trade partner...");
+                Log("正在寻找交易伙伴...");
                 int boxCheckAttempts = 0;
                 while (!await CheckIfInTradeBox(token).ConfigureAwait(false))
                 {
                     await Task.Delay(500, token).ConfigureAwait(false);
                     if (++boxCheckAttempts > 30) // 15 seconds max
                     {
-                        Log("No trade partner found.");
+                        Log("未找到交易伙伴。");
                         return PokeTradeResult.NoTrainerFound;
                     }
                 }
@@ -898,11 +872,11 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
 
                 var trainerNID = await GetTradePartnerNID(Offsets.LinkTradePartnerNIDPointer, token).ConfigureAwait(false);
 
-                Log($"[TradePartner] OT: {tradePartner.TrainerName}, TID: {tradePartner.TID7}, SID: {tradePartner.SID7}, Gender: {tradePartnerFullInfo.Gender}, Language: {tradePartnerFullInfo.Language}, NID: {trainerNID}");
+                Log($"[交易伙伴] OT：{tradePartner.TrainerName}，TID：{tradePartner.TID7}，SID：{tradePartner.SID7}，性别：{tradePartnerFullInfo.Gender}，语言：{tradePartnerFullInfo.Language}，NID：{trainerNID}");
 
-                RecordUtil<PokeTradeBotPLZA>.Record($"Initiating\t{trainerNID:X16}\t{tradePartner.TrainerName}\t{poke.Trainer.TrainerName}\t{poke.Trainer.ID}\t{poke.ID}\t{toSend.EncryptionConstant:X8}");
+                RecordUtil<PokeTradeBotPLZA>.Record($"开始\t{trainerNID:X16}\t{tradePartner.TrainerName}\t{poke.Trainer.TrainerName}\t{poke.Trainer.ID}\t{poke.ID}\t{toSend.EncryptionConstant:X8}");
 
-                poke.SendNotification(this, $"Found trade partner: {tradePartner.TrainerName}. **TID**: {tradePartner.TID7} **SID**: {tradePartner.SID7}");
+                poke.SendNotification(this, $"已找到交易伙伴：{tradePartner.TrainerName}。**TID**：{tradePartner.TID7} **SID**：{tradePartner.SID7}");
 
                 var tradeCodeStorage = new TradeCodeStorage();
                 var existingTradeDetails = tradeCodeStorage.GetTradeDetails(poke.Trainer.ID);
@@ -926,14 +900,14 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
                 var partnerCheck = CheckPartnerReputation(this, poke, trainerNID, tradePartner.TrainerName, AbuseSettings, token);
                 if (partnerCheck != PokeTradeResult.Success)
                 {
-                    poke.SendNotification(this, "Trade partner blocked. Canceling trades.");
+                    poke.SendNotification(this, "交易对象已被拦截，正在取消交易。");
                     SendCollectedPokemonAndCleanup();
                     await Click(A, 1_000, token).ConfigureAwait(false);
                     await ExitTradeToOverworld(false, token).ConfigureAwait(false);
                     return partnerCheck;
                 }
 
-                poke.SendNotification(this, $"Found trade partner: {tradePartner.TrainerName}. **TID**: {tradePartner.TID7} **SID**: {tradePartner.SID7}");
+                poke.SendNotification(this, $"已找到交易伙伴：{tradePartner.TrainerName}。**TID**：{tradePartner.TID7} **SID**：{tradePartner.SID7}");
 
                 // Apply AutoOT for first trade if needed
                 if (Hub.Config.Legality.UseTradePartnerInfo && !poke.IgnoreAutoOT)
@@ -947,18 +921,18 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
 
             if (currentTradeIndex == 0)
             {
-                poke.SendNotification(this, $"Please offer your Pokémon for trade 1/{totalBatchTrades}.");
+                poke.SendNotification(this, $"请提供你的宝可梦进行第 1/{totalBatchTrades} 次交易。");
             }
 
             var offsetBeforeBatch = await GetBoxStartOffset(token).ConfigureAwait(false);
             var pokemonBeforeBatchTrade = await ReadPokemon(offsetBeforeBatch, BoxFormatSlotSize, token).ConfigureAwait(false);
             var checksumBeforeBatchTrade = pokemonBeforeBatchTrade.Checksum;
 
-            Log($"Confirming trade {currentTradeIndex + 1}/{totalBatchTrades}.");
+            Log($"正在确认第 {currentTradeIndex + 1}/{totalBatchTrades} 次交易。");
             var tradeResult = await ConfirmAndStartTrading(poke, checksumBeforeBatchTrade, token).ConfigureAwait(false);
             if (tradeResult != PokeTradeResult.Success)
             {
-                poke.SendNotification(this, $"Trade failed for trade {currentTradeIndex + 1}/{totalBatchTrades}. Canceling remaining trades.");
+                poke.SendNotification(this, $"第 {currentTradeIndex + 1}/{totalBatchTrades} 次交易失败，正在取消剩余交易。");
                 SendCollectedPokemonAndCleanup();
                 if (tradeResult == PokeTradeResult.TrainerTooSlow)
                 {
@@ -969,7 +943,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             }
 
             // Wait for trade to complete
-            Log($"Confirming trade {currentTradeIndex + 1}/{totalBatchTrades}...");
+            Log($"正在确认第 {currentTradeIndex + 1}/{totalBatchTrades} 次交易...");
 
             int maxBatchWaitSeconds = Hub.Config.Trade.TradeConfiguration.TradeWaitTime;
             int elapsedBatch = 0;
@@ -986,8 +960,8 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
                 // Check if partner disconnected (NID = 0)
                 if (!await IsPartnerStillConnected(token).ConfigureAwait(false))
                 {
-                    Log($"Trade partner disconnected during batch trade {currentTradeIndex + 1}/{totalBatchTrades} (NID = 0).");
-                    poke.SendNotification(this, "Trade partner disconnected.");
+                    Log($"批量交易第 {currentTradeIndex + 1}/{totalBatchTrades} 次过程中交易伙伴断开（NID = 0）。");
+                    poke.SendNotification(this, "交易伙伴已断开连接。");
                     SendCollectedPokemonAndCleanup();
                     await ExitTradeToOverworld(false, token).ConfigureAwait(false);
                     return PokeTradeResult.TrainerTooSlow;
@@ -996,7 +970,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
                 // Send warning 10 seconds before timeout
                 if (!batchWarningSent && elapsedBatch == maxBatchWaitSeconds - 10 && maxBatchWaitSeconds >= 10)
                 {
-                    poke.SendNotification(this, "Hey! Pick a Pokemon to trade or I am leaving!");
+                    poke.SendNotification(this, "快点选择要交换的宝可梦，否则我就要离开了！");
                     batchWarningSent = true;
                 }
 
@@ -1008,7 +982,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
                     // B1S1 has changed - immediately read and save the received Pokemon
                     boxOffset = await GetBoxStartOffset(token).ConfigureAwait(false);
                     var receivedPokemon = await ReadPokemon(boxOffset, BoxFormatSlotSize, token).ConfigureAwait(false);
-                    Log($"Trade {currentTradeIndex + 1} confirmed - received {(Species)receivedPokemon.Species}");
+                    Log($"第 {currentTradeIndex + 1} 次交易已确认，收到 {(Species)receivedPokemon.Species}");
 
                     // Immediately inject the next Pokemon if there is one
                     if (currentTradeIndex + 1 < totalBatchTrades)
@@ -1027,15 +1001,15 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
                             await SetBoxPokemonAbsolute(boxOffset, nextPokemon, token, sav).ConfigureAwait(false);
                         }
 
-                        Log($"Next Pokemon ({currentTradeIndex + 2}/{totalBatchTrades}) injected into B1S1");
+                        Log($"下一只宝可梦（{currentTradeIndex + 2}/{totalBatchTrades}）已写入 B1S1");
                     }
                 }
             }
 
             if (!batchTradeAnimationStarted)
             {
-                Log($"Trade {currentTradeIndex + 1}/{totalBatchTrades} was not confirmed.");
-                poke.SendNotification(this, $"Trade {currentTradeIndex + 1}/{totalBatchTrades} was not confirmed. Canceling remaining trades.");
+                Log($"第 {currentTradeIndex + 1}/{totalBatchTrades} 次交易未确认。");
+                poke.SendNotification(this, $"第 {currentTradeIndex + 1}/{totalBatchTrades} 次交易未确认，正在取消剩余交易。");
                 SendCollectedPokemonAndCleanup();
                 await DisconnectFromTrade(token).ConfigureAwait(false);
                 await ExitTradeToOverworld(false, token).ConfigureAwait(false);
@@ -1051,8 +1025,8 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
                 // Check if partner disconnected (NID = 0)
                 if (!await IsPartnerStillConnected(token).ConfigureAwait(false))
                 {
-                    Log($"Trade partner disconnected during batch trade {currentTradeIndex + 1}/{totalBatchTrades} animation (NID = 0).");
-                    poke.SendNotification(this, "Trade partner disconnected during trade.");
+                    Log($"批量交易第 {currentTradeIndex + 1}/{totalBatchTrades} 次动画期间交易伙伴断开（NID = 0）。");
+                    poke.SendNotification(this, "交易伙伴在交易过程中断开连接。");
                     SendCollectedPokemonAndCleanup();
                     await ExitTradeToOverworld(false, token).ConfigureAwait(false);
                     return PokeTradeResult.TrainerTooSlow;
@@ -1069,8 +1043,8 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
 
             if (!batchTradeCompleted)
             {
-                Log($"Trade {currentTradeIndex + 1}/{totalBatchTrades} timed out.");
-                poke.SendNotification(this, $"Trade {currentTradeIndex + 1}/{totalBatchTrades} timed out. Canceling remaining trades.");
+                Log($"第 {currentTradeIndex + 1}/{totalBatchTrades} 次交易超时。");
+                poke.SendNotification(this, $"第 {currentTradeIndex + 1}/{totalBatchTrades} 次交易超时，正在取消剩余交易。");
                 SendCollectedPokemonAndCleanup();
                 await DisconnectFromTrade(token).ConfigureAwait(false);
                 await ExitTradeToOverworld(false, token).ConfigureAwait(false);
@@ -1080,7 +1054,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             if (token.IsCancellationRequested)
             {
                 StartFromOverworld = true;
-                poke.SendNotification(this, "Canceling batch trades.");
+                poke.SendNotification(this, "正在取消批量交易。");
                 SendCollectedPokemonAndCleanup();
                 await ExitTradeToOverworld(false, token).ConfigureAwait(false);
                 return PokeTradeResult.RoutineCancel;
@@ -1093,22 +1067,22 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
 
             if (checksumBeforeBatchTrade == checksumAfterBatchTrade)
             {
-                Log($"Batch trade {currentTradeIndex + 1}/{totalBatchTrades} was canceled or did not occur.");
-                poke.SendNotification(this, $"Trade {currentTradeIndex + 1}/{totalBatchTrades} was canceled. Canceling remaining trades.");
+                Log($"批量交易第 {currentTradeIndex + 1}/{totalBatchTrades} 次被取消或未执行。");
+                poke.SendNotification(this, $"第 {currentTradeIndex + 1}/{totalBatchTrades} 次交易被取消，正在取消剩余交易。");
                 SendCollectedPokemonAndCleanup();
                 await DisconnectFromTrade(token).ConfigureAwait(false);
                 await ExitTradeToOverworld(false, token).ConfigureAwait(false);
                 return PokeTradeResult.TrainerTooSlow;
             }
 
-            Log($"Trade {currentTradeIndex + 1}/{totalBatchTrades} complete! Received {(Species)received.Species}.");
+            Log($"第 {currentTradeIndex + 1}/{totalBatchTrades} 次交易完成！收到 {(Species)received.Species}。");
 
             UpdateCountsAndExport(poke, received, toSend);
 
             // Get the trainer NID and name for logging
             var logTrainerNID = currentTradeIndex == 0 ? await GetTradePartnerNID(Offsets.LinkTradePartnerNIDPointer, token).ConfigureAwait(false) : 0;
             var logPartner = cachedTradePartnerInfo != null ? new TradePartnerPLZA(cachedTradePartnerInfo) : null;
-            LogSuccessfulTrades(poke, logTrainerNID, logPartner?.TrainerName ?? "Unknown");
+            LogSuccessfulTrades(poke, logTrainerNID, logPartner?.TrainerName ?? "未知");
 
             BatchTracker.AddReceivedPokemon(originalTrainerID, received);
             completedTrades = currentTradeIndex + 1;
@@ -1119,12 +1093,12 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
                 var allReceived = BatchTracker.GetReceivedPokemon(originalTrainerID);
 
                 // First send notification that trades are complete
-                poke.SendNotification(this, "All batch trades completed! Thank you for trading!");
+                poke.SendNotification(this, "所有批量交易已完成！感谢你的交易！");
 
                 // Send back all received Pokemon if ReturnPKMs is enabled
                 if (Hub.Config.Discord.ReturnPKMs && allReceived.Count > 0)
                 {
-                    poke.SendNotification(this, $"Here are the {allReceived.Count} Pokémon you traded to me:");
+                    poke.SendNotification(this, $"这是你交易给我的 {allReceived.Count} 只宝可梦：");
 
                     // Send each Pokemon directly instead of calling TradeFinished
                     for (int j = 0; j < allReceived.Count; j++)
@@ -1133,7 +1107,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
                         var speciesName = SpeciesName.GetSpeciesName(pokemon.Species, 2);
 
                         // Send the Pokemon directly to the notifier
-                        poke.SendNotification(this, pokemon, $"Pokémon you traded to me: {speciesName}");
+                        poke.SendNotification(this, pokemon, $"你交易给我的宝可梦：{speciesName}");
                         await Task.Delay(500, token).ConfigureAwait(false);
                     }
                 }
@@ -1160,7 +1134,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             }
 
             // Prepare for next trade - wait a moment before continuing
-            Log($"Preparing for next trade ({currentTradeIndex + 2}/{totalBatchTrades})...");
+            Log($"正在准备下一次交易（{currentTradeIndex + 2}/{totalBatchTrades}）...");
             await Task.Delay(2_000, token).ConfigureAwait(false);
         }
 
@@ -1216,7 +1190,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
         // Check if trade was canceled by user
         if (poke.IsCanceled)
         {
-            Log($"Trade for {poke.Trainer.TrainerName} was canceled by user.");
+            Log($"训练家 {poke.Trainer.TrainerName} 取消了此次交易。");
             poke.TradeCanceled(this, PokeTradeResult.UserCanceled);
             return PokeTradeResult.UserCanceled;
         }
@@ -1238,7 +1212,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
         if (result == LinkCodeEntryResult.VerificationFailedMismatch)
         {
             // Code didn't match - something went wrong, restart game
-            Log("Code verification failed. Restarting game...");
+            Log("连线密码验证失败，正在重新启动游戏...");
             await RestartGamePLZA(token).ConfigureAwait(false);
             return PokeTradeResult.RecoverStart;
         }
@@ -1247,7 +1221,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
         var toSend = poke.TradeData;
         if (toSend.Species != 0)
         {
-            Log("Preparing Pokemon for trade...");
+            Log("正在准备要发送的宝可梦...");
             var offset = await GetBoxStartOffset(token).ConfigureAwait(false);
             await SetBoxPokemonAbsolute(offset, toSend, token, sav).ConfigureAwait(false);
         }
@@ -1272,7 +1246,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
 
             if (!await ConnectAndEnterPortal(token).ConfigureAwait(false))
             {
-                Log("Connection error. Restarting...");
+                Log("连接出错，正在重新启动...");
                 await RecoverToOverworld(token).ConfigureAwait(false);
                 return false;
             }
@@ -1282,7 +1256,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             await RecoverToOverworld(token).ConfigureAwait(false);
             if (!await ConnectAndEnterPortal(token).ConfigureAwait(false))
             {
-                Log("Connection failed. Restarting...");
+                Log("连接失败，正在重新启动...");
                 await RecoverToOverworld(token).ConfigureAwait(false);
                 return false;
             }
@@ -1298,35 +1272,15 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
         {
             Hub.Config.Stream.StartEnterCode(this);
         }
-        // Read current code to determine if we need to clear
-        var currentCode = await GetCurrentLinkCode(token).ConfigureAwait(false);
 
-        // If there's a non-zero code, clear it
-        if (currentCode != 0)
-        {
-            var formattedCode = $"{currentCode:00000000}";
-            var digitCount = formattedCode.Length;
-            await Task.Delay(1_000, token).ConfigureAwait(false);
-
-            for (int i = 0; i < digitCount; i++)
-                await Click(B, 0, token).ConfigureAwait(false);
-
-            await Task.Delay(1_000, token).ConfigureAwait(false);
-        }
-
-
+        // Clear any existing code by holding B for 4 seconds
+        await Task.Delay(1_000, token).ConfigureAwait(false);
+        await PressAndHold(B, 4_000, 0, token).ConfigureAwait(false);
+        await Task.Delay(1_000, token).ConfigureAwait(false);
 
         // Enter the new code
         await EnterLinkCode(code, Hub.Config, token).ConfigureAwait(false);
         await Click(PLUS, 2_000, token).ConfigureAwait(false);
-
-        // Verify the code was entered correctly (memory updates immediately after PLUS)
-        var verifyCode = await GetCurrentLinkCode(token).ConfigureAwait(false);
-
-        if (verifyCode != code)
-        {
-            return LinkCodeEntryResult.VerificationFailedMismatch;
-        }
 
         return LinkCodeEntryResult.Success;
     }
@@ -1355,7 +1309,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
         {
             // Partner never showed up - their fault, don't requeue
             poke.IsProcessing = false;
-            poke.SendNotification(this, "No trading partner found. Canceling the trade.");
+            poke.SendNotification(this, "未找到交易伙伴，正在取消本次交易。");
             poke.TradeCanceled(this, PokeTradeResult.NoTrainerFound);
 
             await RecoverToOverworld(token).ConfigureAwait(false);
@@ -1365,7 +1319,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
         if (partnerWaitResult == TradePartnerWaitResult.KickedToMenu)
         {
             // Bot got kicked to menu - our fault, trigger requeue
-            Log("Connection error. Retrying...");
+            Log("连接出错，正在重试...");
             await RecoverToOverworld(token).ConfigureAwait(false);
             return PokeTradeResult.RecoverStart;
         }
@@ -1373,14 +1327,14 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
         Hub.Config.Stream.EndEnterCode(this);
 
         // Wait until we're in the trade box
-        Log("Searching for trade partner...");
+        Log("正在寻找交易伙伴...");
         int boxCheckAttempts = 0;
         while (!await CheckIfInTradeBox(token).ConfigureAwait(false))
         {
             await Task.Delay(500, token).ConfigureAwait(false);
             if (++boxCheckAttempts > 30) // 15 seconds max
             {
-                Log("No trade partner found.");
+                Log("未找到交易伙伴。");
                 return PokeTradeResult.NoTrainerFound;
             }
         }
@@ -1400,10 +1354,10 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
 
         var trainerNID = await GetTradePartnerNID(Offsets.LinkTradePartnerNIDPointer, token).ConfigureAwait(false);
 
-        Log($"[TradePartner] OT: {tradePartner.TrainerName}, TID: {tradePartner.TID7}, SID: {tradePartner.SID7}, Gender: {tradePartnerFullInfo.Gender}, Language: {tradePartnerFullInfo.Language}, NID: {trainerNID}");
+        Log($"[交易伙伴] OT：{tradePartner.TrainerName}，TID：{tradePartner.TID7}，SID：{tradePartner.SID7}，性别：{tradePartnerFullInfo.Gender}，语言：{tradePartnerFullInfo.Language}，NID：{trainerNID}");
 
-        RecordUtil<PokeTradeBotPLZA>.Record($"Initiating\t{trainerNID:X16}\t{tradePartner.TrainerName}\t{poke.Trainer.TrainerName}\t{poke.Trainer.ID}\t{poke.ID}\t{toSend.EncryptionConstant:X8}");
-        poke.SendNotification(this, $"Found trade partner: {tradePartner.TrainerName}. **TID**: {tradePartner.TID7} **SID**: {tradePartner.SID7} Waiting for a Pokémon...");
+        RecordUtil<PokeTradeBotPLZA>.Record($"开始\t{trainerNID:X16}\t{tradePartner.TrainerName}\t{poke.Trainer.TrainerName}\t{poke.Trainer.ID}\t{poke.ID}\t{toSend.EncryptionConstant:X8}");
+        poke.SendNotification(this, $"已找到交易伙伴：{tradePartner.TrainerName}。**TID**：{tradePartner.TID7} **SID**：{tradePartner.SID7}，等待对方提供宝可梦…");
 
         var tradeCodeStorage = new TradeCodeStorage();
         var existingTradeDetails = tradeCodeStorage.GetTradeDetails(poke.Trainer.ID);
@@ -1435,14 +1389,14 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
         // Clone and Dump commands are currently disabled for PLZA due to bugs
         if (poke.Type == PokeTradeType.Clone)
         {
-            poke.SendNotification(this, "Clone trades are currently disabled for Legends Z-A. Please try again later.");
+            poke.SendNotification(this, "Legends Z-A 当前已禁用克隆交易，请稍后再试。");
             await ExitTradeToOverworld(false, token).ConfigureAwait(false);
             return PokeTradeResult.TrainerRequestBad;
         }
 
         if (poke.Type == PokeTradeType.Dump)
         {
-            poke.SendNotification(this, "Dump trades are currently disabled for Legends Z-A. Please try again later.");
+            poke.SendNotification(this, "Legends Z-A 当前已禁用导出交易，请稍后再试。");
             await ExitTradeToOverworld(false, token).ConfigureAwait(false);
             return PokeTradeResult.TrainerRequestBad;
         }
@@ -1477,17 +1431,17 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
         SpecialTradeType itemReq = SpecialTradeType.None;
         if (poke.Type == PokeTradeType.Seed)
         {
-            poke.SendNotification(this, "Seed trades are temporarily unavailable. Please request a specific Pokemon instead.");
+            poke.SendNotification(this, "种子交易暂不可用，请改为请求具体的宝可梦。");
             await ExitTradeToOverworld(true, token).ConfigureAwait(false);
             return PokeTradeResult.TrainerRequestBad;
         }
 
         if (itemReq == SpecialTradeType.WonderCard)
-            poke.SendNotification(this, "Distribution success!");
+            poke.SendNotification(this, "派发成功！");
         else if (itemReq != SpecialTradeType.None && itemReq != SpecialTradeType.Shinify)
-            poke.SendNotification(this, "Special request successful!");
+            poke.SendNotification(this, "特殊请求完成！");
         else if (itemReq == SpecialTradeType.Shinify)
-            poke.SendNotification(this, "Shinify success! Thanks for being part of the community!");
+            poke.SendNotification(this, "闪光处理成功！感谢你对社区的支持！");
 
         var offsetBefore = await GetBoxStartOffset(token).ConfigureAwait(false);
         var pokemonBeforeTrade = await ReadPokemon(offsetBefore, BoxFormatSlotSize, token).ConfigureAwait(false);
@@ -1511,7 +1465,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             return PokeTradeResult.RoutineCancel;
         }
 
-        Log("Confirming trade...");
+        Log("正在确认交易...");
 
         int maxWaitSeconds = Hub.Config.Trade.TradeConfiguration.TradeWaitTime;
         int elapsed = 0;
@@ -1528,8 +1482,8 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             // Check if partner disconnected (NID = 0)
             if (!await IsPartnerStillConnected(token).ConfigureAwait(false))
             {
-                Log("Trade partner disconnected (NID = 0). Exiting trade.");
-                poke.SendNotification(this, "Trade partner disconnected.");
+                Log("交易伙伴已断开（NID = 0），正在退出交易。");
+                poke.SendNotification(this, "交易伙伴已断开连接。");
                 await ExitTradeToOverworld(false, token).ConfigureAwait(false);
                 return PokeTradeResult.TrainerTooSlow;
             }
@@ -1537,7 +1491,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             // Send warning 10 seconds before timeout
             if (!warningSent && elapsed == maxWaitSeconds - 10 && maxWaitSeconds >= 10)
             {
-                poke.SendNotification(this, "Hey! Pick a Pokemon to trade or I am leaving!");
+                poke.SendNotification(this, "快点选择要交换的宝可梦，否则我就要离开了！");
                 warningSent = true;
             }
 
@@ -1550,7 +1504,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
 
         if (!tradeAnimationStarted)
         {
-            Log("Trade was not confirmed.");
+            Log("交易未确认。");
             await DisconnectFromTrade(token).ConfigureAwait(false);
             await ExitTradeToOverworld(false, token).ConfigureAwait(false);
             return PokeTradeResult.TrainerTooSlow;
@@ -1565,8 +1519,8 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             // Check if partner disconnected (NID = 0)
             if (!await IsPartnerStillConnected(token).ConfigureAwait(false))
             {
-                Log("Trade partner disconnected during trade animation (NID = 0).");
-                poke.SendNotification(this, "Trade partner disconnected during trade.");
+                Log("交易动画期间交易伙伴断开（NID = 0）。");
+                poke.SendNotification(this, "交易伙伴在交易过程中断开连接。");
                 await ExitTradeToOverworld(false, token).ConfigureAwait(false);
                 return PokeTradeResult.TrainerTooSlow;
             }
@@ -1581,7 +1535,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
 
         if (!tradeCompleted)
         {
-            Log("Trade timed out.");
+        Log("交易超时。");
             await DisconnectFromTrade(token).ConfigureAwait(false);
             await ExitTradeToOverworld(false, token).ConfigureAwait(false);
             return PokeTradeResult.TrainerTooSlow;
@@ -1594,14 +1548,14 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
 
         if (checksumBeforeTrade == checksumAfterTrade)
         {
-            Log("Trade was canceled.");
-            poke.SendNotification(this, "Trade was canceled. Please try again.");
+        Log("交易已取消。");
+        poke.SendNotification(this, "交易已取消，请重试。");
             await DisconnectFromTrade(token).ConfigureAwait(false);
             await ExitTradeToOverworld(false, token).ConfigureAwait(false);
             return PokeTradeResult.TrainerTooSlow;
         }
 
-        Log($"Trade complete! Received {(Species)received.Species}.");
+        Log($"交易完成！收到 {(Species)received.Species}。");
 
         poke.TradeFinished(this, received);
         UpdateCountsAndExport(poke, received, toSend);
@@ -1627,11 +1581,11 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             {
                 detail.IsRetry = true;
                 Hub.Queues.Enqueue(type, detail, Math.Min(priority, PokeTradePriorities.Tier2));
-                detail.SendNotification(this, "Oops! Something happened during your batch trade. I'll requeue you for another attempt.");
+                detail.SendNotification(this, "糟糕！批量交易出现异常，我会重新为你排队再试一次。");
             }
             else
             {
-                detail.SendNotification(this, $"Batch trade failed: {result}");
+                detail.SendNotification(this, $"批量交易失败：{result}");
                 detail.TradeCanceled(this, result);
                 await ExitTradeToOverworld(false, token).ConfigureAwait(false);
             }
@@ -1647,7 +1601,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
         if (await CheckIfOnOverworld(token).ConfigureAwait(false))
             return true;
 
-        Log("Recovering...");
+        Log("正在恢复...");
 
         await Click(B, 1_500, token).ConfigureAwait(false);
         if (await CheckIfOnOverworld(token).ConfigureAwait(false))
@@ -1675,7 +1629,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
 
         if (!await CheckIfOnOverworld(token).ConfigureAwait(false))
         {
-            Log("Restarting game...");
+            Log("正在重新启动游戏...");
             await RestartGamePLZA(token).ConfigureAwait(false);
         }
         await Task.Delay(1_000, token).ConfigureAwait(false);
@@ -1692,7 +1646,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
         // If we were connected to a partner before restart, prevent soft ban
         if (_wasConnectedToPartner)
         {
-            Log("Preventing trade soft ban - connecting with random partner to clear trade state...");
+            Log("正在防止交易软封禁——连接随机伙伴以清除交易状态...");
             await PreventTradeSoftBan(token).ConfigureAwait(false);
             _wasConnectedToPartner = false; // Reset the flag after recovery
         }
@@ -1713,11 +1667,11 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
 
         if (!await CheckIfOnOverworld(token).ConfigureAwait(false))
         {
-            Log("Not on overworld after restart, attempting recovery...");
+            Log("重启后仍未回到主世界，正在尝试恢复...");
             await RecoverToOverworld(token).ConfigureAwait(false);
         }
 
-        Log("Connecting online to prevent trade soft ban...");
+        Log("正在连接线上模式以防止交易软封禁...");
         await Click(X, 3_000, token).ConfigureAwait(false);
         await Click(DUP, 1_000, token).ConfigureAwait(false);
         await Click(A, 2_000, token).ConfigureAwait(false);
@@ -1733,22 +1687,22 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             await Task.Delay(1_000, token).ConfigureAwait(false);
             if (++attempts > 30)
             {
-                Log("Failed to connect online during soft ban prevention.");
+                Log("在尝试防止软封禁时连接网络失败。");
                 await RecoverToOverworld(token).ConfigureAwait(false);
                 return;
             }
         }
         await Task.Delay(8_000 + Hub.Config.Timings.ExtraTimeConnectOnline, token).ConfigureAwait(false);
-        Log("Connected online for soft ban prevention.");
+        Log("已连接至网络，继续执行软封禁预防流程。");
 
         await Click(A, 1_000, token).ConfigureAwait(false);
         await Click(A, 1_000, token).ConfigureAwait(false);
         await Task.Delay(3_000, token).ConfigureAwait(false);
 
-        Log("Connecting with random partner to clear previous trade session...");
+        Log("正在连接随机伙伴以清除上一次交易会话...");
         await Click(PLUS, 2_000, token).ConfigureAwait(false);
 
-        Log("Waiting for random partner to connect...");
+        Log("正在等待随机伙伴连接...");
         await Task.Delay(3_000, token).ConfigureAwait(false);
 
         int waitAttempts = 0;
@@ -1758,14 +1712,14 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             var nid = await GetTradePartnerNID(Offsets.LinkTradePartnerNIDPointer, token).ConfigureAwait(false);
             if (nid != 0)
             {
-                Log("Random partner connected via NID. Disconnecting to complete soft ban prevention...");
+                Log("已通过 NID 连接到随机伙伴，正在断开以完成软封禁预防...");
                 connected = true;
                 break;
             }
 
             if (await CheckIfInTradeBox(token).ConfigureAwait(false))
             {
-                Log("Random partner connected via TradeBox. Disconnecting to complete soft ban prevention...");
+                Log("已通过交易界面连接到随机伙伴，正在断开以完成软封禁预防...");
                 connected = true;
                 break;
             }
@@ -1776,16 +1730,16 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
 
         if (!connected)
         {
-            Log("No random partner found within 30s timeout. Soft ban may not be fully prevented. Continuing...");
+            Log("30 秒内未找到随机伙伴，可能未完全避免软封禁，继续执行...");
             await RecoverToOverworld(token).ConfigureAwait(false);
             return;
         }
 
-        Log("Disconnecting from random partner (B to cancel, A to confirm)...");
+        Log("正在与随机伙伴断开连接（B 取消，A 确认）...");
         await Click(B, 1_000, token).ConfigureAwait(false);
         await Click(A, 1_000, token).ConfigureAwait(false);
 
-        Log("Waiting for partner disconnect confirmation...");
+        Log("正在等待伙伴断开确认...");
         int disconnectAttempts = 0;
         bool partnerDisconnected = false;
         while (disconnectAttempts < 10 && !partnerDisconnected)
@@ -1794,7 +1748,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             var currentNid = await GetTradePartnerNID(Offsets.LinkTradePartnerNIDPointer, token).ConfigureAwait(false);
             if (currentNid == 0)
             {
-                Log("Partner disconnected (NID = 0). Exiting to overworld...");
+                Log("伙伴已断开（NID = 0），正在返回主世界...");
                 partnerDisconnected = true;
                 break;
             }
@@ -1803,23 +1757,23 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
 
         if (!partnerDisconnected)
         {
-            Log("Partner did not disconnect within timeout. Forcing exit...");
+            Log("伙伴未在超时时间内断开，强制退出...");
         }
 
-        Log("Spamming B to return to overworld...");
+        Log("正在连续按 B 返回主世界...");
         for (int i = 0; i < 15; i++)
         {
             await Click(B, 1_000, token).ConfigureAwait(false);
 
             if (await CheckIfOnOverworld(token).ConfigureAwait(false))
             {
-                Log("Soft ban prevention complete. Successfully returned to overworld.");
+                Log("软封禁预防完成，已成功返回主世界。");
                 StartFromOverworld = true;
                 return;
             }
         }
 
-        Log("Failed to return to overworld after B spam. Performing full recovery...");
+        Log("连续按 B 仍未返回主世界，执行完整恢复流程...");
         await RecoverToOverworld(token).ConfigureAwait(false);
         StartFromOverworld = true;
     }
@@ -1842,12 +1796,12 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
         if (shouldWait)
         {
             Hub.BotSync.Barrier.AddParticipant();
-            Log($"Joined the Barrier. Count: {Hub.BotSync.Barrier.ParticipantCount}");
+            Log($"已加入屏障。计数：{Hub.BotSync.Barrier.ParticipantCount}");
         }
         else
         {
             Hub.BotSync.Barrier.RemoveParticipant();
-            Log($"Left the Barrier. Count: {Hub.BotSync.Barrier.ParticipantCount}");
+            Log($"已离开屏障。计数：{Hub.BotSync.Barrier.ParticipantCount}");
         }
     }
 
@@ -2089,7 +2043,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
         }
 
         FailedBarrier++;
-        Log($"Barrier sync timed out after {timeoutAfter} seconds. Continuing.");
+        Log($"屏障同步在 {timeoutAfter} 秒后超时，继续执行。");
     }
 
     private Task WaitForQueueStep(int waitCounter, CancellationToken token)
@@ -2098,7 +2052,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
         {
             // Updates the assets.
             Hub.Config.Stream.IdleAssets(this);
-            Log("Waiting for trade requests...");
+            Log("正在等待交易请求...");
         }
 
         return Task.Delay(1_000, token);

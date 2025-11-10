@@ -117,11 +117,11 @@ public abstract class PokeRoutineExecutor9PLZA : PokeRoutineExecutor<PA9>
 
         string title = await SwitchConnection.GetTitleID(token).ConfigureAwait(false);
         if (title is not PLZAID)
-            throw new Exception($"Incorrect Title ID: {title}. Expected PLZA title ID: {PLZAID}");
+            throw new Exception($"标题 ID 不正确：{title}。期望的 PLZA 标题 ID 为：{PLZAID}");
 
         var game_version = await SwitchConnection.GetGameInfo("version", token).ConfigureAwait(false);
         if (!game_version.SequenceEqual(PLZAGameVersion))
-            throw new Exception($"Game version is not supported. Expected version {PLZAGameVersion}, current version is {game_version}.");
+            throw new Exception($"游戏版本不受支持。期望版本为 {PLZAGameVersion}，当前版本为 {game_version}。");
 
         var sav = await GetFakeTrainerSAV(token).ConfigureAwait(false);
         InitSaveData(sav);
@@ -129,7 +129,7 @@ public abstract class PokeRoutineExecutor9PLZA : PokeRoutineExecutor<PA9>
         if (!IsValidTrainerData())
         {
             await CheckForRAMShiftingApps(token).ConfigureAwait(false);
-            throw new Exception("Refer to the SysBot.NET wiki for more information.");
+            throw new Exception("训练家数据无效。请参考 SysBot.NET Wiki 获取更多信息。");
         }
 
         return sav;

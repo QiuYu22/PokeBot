@@ -188,21 +188,21 @@ public static class DetailsExtractor<T> where T : PKM, new()
         string userDetailsText = "";
         if (totalTradeCount > 0)
         {
-            userDetailsText = $"Trades: {totalTradeCount}";
+            userDetailsText = $"交易次数：{totalTradeCount}";
         }
         if (SysCord<T>.Runner.Config.Trade.TradeConfiguration.StoreTradeCodes && tradeDetails != null)
         {
             if (!string.IsNullOrEmpty(tradeDetails?.OT))
             {
-                userDetailsText += $" | OT: {tradeDetails?.OT}";
+                userDetailsText += $" | OT：{tradeDetails?.OT}";
             }
             if (tradeDetails?.TID != null)
             {
-                userDetailsText += $" | TID: {tradeDetails?.TID}";
+                userDetailsText += $" | TID：{tradeDetails?.TID}";
             }
             if (tradeDetails?.TID != null)
             {
-                userDetailsText += $" | SID: {tradeDetails?.SID}";
+                userDetailsText += $" | SID：{tradeDetails?.SID}";
             }
         }
         return userDetailsText;
@@ -212,7 +212,7 @@ public static class DetailsExtractor<T> where T : PKM, new()
     {
         int safeLanguage = pk.Language;
 
-        string languageName = "Unknown";
+        string languageName = "未知";
         var languageList = GameInfo.LanguageDataSource(pk.Format, pk.Context);
         var languageEntry = languageList.FirstOrDefault(l => l.Value == pk.Language);
 
@@ -228,7 +228,7 @@ public static class DetailsExtractor<T> where T : PKM, new()
         if (safeLanguage != pk.Language)
         {
             string safeLanguageName = languageList.FirstOrDefault(l => l.Value == safeLanguage)?.Text ?? ((LanguageID)safeLanguage).GetLanguageCode();
-            return $"{languageName} (Safe: {safeLanguageName})";
+            return $"{languageName}（安全值：{safeLanguageName}）";
         }
 
         return languageName;
@@ -241,10 +241,10 @@ public static class DetailsExtractor<T> where T : PKM, new()
 
     private static string GetAuthorName(string username, string tradeTitle, bool isMysteryEgg, bool isFixOTRequest, bool isCloneRequest, bool isDumpRequest, bool isSpecialRequest, bool isBatchTrade, string pokemonDisplayName, bool isShiny)
     {
-        string isPkmShiny = isShiny ? "Shiny " : "";
+        string isPkmShiny = isShiny ? "闪光 " : "";
         return isMysteryEgg || isFixOTRequest || isCloneRequest || isDumpRequest || isSpecialRequest || isBatchTrade ?
-               $"{username}'s {tradeTitle}" :
-               $"{username}'s {isPkmShiny}{pokemonDisplayName}";
+               $"{username} 的 {tradeTitle}" :
+               $"{username} 的 {isPkmShiny}{pokemonDisplayName}";
     }
 
     private static int[] GetEVs(T pk)
@@ -271,7 +271,7 @@ public static class DetailsExtractor<T> where T : PKM, new()
             string moveName = strings.movelist[moves[i]];
             byte moveTypeId = MoveInfo.GetType(moves[i], default);
             PKHeX.Core.MoveType moveType = (PKHeX.Core.MoveType)moveTypeId;
-            string formattedMove = $"{moveName} ({movePPs[i]}pp)";
+            string formattedMove = $"{moveName}（PP {movePPs[i]}）";
             if (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.MoveTypeEmojis && typeEmojis.TryGetValue(moveType, out var moveEmoji))
             {
                 formattedMove = $"{moveEmoji} {formattedMove}";

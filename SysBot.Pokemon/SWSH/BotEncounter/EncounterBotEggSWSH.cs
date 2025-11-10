@@ -52,7 +52,7 @@ public class EncounterBotEggSWSH : EncounterBotSWSH
             if (attempts < 0) // aborted
                 return;
 
-            Log($"Egg available after {attempts} attempts! Clearing destination slot.");
+            Log($"经过 {attempts} 次尝试获取到蛋！正在清理目标槽位。");
             await SetBoxPokemon(Blank, 0, 0, token).ConfigureAwait(false);
 
             for (int i = 0; i < 10; i++)
@@ -62,11 +62,11 @@ public class EncounterBotEggSWSH : EncounterBotSWSH
             while (!await IsOnOverworld(OverworldOffset, token).ConfigureAwait(false))
                 await Click(B, 0_200, token).ConfigureAwait(false);
 
-            Log("Egg received. Checking details.");
+            Log("蛋已获取，正在检查详情。");
             var pk = await ReadBoxPokemon(0, 0, token).ConfigureAwait(false);
             if (pk.Species == 0)
             {
-                Log("No egg found in Box 1, slot 1. Ensure that the party is full. Restarting loop.");
+                Log("在 1 号盒子 1 号槽位未发现蛋，请确认队伍已满。重新开始循环。");
                 continue;
             }
 
@@ -77,7 +77,7 @@ public class EncounterBotEggSWSH : EncounterBotSWSH
 
     private async Task<int> StepUntilEgg(CancellationToken token)
     {
-        Log("Walking around until an egg is ready...");
+        Log("四处走动直至生成蛋...");
         int attempts = 0;
         while (!token.IsCancellationRequested && Config.NextRoutineType == PokeRoutineType.EggFetch)
         {
@@ -97,7 +97,7 @@ public class EncounterBotEggSWSH : EncounterBotSWSH
 
             attempts++;
             if (attempts % 10 == 0)
-                Log($"Tried {attempts} times, still no egg.");
+                Log($"已尝试 {attempts} 次，仍未获得蛋。");
 
             if (attempts > 10)
                 await Click(B, 500, token).ConfigureAwait(false);

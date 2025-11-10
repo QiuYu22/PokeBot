@@ -27,7 +27,7 @@ public abstract class PokeRoutineExecutor8LA : PokeRoutineExecutor<PA8>
     public async Task CleanExit(CancellationToken token)
     {
         await SetScreen(ScreenState.On, token).ConfigureAwait(false);
-        Log("流程结束时断开控制器。");
+        Log("流程结束，正在断开控制器。");
         await DetachController(token).ConfigureAwait(false);
     }
 
@@ -78,12 +78,12 @@ public abstract class PokeRoutineExecutor8LA : PokeRoutineExecutor<PA8>
         // Check title so we can warn if mode is incorrect.
         string title = await SwitchConnection.GetTitleID(token).ConfigureAwait(false);
         if (title != LegendsArceusID)
-            throw new Exception($"{title} is not a valid Pokémon Legends: Arceus title. Is your mode correct?");
+            throw new Exception($"{title} 不是有效的《宝可梦传说：阿尔宙斯》标题。请检查运行模式是否正确。");
 
         // Verify the game version.
         var game_version = await SwitchConnection.GetGameInfo("version", token).ConfigureAwait(false);
         if (!game_version.SequenceEqual(LAGameVersion))
-            throw new Exception($"Game version is not supported. Expected version {LAGameVersion}, and current game version is {game_version}.");
+            throw new Exception($"游戏版本不受支持。期望版本为 {LAGameVersion}，当前版本为 {game_version}。");
 
         var sav = await GetFakeTrainerSAV(token).ConfigureAwait(false);
         InitSaveData(sav);
@@ -91,11 +91,11 @@ public abstract class PokeRoutineExecutor8LA : PokeRoutineExecutor<PA8>
         if (!IsValidTrainerData())
         {
             await CheckForRAMShiftingApps(token).ConfigureAwait(false);
-            throw new Exception("Refer to the SysBot.NET wiki (https://github.com/kwsch/SysBot.NET/wiki/Troubleshooting) for more information.");
+            throw new Exception("训练家数据无效。请参考 SysBot.NET Wiki（https://github.com/kwsch/SysBot.NET/wiki/Troubleshooting）获取更多信息。");
         }
 
         if (await GetTextSpeed(token).ConfigureAwait(false) < TextSpeedOption.Fast)
-            throw new Exception("Text speed should be set to FAST. Fix this for correct operation.");
+            throw new Exception("文本速度必须设置为“快速”。请调整后再继续。");
 
         return sav;
     }

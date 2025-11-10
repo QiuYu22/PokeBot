@@ -44,9 +44,9 @@ public static class AutoLegalityExtensionsDiscord
             var spec = GameInfo.Strings.Species[template.Species];
             if (!la.Valid)
             {
-                var reason = result == "Timeout" ? $"该 {spec} 配置生成耗时过长。" : result == "VersionMismatch" ? "请求被拒：PKHeX 与 Auto-Legality Mod 版本不匹配。" : $"无法根据该配置生成 {spec}。";
+                var reason = result == "超时" ? $"该 {spec} 配置生成耗时过长。" : result == "版本不匹配" ? "请求被拒：PKHeX 与 Auto-Legality Mod 版本不匹配。" : $"无法根据该配置生成 {spec}。";
                 var imsg = $"抱歉！{reason}";
-                if (result == "Failed")
+                if (result == "失败")
                     imsg += $"\n{AutoLegalityWrapper.GetLegalizationHint(template, sav, pkm)}";
                 await channel.SendMessageAsync(imsg).ConfigureAwait(false);
                 return;
