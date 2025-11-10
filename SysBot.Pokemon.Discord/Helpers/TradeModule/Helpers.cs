@@ -397,16 +397,6 @@ public static class Helpers<T> where T : PKM, new()
             return;
         }
 
-        // Block non-tradable items in PLZA mode
-        if (pk is not null && NonTradableItemsPLZA.IsPLZAMode(Info.Hub) && NonTradableItemsPLZA.IsBlocked(pk))
-        {
-            var itemName = pk.HeldItem > 0 ? GameInfo.GetStrings("en").Item[pk.HeldItem] : "(none)";
-            var reply = await context.Channel.SendMessageAsync($"Trade blocked: The held item '{itemName}' cannot be traded in PLZA.").ConfigureAwait(false);
-            await Task.Delay(6000).ConfigureAwait(false);
-            await reply.DeleteAsync().ConfigureAwait(false);
-            return;
-        }
-
         var la = new LegalityAnalysis(pk!);
 
         if (!la.Valid)

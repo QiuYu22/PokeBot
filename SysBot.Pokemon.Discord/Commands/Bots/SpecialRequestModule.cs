@@ -175,6 +175,7 @@ namespace SysBot.Pokemon.Discord
                 "pla" or "la" => EncounterEvent.MGDB_G8A,
                 "bdsp" => EncounterEvent.MGDB_G8B,
                 "9" or "gen9" => EncounterEvent.MGDB_G9,
+                "plza" or "9a" or "gen9a" => EncounterEvent.MGDB_G9A,
                 _ => null,
             };
         }

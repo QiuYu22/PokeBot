@@ -117,15 +117,6 @@ public static class QueueHelper<T> where T : PKM, new()
         var notifier = new DiscordTradeNotifier<T>(pk, trainer, code, trader, batchTradeNumber, totalBatchTrades,
             isMysteryEgg, lgcode: lgcode!);
 
-        // PLZA command-level block: prevent queuing if item is on PLZA blacklist
-        if (NonTradableItemsPLZA.IsPLZAMode(SysCord<T>.Runner.Hub) && NonTradableItemsPLZA.IsBlocked(pk))
-        {
-            var held = pk.HeldItem;
-            var itemName = held > 0 ? PKHeX.Core.GameInfo.GetStrings("en").Item[held] : "(none)";
-            await context.Channel.SendMessageAsync($"{trader.Mention} - Trade blocked: the held item '{itemName}' cannot be traded in PLZA.").ConfigureAwait(false);
-            return new TradeQueueResult(false);
-        }
-
         int uniqueTradeID = GenerateUniqueTradeID();
 
         var detail = new PokeTradeDetail<T>(pk, trainer, notifier, t, code, sig == RequestSignificance.Favored,
@@ -317,15 +308,6 @@ public static class QueueHelper<T> where T : PKM, new()
         var name = trader.Username;
         var trainer_info = new PokeTradeTrainerInfo(trainer, userID);
         var notifier = new DiscordTradeNotifier<T>(firstTrade, trainer_info, code, trader, 1, totalBatchTrades, false, lgcode: []);
-
-        // PLZA command-level block for batch: block if first trade item is on PLZA blacklist
-        if (NonTradableItemsPLZA.IsPLZAMode(SysCord<T>.Runner.Hub) && NonTradableItemsPLZA.IsBlocked(firstTrade))
-        {
-            var held = firstTrade.HeldItem;
-            var itemName = held > 0 ? PKHeX.Core.GameInfo.GetStrings("en").Item[held] : "(none)";
-            await context.Channel.SendMessageAsync($"{trader.Mention} - Trade blocked: the held item '{itemName}' cannot be traded in PLZA.").ConfigureAwait(false);
-            return;
-        }
 
         int uniqueTradeID = GenerateUniqueTradeID();
 

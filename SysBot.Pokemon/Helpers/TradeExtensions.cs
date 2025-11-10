@@ -387,7 +387,7 @@ public abstract class TradeExtensions<T> where T : PKM, new()
         var batchMatch = Regex.Match(content, @"\.Language=(\d+)");
         if (batchMatch.Success && byte.TryParse(batchMatch.Groups[1].Value, out byte langCode))
         {
-            return langCode >= 1 && langCode <= 10 ? langCode : (byte)2; // Validate range and default to English if invalid
+            return langCode >= 1 && langCode <= 11 ? langCode : (byte)2; // Validate range and default to English if invalid
         }
 
         // Check for explicit language specification
@@ -405,6 +405,7 @@ public abstract class TradeExtensions<T> where T : PKM, new()
                     "italian" or "italiano" or "ita" or "it" => 4,
                     "german" or "deutsch" or "deu" or "de" => 5,
                     "spanish" or "español" or "spa" or "es" => 7,
+                    "spanish-latam" or "spanishl" or "es-419" or "latam" => 11,
                     "japanese" or "日本語" or "jpn" or "ja" => 1,
                     "korean" or "한국어" or "kor" or "ko" => 8,
                     "chinese simplified" or "中文简体" or "chs" or "zh-cn" => 9,

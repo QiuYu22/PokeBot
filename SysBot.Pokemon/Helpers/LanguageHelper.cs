@@ -31,6 +31,7 @@ public static class LanguageHelper
                     "italian" or "ita" => (byte)LanguageID.Italian,
                     "german" or "ger" or "deu" => (byte)LanguageID.German,
                     "spanish" or "spa" or "esp" => (byte)LanguageID.Spanish,
+                    "spanish-latam" or "spanishl" or "es-419" or "latam" => (byte)LanguageID.SpanishL,
                     "korean" or "kor" or "한국어" => (byte)LanguageID.Korean,
                     "chinese" or "chs" or "中文" => (byte)LanguageID.ChineseS,
                     "cht" => (byte)LanguageID.ChineseT,
@@ -47,10 +48,10 @@ public static class LanguageHelper
         // No explicit language found, use detection
         byte detectedLanguage = detectLanguageFunc(content);
 
-        // If no language was detected (0), default to English
+        // If no language was detected (0), use the config language setting
         if (detectedLanguage == 0)
         {
-            return (byte)LanguageID.English;
+            return configLanguage;
         }
 
         return detectedLanguage;

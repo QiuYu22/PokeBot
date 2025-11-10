@@ -65,5 +65,5 @@ public abstract class PokeRoutineExecutorBase(IConsoleBotManaged<IConsoleConnect
         Log($"{Connection.Name} identified as {TrainerLabel}, using {GameLang}.");
     }
 
-    protected bool IsValidTrainerData() => GameLang is > 0 and <= LanguageID.ChineseT && InGameName.Length > 0 && Version > 0;
+    protected bool IsValidTrainerData() => GameLang is > 0 and <= LanguageID.SpanishL && InGameName.Length > 0 && Version > 0;
 }

@@ -1641,18 +1641,6 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         // Check if the Pokémon is from a Mystery Gift
         bool isMysteryGift = toSend.FatefulEncounter;
 
-        // Check if Pokemon has PKHeX default trainer info
-        bool hasDefaultTrainerInfo = toSend.OriginalTrainerName.Equals("PKHeX", StringComparison.OrdinalIgnoreCase) &&
-                                    toSend.TID16 == 12345 &&
-                                    toSend.SID16 == 54321;
-
-        // If Pokemon has custom OT/TID/SID (not PKHeX defaults), respect user's specification
-        if (!hasDefaultTrainerInfo)
-        {
-            Log($"Pokemon has custom OT/TID/SID (OT: '{toSend.OriginalTrainerName}', TID: {toSend.TID16}, SID: {toSend.SID16}). Keeping user-specified values, skipping AutoOT.");
-            return toSend;
-        }
-
         var data = await Connection.ReadBytesAsync(LinkTradePartnerNameOffset - 0x8, 8, token).ConfigureAwait(false);
         var tidsid = BitConverter.ToUInt32(data, 0);
         var cln = toSend.Clone();

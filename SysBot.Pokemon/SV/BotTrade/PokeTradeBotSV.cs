@@ -220,19 +220,6 @@ public class PokeTradeBotSV(PokeTradeHub<PK9> Hub, PokeBotState Config) : PokeRo
         }
 
         bool isMysteryGift = toSend.FatefulEncounter;
-
-        // Check if Pokemon has PKHeX default trainer info
-        bool hasDefaultTrainerInfo = toSend.OriginalTrainerName.Equals("PKHeX", StringComparison.OrdinalIgnoreCase) &&
-                                    toSend.TID16 == 12345 &&
-                                    toSend.SID16 == 54321;
-
-        // If Pokemon has custom OT/TID/SID (not PKHeX defaults), respect user's specification
-        if (!hasDefaultTrainerInfo)
-        {
-            Log($"Pokemon has custom OT/TID/SID (OT: '{toSend.OriginalTrainerName}', TID: {toSend.TID16}, SID: {toSend.SID16}). Keeping user-specified values, skipping AutoOT.");
-            return toSend;
-        }
-
         var cln = toSend.Clone();
 
         if (isMysteryGift)

@@ -25,7 +25,7 @@ public class TimingSettings
     public int ExtraTimeCloseGame { get; set; }
 
     // Miscellaneous settings.
-    [Category(Misc), Description("[SWSH/SV] Extra time in milliseconds to wait after clicking + to connect to Y-Comm (SWSH) or L to connect online (SV).")]
+    [Category(Misc), Description("[SWSH/SV/PLZA] Extra time in milliseconds to wait after clicking + to connect to Y-Comm (SWSH), L to connect online (SV), or after connecting to Portal (PLZA). Base time for PLZA is 8 seconds.")]
     public int ExtraTimeConnectOnline { get; set; }
 
     [Category(Raid), Description("[RaidBot] Extra time in milliseconds to wait after deleting a friend.")]
