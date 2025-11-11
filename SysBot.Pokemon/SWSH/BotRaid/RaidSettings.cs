@@ -8,67 +8,67 @@ namespace SysBot.Pokemon;
 
 public class RaidSettings : IBotStateSettings, ICountSettings
 {
-    private const string Counts = nameof(Counts);
+private const string Counts = "计数";
 
-    private const string FeatureToggle = nameof(FeatureToggle);
+private const string FeatureToggle = "功能开关";
 
-    private const string Hosting = nameof(Hosting);
+private const string Hosting = "团战配置";
 
     private int _completedRaids;
 
-    [Category(Counts), Description("Raids Started")]
+    [Category(Counts), Description("已发起的团战次数")]
     public int CompletedRaids
     {
         get => _completedRaids;
         set => _completedRaids = value;
     }
 
-    [Category(FeatureToggle), Description("Echoes each party member as they lock into a Pokémon.")]
+    [Category(FeatureToggle), Description("当每位队员锁定宝可梦时播报对应信息。")]
     public bool EchoPartyReady { get; set; }
 
-    [Category(Counts), Description("When enabled, the counts will be emitted when a status check is requested.")]
+    [Category(Counts), Description("启用后，在请求状态检查时会输出计数信息。")]
     public bool EmitCountsOnStatusCheck { get; set; }
 
-    [Category(FeatureToggle), Description("Allows the bot to echo your Friend Code if set.")]
+    [Category(FeatureToggle), Description("启用后若设置好友码，机器人会向外广播该好友码。")]
     public string FriendCode { get; set; } = string.Empty;
 
-    [Category(Hosting), Description("Number of raids to host before trying to add/remove friends. Setting a value of 1 will tell the bot to host one raid, then start adding/removing friends.")]
+    [Category(Hosting), Description("计划在添加或删除好友之前先主持的团战次数。设为 1 表示完成一场团战后立即处理好友列表。")]
     public int InitialRaidsToHost { get; set; }
 
-    [Category(Hosting), Description("Maximum Link Code to host the raid with. Set this to -1 to host with no code.")]
+    [Category(Hosting), Description("主持团战时使用的联机密码上限，设为 -1 表示无需密码。")]
     public int MaxRaidCode { get; set; } = 8199;
 
-    [Category(Hosting), Description("Minimum Link Code to host the raid with. Set this to -1 to host with no code.")]
+    [Category(Hosting), Description("主持团战时使用的联机密码下限，设为 -1 表示无需密码。")]
     public int MinRaidCode { get; set; } = 8180;
 
-    [Category(Hosting), Description("Number of friend requests to accept each time.")]
+    [Category(Hosting), Description("每次接受的好友申请数量。")]
     public int NumberFriendsToAdd { get; set; }
 
-    [Category(Hosting), Description("Number of friends to delete each time.")]
+    [Category(Hosting), Description("每次删除的好友数量。")]
     public int NumberFriendsToDelete { get; set; }
 
-    [Category(Hosting), Description("The Nintendo Switch profile you are using to manage friends. For example, set this to 2 if you are using the second profile.")]
+    [Category(Hosting), Description("用于管理好友的 Nintendo Switch 账号序号，例如使用第二个账号时设为 2。")]
     public int ProfileNumber { get; set; } = 1;
 
-    [Category(FeatureToggle), Description("Optional description of the raid the bot is hosting. Uses automatic Pokémon detection if left blank.")]
+    [Category(FeatureToggle), Description("可选的团战描述；留空时自动使用宝可梦识别结果。")]
     public string RaidDescription { get; set; } = string.Empty;
 
-    [Category(Hosting), Description("Number of raids to host between trying to add friends.")]
+    [Category(Hosting), Description("每隔多少场团战尝试添加好友一次。")]
     public int RaidsBetweenAddFriends { get; set; }
 
-    [Category(Hosting), Description("Number of raids to host between trying to delete friends.")]
+    [Category(Hosting), Description("每隔多少场团战尝试删除好友一次。")]
     public int RaidsBetweenDeleteFriends { get; set; }
 
-    [Category(Hosting), Description("Number of row to start trying to add friends.")]
+    [Category(Hosting), Description("尝试添加好友时从第几行开始。")]
     public int RowStartAddingFriends { get; set; } = 1;
 
-    [Category(Hosting), Description("Number of row to start trying to delete friends.")]
+    [Category(Hosting), Description("尝试删除好友时从第几行开始。")]
     public int RowStartDeletingFriends { get; set; } = 1;
 
-    [Category(FeatureToggle), Description("When enabled, the screen will be turned off during normal bot loop operation to save power.")]
+    [Category(FeatureToggle), Description("启用后，在常规循环中会关闭屏幕以节省电量。")]
     public bool ScreenOff { get; set; }
 
-    [Category(Hosting), Description("Number of seconds to wait before trying to start a raid. Ranges from 0 to 180 seconds.")]
+    [Category(Hosting), Description("在尝试开始团战前等待的秒数，范围 0 到 180。")]
     public int TimeToWait { get; set; } = 90;
 
     public int AddCompletedRaids() => Interlocked.Increment(ref _completedRaids);
@@ -78,7 +78,7 @@ public class RaidSettings : IBotStateSettings, ICountSettings
         if (!EmitCountsOnStatusCheck)
             yield break;
         if (CompletedRaids != 0)
-            yield return $"Started Raids: {CompletedRaids}";
+            yield return $"已发起团战：{CompletedRaids}";
     }
 
     /// <summary>
@@ -86,5 +86,5 @@ public class RaidSettings : IBotStateSettings, ICountSettings
     /// </summary>
     public int GetRandomRaidCode() => Util.Rand.Next(MinRaidCode, MaxRaidCode + 1);
 
-    public override string ToString() => "Raid Bot Settings";
+    public override string ToString() => "团战机器人设置";
 }

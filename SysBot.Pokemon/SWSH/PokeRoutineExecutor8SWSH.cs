@@ -27,7 +27,7 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
     public async Task CleanExit(CancellationToken token)
     {
         await SetScreen(ScreenState.On, token).ConfigureAwait(false);
-        Log("Detaching controllers on routine exit.");
+        Log("流程结束时断开控制器。");
         await DetachController(token).ConfigureAwait(false);
     }
 
@@ -40,14 +40,14 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
         await Click(HOME, 2_000 + timing.ExtraTimeReturnHome, token).ConfigureAwait(false);
         await Click(X, 1_000, token).ConfigureAwait(false);
         await Click(A, 5_000 + timing.ExtraTimeCloseGame, token).ConfigureAwait(false);
-        Log("Closed out of the game!");
+        Log("已退出游戏！");
     }
 
     public async Task EnsureConnectedToYComm(ulong overworldOffset, PokeTradeHubConfig config, CancellationToken token)
     {
         if (!await IsGameConnectedToYComm(token).ConfigureAwait(false))
         {
-            Log("Reconnecting to Y-Comm...");
+            Log("正在重新连接 Y-Comm…");
             await ReconnectToYComm(overworldOffset, config, token).ConfigureAwait(false);
         }
     }
@@ -91,36 +91,36 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
         // Check title so we can warn if mode is incorrect.
         string title = await SwitchConnection.GetTitleID(token).ConfigureAwait(false);
         if (title is not (SwordID or ShieldID))
-            throw new Exception($"{title} is not a valid SWSH title. Is your mode correct?");
+            throw new Exception($"{title} 不是有效的剑盾标题。请确认当前模式是否正确。");
 
         // Verify the game version.
         var game_version = await SwitchConnection.GetGameInfo("version", token).ConfigureAwait(false);
         if (!game_version.SequenceEqual(SWSHGameVersion))
-            throw new Exception($"Game version is not supported. Expected version {SWSHGameVersion}, and current game version is {game_version}.");
+            throw new Exception($"当前游戏版本不受支持。期望版本为 {SWSHGameVersion}，当前版本为 {game_version}。");
 
-        Log("Grabbing trainer data of host console...");
+        Log("正在获取主机的训练家数据…");
         var sav = await GetFakeTrainerSAV(token).ConfigureAwait(false);
         InitSaveData(sav);
 
         if (!IsValidTrainerData())
         {
             await CheckForRAMShiftingApps(token).ConfigureAwait(false);
-            throw new Exception("Refer to the SysBot.NET wiki (https://github.com/kwsch/SysBot.NET/wiki/Troubleshooting) for more information.");
+            throw new Exception("训练家数据无效。请参考 SysBot.NET Wiki（https://github.com/kwsch/SysBot.NET/wiki/Troubleshooting）了解更多信息。");
         }
 
         if (await GetTextSpeed(token).ConfigureAwait(false) < TextSpeedOption.Fast)
-            throw new Exception("Text speed should be set to FAST. Fix this for correct operation.");
+            throw new Exception("文本速度必须设置为“快速”，请调整后再继续。");
 
         return sav;
     }
 
     public async Task InitializeHardware(IBotStateSettings settings, CancellationToken token)
     {
-        Log("Detaching on startup.");
+        Log("启动时执行断开操作。");
         await DetachController(token).ConfigureAwait(false);
         if (settings.ScreenOff)
         {
-            Log("Turning off screen.");
+            Log("正在关闭屏幕。");
             await SetScreen(ScreenState.Off, token).ConfigureAwait(false);
         }
         await SetController(ControllerType.ProController, token);
@@ -221,7 +221,7 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
     public async Task ReOpenGame(PokeTradeHubConfig config, CancellationToken token)
     {
         // Reopen the game if we get soft-banned
-        Log("Potential soft ban detected, reopening game just in case!");
+        Log("检测到可能的软封禁，正在重新打开游戏以防万一！");
         await CloseGame(config, token).ConfigureAwait(false);
         await StartGame(config, token).ConfigureAwait(false);
 
@@ -261,11 +261,11 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
         var existing = await ReadBoxPokemon(0, 0, token).ConfigureAwait(false);
         if (existing.Species != 0 && existing.ChecksumValid)
         {
-            Log("Destination slot is occupied! Dumping the Pokémon found there...");
+            Log("目标格位已有宝可梦！正在导出其中的宝可梦…");
             DumpPokemon(DumpSetting.DumpFolder, "saved", existing);
         }
 
-        Log("Clearing destination slot to start the bot.");
+        Log("正在清空目标格位以启动机器人。");
         PK8 blank = new();
         await SetBoxPokemon(blank, 0, 0, token).ConfigureAwait(false);
     }
@@ -302,7 +302,7 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
 
         await Click(A, 0_600, token).ConfigureAwait(false);
 
-        Log("Restarting the game!");
+        Log("正在重新启动游戏！");
 
         // Switch Logo lag, skip cutscene, game load screen
         await Task.Delay(10_000 + timing.ExtraTimeLoadGame, token).ConfigureAwait(false);
@@ -320,14 +320,14 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
             // Don't risk it if hub is set to avoid updates.
             if (timer <= 0 && !timing.AvoidSystemUpdate)
             {
-                Log("Still not in the game, initiating rescue protocol!");
+                Log("仍未进入游戏，启动救援流程！");
                 while (!await IsOnOverworldTitle(token).ConfigureAwait(false) && !await IsInBattle(token).ConfigureAwait(false))
                     await Click(A, 6_000, token).ConfigureAwait(false);
                 break;
             }
         }
 
-        Log("Back in the overworld!");
+        Log("已返回主世界！");
     }
 
     public Task UnSoftBan(CancellationToken token)
@@ -335,7 +335,7 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
         // Like previous generations, the game uses a Unix timestamp for
         // how long we are soft banned and once the soft ban is lifted
         // the game sets the value back to 0 (1970/01/01 12:00 AM (UTC))
-        Log("Soft ban detected, unbanning.");
+        Log("检测到软封禁，正在解除。");
         var data = BitConverter.GetBytes(0);
         return Connection.WriteBytesAsync(data, SoftBanUnixTimespanOffset, token);
     }

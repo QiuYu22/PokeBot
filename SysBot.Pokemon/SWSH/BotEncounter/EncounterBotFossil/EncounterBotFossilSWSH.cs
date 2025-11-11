@@ -30,31 +30,31 @@ public class EncounterBotFossilSWSH : EncounterBotSWSH
     {
         await SetupBoxState(DumpSetting, token).ConfigureAwait(false);
 
-        Log("Checking item counts...");
+        Log("正在检查化石碎片数量...");
         var pouchData = await Connection.ReadBytesAsync(ItemTreasureAddress, 80, token).ConfigureAwait(false);
         var counts = FossilCount.GetFossilCounts(pouchData);
         int reviveCount = counts.PossibleRevives(Settings.Species);
         if (reviveCount == 0)
         {
-            Log("Insufficient fossil pieces. Please obtain at least one of each required fossil piece first.");
+            Log("化石碎片不足。请先取得每种所需碎片各一份。");
             return;
         }
-        Log($"Enough fossil pieces are available to revive {reviveCount} {Settings.Species}.");
+        Log($"化石碎片充足，可复活 {reviveCount} 只 {Settings.Species}。");
 
         while (!token.IsCancellationRequested)
         {
             if (encounterCount != 0 && encounterCount % reviveCount == 0)
             {
-                Log($"Ran out of fossils to revive {Settings.Species}.");
+                Log($"用于复活 {Settings.Species} 的化石已耗尽。");
                 if (Settings.InjectWhenEmpty)
                 {
-                    Log("Restoring original pouch data.");
+                    Log("正在恢复原始背包数据。");
                     await Connection.WriteBytesAsync(pouchData, ItemTreasureAddress, token).ConfigureAwait(false);
                     await Task.Delay(500, token).ConfigureAwait(false);
                 }
                 else
                 {
-                    Log("Fossil pieces have been depleted. Resetting the game.");
+                    Log("化石碎片已耗尽，正在重置游戏。");
                     await CloseGame(Hub.Config, token).ConfigureAwait(false);
                     await StartGame(Hub.Config, token).ConfigureAwait(false);
                     await SetupBoxState(DumpSetting, token).ConfigureAwait(false);
@@ -62,26 +62,26 @@ public class EncounterBotFossilSWSH : EncounterBotSWSH
             }
 
             await ReviveFossil(counts, token).ConfigureAwait(false);
-            Log("Fossil revived. Checking details...");
+            Log("化石复活完成，正在检查详情...");
 
             var pk = await ReadBoxPokemon(0, 0, token).ConfigureAwait(false);
             if (pk.Species == 0 || !pk.ChecksumValid)
             {
-                Log("No fossil found in Box 1, slot 1. Ensure that the party is full. Restarting loop.");
+                Log("在 1 号盒子 1 号槽位未发现复活的宝可梦，请确认队伍已满。重新开始循环。");
                 continue;
             }
 
             if (await HandleEncounter(pk, token).ConfigureAwait(false))
                 return;
 
-            Log("Clearing destination slot.");
+            Log("正在清理目标槽位。");
             await SetBoxPokemon(Blank, 0, 0, token).ConfigureAwait(false);
         }
     }
 
     private async Task ReviveFossil(FossilCount count, CancellationToken token)
     {
-        Log("Starting fossil revival routine...");
+        Log("开始执行化石复活流程...");
         if (GameLang == LanguageID.Spanish)
             await Click(A, 0_900, token).ConfigureAwait(false);
 

@@ -27,7 +27,7 @@ public abstract class PokeRoutineExecutor<T>(IConsoleBotManaged<IConsoleConnecti
         Directory.CreateDirectory(dir);
         var fn = Path.Combine(dir, PathUtil.CleanFileName(pk.FileName));
         File.WriteAllBytes(fn, pk.DecryptedPartyData);
-        LogUtil.LogInfo("Dump", $"Saved file: {fn}");
+        LogUtil.LogInfo("Dump", $"已保存文件：{fn}");
     }
 
     public static void LogSuccessfulTrades(PokeTradeDetail<T> poke, ulong TrainerNID, string TrainerName)
@@ -41,28 +41,28 @@ public abstract class PokeRoutineExecutor<T>(IConsoleBotManaged<IConsoleConnecti
 
     public async Task CheckForRAMShiftingApps(CancellationToken token)
     {
-        Log("Trainer data is not valid.");
+        Log("训练家数据无效。");
 
         bool found = false;
         var msg = "";
         if (await SwitchConnection.IsProgramRunning(ovlloaderID, token).ConfigureAwait(false))
         {
-            msg += "Found Tesla Menu";
+            msg += "检测到 Tesla 菜单";
             found = true;
         }
 
         if (await SwitchConnection.IsProgramRunning(dmntID, token).ConfigureAwait(false))
         {
             if (found)
-                msg += " and ";
-            msg += "dmnt (cheat codes?)";
+                msg += " 和 ";
+            msg += "dmnt（作弊代码？）";
             found = true;
         }
         if (found)
         {
-            msg += ".";
+            msg += "。";
             Log(msg);
-            Log("Please remove interfering applications and reboot the Switch.");
+            Log("请关闭干扰的应用并重启 Switch。");
         }
     }
 
@@ -111,7 +111,7 @@ public abstract class PokeRoutineExecutor<T>(IConsoleBotManaged<IConsoleConnecti
             // If ReconnectAttempts is set to -1, this should allow it to reconnect (essentially) indefinitely.
             for (int i = 0; i < (uint)attempts; i++)
             {
-                LogUtil.LogInfo($"Trying to reconnect... ({i + 1})", Connection.Label);
+                LogUtil.LogInfo($"正在尝试重新连接... (第 {i + 1} 次)", Connection.Label);
                 Connection.Reset();
                 if (Connection.Connected)
                     break;
@@ -130,7 +130,7 @@ public abstract class PokeRoutineExecutor<T>(IConsoleBotManaged<IConsoleConnecti
         {
             var protocol = Config.Connection.Protocol;
             var msg = protocol is SwitchProtocol.WiFi ? "sys-botbase" : "usb-botbase";
-            msg += $" version is not supported. Expected version {BotbaseVersion} or greater, and current version is {version}. Please download the latest version from: ";
+            msg += $" 版本不受支持。需要版本 {BotbaseVersion} 或更高，当前版本为 {version}。请从以下地址下载最新版本：";
             if (protocol is SwitchProtocol.WiFi)
                 msg += "https://github.com/olliz0r/sys-botbase/releases/latest";
             else
@@ -161,13 +161,13 @@ public abstract class PokeRoutineExecutor<T>(IConsoleBotManaged<IConsoleConnecti
         if (previous != null)
         {
             var delta = DateTime.Now - previous.Time; // Time that has passed since last trade.
-            Log($"Last traded with {user.TrainerName} {delta.TotalMinutes:F1} minutes ago (OT: {TrainerName}).");
+            Log($"上次与 {user.TrainerName} 交易是在 {delta.TotalMinutes:F1} 分钟前（OT: {TrainerName}）。");
 
             // Allows setting a cooldown for repeat trades. If the same user is encountered within the cooldown period for the same trade type, the user is warned and the trade will be ignored.
             var cd = AbuseSettings.TradeCooldown; // Time they must wait before trading again.
             if (cd != 0 && TimeSpan.FromMinutes(cd) > delta)
             {
-                Log($"Found {user.TrainerName} ignoring the {cd} minute trade cooldown. Last encountered {delta.TotalMinutes:F1} minutes ago.");
+                Log($"发现 {user.TrainerName} 无视 {cd} 分钟的交易冷却。上次遇到是在 {delta.TotalMinutes:F1} 分钟前。");
                 return PokeTradeResult.SuspiciousActivity;
             }
 
@@ -178,7 +178,7 @@ public abstract class PokeRoutineExecutor<T>(IConsoleBotManaged<IConsoleConnecti
                 if (delta < TimeSpan.FromMinutes(AbuseSettings.TradeAbuseExpiration))
                 {
                     quit = true;
-                    Log($"Found {user.TrainerName} using multiple accounts.\nPreviously traded with {previous.Name} ({previous.RemoteID}) {delta.TotalMinutes:F1} minutes ago on OT: {TrainerName}.");
+                    Log($"发现 {user.TrainerName} 使用多个账号。\n此前在 {delta.TotalMinutes:F1} 分钟前与 {previous.Name}（{previous.RemoteID}）交易，OT 为 {TrainerName}。");
                 }
             }
         }

@@ -22,7 +22,7 @@ public sealed class EncounterBotLineSWSH(PokeBotState Config, PokeTradeHub<PK8> 
             if (attempts < 0) // aborted
                 continue;
 
-            Log($"Encounter found after {attempts} attempts! Checking details...");
+            Log($"经过 {attempts} 次尝试找到遭遇战！正在检查详情...");
 
             // Reset stick while we wait for the encounter to load.
             await ResetStick(token).ConfigureAwait(false);
@@ -30,7 +30,7 @@ public sealed class EncounterBotLineSWSH(PokeBotState Config, PokeTradeHub<PK8> 
             var pk = await ReadUntilPresent(WildPokemonOffset, 2_000, 0_200, BoxFormatSlotSize, token).ConfigureAwait(false);
             if (pk == null)
             {
-                Log("Invalid data detected. Restarting loop.");
+                Log("检测到无效数据，重新开始循环。");
 
                 // Flee and continue looping.
                 await FleeToOverworld(token).ConfigureAwait(false);
@@ -44,14 +44,14 @@ public sealed class EncounterBotLineSWSH(PokeBotState Config, PokeTradeHub<PK8> 
             if (await HandleEncounter(pk, token).ConfigureAwait(false))
                 return;
 
-            Log("Running away...");
+            Log("正在撤退...");
             await FleeToOverworld(token).ConfigureAwait(false);
         }
     }
 
     private async Task<int> StepUntilEncounter(CancellationToken token)
     {
-        Log("Walking around until an encounter...");
+        Log("四处走动直至触发遭遇...");
         int attempts = 0;
         while (!token.IsCancellationRequested)
         {
@@ -86,7 +86,7 @@ public sealed class EncounterBotLineSWSH(PokeBotState Config, PokeTradeHub<PK8> 
 
                 attempts++;
                 if (attempts % 10 == 0)
-                    Log($"Tried {attempts} times, still no encounters.");
+                    Log($"已尝试 {attempts} 次，仍未触发遭遇。");
             }
 
             if (await IsInBattle(token).ConfigureAwait(false))

@@ -14,7 +14,7 @@ public static class WinFormsUtil
         if (sound)
             System.Media.SystemSounds.Asterisk.Play();
         string msg = string.Join(Environment.NewLine + Environment.NewLine, lines);
-        return MessageBox.Show(msg, "Alert", MessageBoxButtons.OK, sound ? MessageBoxIcon.Information : MessageBoxIcon.None);
+        return MessageBox.Show(msg, "提示", MessageBoxButtons.OK, sound ? MessageBoxIcon.Information : MessageBoxIcon.None);
     }
 
     /// <summary>
@@ -26,14 +26,14 @@ public static class WinFormsUtil
     {
         System.Media.SystemSounds.Hand.Play();
         string msg = string.Join(Environment.NewLine + Environment.NewLine, lines);
-        return MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return MessageBox.Show(msg, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
     }
 
     internal static DialogResult Prompt(MessageBoxButtons btn, params string[] lines)
     {
         System.Media.SystemSounds.Asterisk.Play();
         string msg = string.Join(Environment.NewLine + Environment.NewLine, lines);
-        return MessageBox.Show(msg, "Prompt", btn, MessageBoxIcon.Question);
+        return MessageBox.Show(msg, "确认", btn, MessageBoxIcon.Question);
     }
 
     #endregion Message Displays

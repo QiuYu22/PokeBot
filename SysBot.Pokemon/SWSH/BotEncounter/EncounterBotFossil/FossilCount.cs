@@ -26,7 +26,7 @@ public class FossilCount
         Arctozolt => Math.Min(Bird, Dino),
         Dracovish => Math.Min(Fish, Drake),
         Arctovish => Math.Min(Fish, Dino),
-        _ => throw new ArgumentOutOfRangeException(nameof(f), f, "Fossil species was invalid."),
+        _ => throw new ArgumentOutOfRangeException(nameof(f), f, "化石宝可梦种类无效。"),
     };
 
     // Top Half: Select Down for fish if species type == Dracovish || Arctovish

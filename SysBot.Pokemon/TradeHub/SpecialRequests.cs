@@ -133,11 +133,11 @@ namespace SysBot.Pokemon.TradeHub
             if (heldItem > 0 && heldItem < allitems.Length)
             {
                 var itemHeld = allitems[heldItem];
-                caller.Log($"Item held: {itemHeld}");
+                caller.Log($"持有道具：{itemHeld}");
             }
             else
             {
-                caller.Log($"Held item was outside the bounds of the Array, or nothing was held: {heldItem}");
+                caller.Log($"持有道具超出数组范围，或未持有任何道具：{heldItem}");
             }
         }
 
@@ -410,7 +410,7 @@ namespace SysBot.Pokemon.TradeHub
             
             if (!Enum.TryParse(natureName, out Nature result))
             {
-                detail.SendNotification(caller, "Nature request was not found in the db.");
+                detail.SendNotification(caller, "数据库中未找到对应的性格请求。");
                 return SpecialTradeType.FailReturn;
             }
 
@@ -435,7 +435,7 @@ namespace SysBot.Pokemon.TradeHub
 
             if (item < 0)
             {
-                detail.SendNotification(caller, "Item request was invalid. Check spelling & gen.");
+                detail.SendNotification(caller, "物品请求无效，请检查拼写与世代。");
                 return SpecialTradeType.FailReturn;
             }
 
@@ -459,7 +459,7 @@ namespace SysBot.Pokemon.TradeHub
             int ball = Array.FindIndex(balls, z => z.Replace(" ", string.Empty).StartsWith(ballLookup, StringComparison.OrdinalIgnoreCase));
             if (ball < 0)
             {
-                detail.SendNotification(caller, "Ball request was invalid. Check spelling & gen.");
+                detail.SendNotification(caller, "精灵球请求无效，请检查拼写与世代。");
                 return SpecialTradeType.FailReturn;
             }
 
@@ -482,7 +482,7 @@ namespace SysBot.Pokemon.TradeHub
 
             if (loaded == null)
             {
-                detail.SendNotification(caller, "This isn't a valid request!");
+                detail.SendNotification(caller, "无效的请求！");
                 return SpecialTradeType.FailReturn;
             }
 
@@ -537,7 +537,7 @@ namespace SysBot.Pokemon.TradeHub
 
             if (!la.Valid)
             {
-                detail.SendNotification(caller, "This modification made the Pokémon illegal per PKHeX's legality checks. Cannot complete this request. The Pokémon will be returned unchanged.");
+                detail.SendNotification(caller, "修改后的宝可梦未通过 PKHeX 合法性检查，无法完成请求。宝可梦将原样返还。");
                 var report = la.Report();
                 caller.Log(report);
                 detail.SendNotification(caller, report);
@@ -619,8 +619,8 @@ namespace SysBot.Pokemon.TradeHub
                 return true;
             
             // Pokemon has a Home Tracker - block all clone changes for safety
-            detail.SendNotification(caller, "Cannot apply clone changes to this Pokemon. It has a Home Tracker, and modifying it would invalidate the tracker. Please use a Pokemon without a Home Tracker.");
-            caller.Log("Clone change blocked - Pokemon has Home Tracker. Modifications would invalidate the tracker.");
+            detail.SendNotification(caller, "无法对该宝可梦应用克隆修改。它包含 HOME 追踪信息，修改会导致追踪失效。请使用没有 HOME 追踪的宝可梦。");
+            caller.Log("已阻止克隆修改 —— 该宝可梦带有 HOME 追踪，修改会使追踪失效。");
             return false;
         }
     }

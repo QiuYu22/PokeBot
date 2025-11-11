@@ -64,12 +64,12 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         {
             await InitializeHardware(hub.Config.Trade, token).ConfigureAwait(false);
 
-            Log("Identifying trainer data of the host console.");
+            Log("正在识别主机的训练家数据。");
             var sav = await IdentifyTrainer(token).ConfigureAwait(false);
             RecentTrainerCache.SetRecentTrainer(sav);
             await InitializeSessionOffsets(token).ConfigureAwait(false);
             OnConnectionSuccess();
-            Log($"Starting main {nameof(PokeTradeBotSWSH)} loop.");
+            Log($"正在启动 {nameof(PokeTradeBotSWSH)} 主循环。");
             await InnerLoop(sav, token).ConfigureAwait(false);
         }
         catch (Exception e)
@@ -78,7 +78,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
             throw;
         }
 
-        Log($"Ending {nameof(PokeTradeBotSWSH)} loop.");
+        Log($"结束 {nameof(PokeTradeBotSWSH)} 循环。");
         await HardStop().ConfigureAwait(false);
     }
 
@@ -97,7 +97,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         await Task.Delay(2_000, t).ConfigureAwait(false);
         if (!t.IsCancellationRequested)
         {
-            Log("Restarting the main loop.");
+            Log("正在重新启动主循环。");
             await MainLoop(t).ConfigureAwait(false);
         }
     }
@@ -136,7 +136,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         while (!token.IsCancellationRequested && Config.NextRoutineType == PokeRoutineType.Idle)
         {
             if (waitCounter == 0)
-                Log("No task assigned. Waiting for new task assignment.");
+                Log("当前无任务，等待新的任务指派。");
             waitCounter++;
             if (waitCounter % 10 == 0 && hub.Config.AntiIdle)
                 await Click(B, 1_000, token).ConfigureAwait(false);
@@ -161,8 +161,8 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
             waitCounter = 0;
 
             detail.IsProcessing = true;
-            string tradetype = $" ({detail.Type})";
-            Log($"Starting next {type}{tradetype} Bot Trade. Getting data...");
+        string tradetype = $"（{detail.Type}）";
+        Log($"开始进行下一次 {type}{tradetype} 机器人交易，正在获取数据...");
             hub.Config.Stream.StartTrade(this, detail, hub);
             hub.Queues.StartTrade(this, detail);
 
@@ -176,7 +176,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         {
             // Updates the assets.
             hub.Config.Stream.IdleAssets(this);
-            Log("Nothing to check, waiting for new users...");
+            Log("暂无待处理内容，正在等待新用户...");
         }
 
         const int interval = 10;
@@ -227,23 +227,23 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
             var allReceived = BatchTracker.GetReceivedPokemon(originalTrainerID);
             if (allReceived.Count > 0)
             {
-                poke.SendNotification(this, $"Sending you the {allReceived.Count} Pokémon you traded to me before the interruption.");
+                poke.SendNotification(this, $"正在将你中断前交易给我的 {allReceived.Count} 只宝可梦发送给你。");
 
-                Log($"Returning {allReceived.Count} Pokémon to trainer {originalTrainerID}.");
+                Log($"正在归还训练家 {originalTrainerID} 的 {allReceived.Count} 只宝可梦。");
 
                 for (int j = 0; j < allReceived.Count; j++)
                 {
                     var pokemon = allReceived[j];
                     var speciesName = SpeciesName.GetSpeciesName(pokemon.Species, 2);
-                    Log($"  - Returning: {speciesName} (Checksum: {pokemon.Checksum:X8})");
+                    Log($"  - 归还：{speciesName}（校验和：{pokemon.Checksum:X8}）");
 
-                    poke.SendNotification(this, pokemon, $"Pokémon you traded to me: {speciesName}");
+                    poke.SendNotification(this, pokemon, $"你交易给我的宝可梦：{speciesName}");
                     Thread.Sleep(500);
                 }
             }
             else
             {
-                Log($"No Pokémon found to return for trainer {originalTrainerID}.");
+                Log($"未找到可归还给训练家 {originalTrainerID} 的宝可梦。");
             }
 
             BatchTracker.ClearReceivedPokemon(originalTrainerID);
@@ -269,18 +269,18 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
 
         while (await CheckIfSearchingForLinkTradePartner(token).ConfigureAwait(false))
         {
-            Log("Still searching, resetting bot position.");
+            Log("仍在搜索，正在重置机器人位置。");
             await ResetTradePosition(token).ConfigureAwait(false);
         }
 
         // Initial connection setup (only done once)
-        Log("Opening Y-Comm menu.");
+        Log("正在打开 Y 通讯菜单。");
         await Click(Y, 2_000, token).ConfigureAwait(false);
 
-        Log("Selecting Link Trade.");
+        Log("正在选择连线交换。");
         await Click(A, 1_500, token).ConfigureAwait(false);
 
-        Log("Selecting Link Trade code.");
+        Log("正在选择连线交换密码。");
         await Click(DDOWN, 500, token).ConfigureAwait(false);
 
         for (int i = 0; i < 2; i++)
@@ -294,7 +294,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         await Task.Delay(hub.Config.Timings.ExtraTimeOpenCodeEntry, token).ConfigureAwait(false);
 
         var code = poke.Code;
-        Log($"Entering Link Trade code: {code:0000 0000}...");
+        Log($"正在输入连线交换密码：{code:0000 0000}...");
         await EnterLinkCode(code, hub.Config, token).ConfigureAwait(false);
 
         WaitAtBarrierIfApplicable(token);
@@ -318,7 +318,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         }
 
         // Wait for and find trade partner
-        poke.SendNotification(this, $"Please offer your Pokémon for trade 1/{totalBatchTrades}.");
+        poke.SendNotification(this, $"请提供你的宝可梦进行第 1/{totalBatchTrades} 次交易。");
         poke.TradeSearching(this);
         await Task.Delay(0_500, token).ConfigureAwait(false);
 
@@ -338,8 +338,8 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         var trainerSID = await GetTradePartnerSID7(TradeMethod.LinkTrade, token).ConfigureAwait(false);
         var trainerNID = await GetTradePartnerNID(token).ConfigureAwait(false);
 
-        Log($"Found Link Trade partner: {trainerName}-{trainerTID} (ID: {trainerNID})");
-        poke.SendNotification(this, $"Found Link Trade partner: {trainerName}. **TID**: {trainerTID} **SID**: {trainerSID}");
+        Log($"已找到连线交换对象：{trainerName}-{trainerTID}（ID：{trainerNID}）");
+        poke.SendNotification(this, $"已找到连线交换对象：{trainerName}。**TID**：{trainerTID} **SID**：{trainerSID}");
 
         // Initialize lastOffered state for tracking between trades
         lastOffered = await Connection.ReadBytesAsync(LinkTradePartnerPokemonOffset, 8, token).ConfigureAwait(false);
@@ -348,7 +348,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         var partnerCheck = CheckPartnerReputation(this, poke, trainerNID, trainerName, AbuseSettings, token);
         if (partnerCheck != PokeTradeResult.Success)
         {
-            poke.SendNotification(this, $"Suspicious activity detected. Canceling the batch trades.");
+            poke.SendNotification(this, "检测到可疑活动，正在取消批量交易。");
             SendCollectedPokemonAndCleanup();
             await ExitTrade(false, token).ConfigureAwait(false);
             return partnerCheck;
@@ -401,12 +401,12 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
                 // Check if we're still connected
                 if (await IsOnOverworld(OverworldOffset, token).ConfigureAwait(false))
                 {
-                    poke.SendNotification(this, "Connection lost. The other trainer may have disconnected.");
+                    poke.SendNotification(this, "连接丢失，对方可能已断线。");
                     SendCollectedPokemonAndCleanup();
                     return PokeTradeResult.TrainerLeft;
                 }
 
-                poke.SendNotification(this, $"**Ready!** You can now offer your Pokémon for trade {currentTradeIndex + 1}/{totalBatchTrades}.");
+                poke.SendNotification(this, $"**准备就绪！** 你现在可以提供宝可梦进行第 {currentTradeIndex + 1}/{totalBatchTrades} 次交易。");
             }
 
             // Ensure we're in the box
@@ -422,7 +422,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
 
                 if (!await IsInBox(token).ConfigureAwait(false))
                 {
-                    poke.SendNotification(this, $"Failed to enter box after trade {completedTrades + 1}/{totalBatchTrades}. Canceling the remaining trades.");
+                    poke.SendNotification(this, $"在第 {completedTrades + 1}/{totalBatchTrades} 次交易后无法进入盒子，正在取消剩余交易。");
                     SendCollectedPokemonAndCleanup();
                     await ExitTrade(true, token).ConfigureAwait(false);
                     return PokeTradeResult.RecoverOpenBox;
@@ -435,7 +435,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
 
             if (offered == null)
             {
-                poke.SendNotification(this, $"No Pokémon offered for trade {currentTradeIndex + 1}/{totalBatchTrades}. Canceling the remaining trades.");
+                poke.SendNotification(this, $"第 {currentTradeIndex + 1}/{totalBatchTrades} 次交易未提供宝可梦，正在取消剩余交易。");
                 SendCollectedPokemonAndCleanup();
                 await ExitTrade(false, token).ConfigureAwait(false);
                 return PokeTradeResult.TrainerTooSlow;
@@ -446,7 +446,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
             var update = await GetEntityToSend(sav, poke, offered, oldEC, toSend, trainer, null, token).ConfigureAwait(false);
             if (update.check != PokeTradeResult.Success)
             {
-                poke.SendNotification(this, $"Check failed for trade {currentTradeIndex + 1}/{totalBatchTrades}. Canceling the remaining trades.");
+                poke.SendNotification(this, $"第 {currentTradeIndex + 1}/{totalBatchTrades} 次交易检查失败，正在取消剩余交易。");
                 SendCollectedPokemonAndCleanup();
                 await ExitTrade(false, token).ConfigureAwait(false);
                 return update.check;
@@ -454,11 +454,11 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
             toSend = update.toSend;
 
             // Confirm and execute the trade
-            Log($"Confirming trade {currentTradeIndex + 1}/{totalBatchTrades}.");
+            Log($"正在确认第 {currentTradeIndex + 1}/{totalBatchTrades} 次交易。");
             var tradeResult = await ConfirmAndStartTrading(poke, token).ConfigureAwait(false);
             if (tradeResult != PokeTradeResult.Success)
             {
-                poke.SendNotification(this, $"Trade confirmation failed for trade {currentTradeIndex + 1}/{totalBatchTrades}. Canceling the remaining trades.");
+                poke.SendNotification(this, $"第 {currentTradeIndex + 1}/{totalBatchTrades} 次交易确认失败，正在取消剩余交易。");
                 SendCollectedPokemonAndCleanup();
                 await ExitTrade(false, token).ConfigureAwait(false);
                 return tradeResult;
@@ -475,7 +475,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
             var received = await ReadBoxPokemon(0, 0, token).ConfigureAwait(false);
             if (SearchUtil.HashByDetails(received) == SearchUtil.HashByDetails(toSend) && received.Checksum == toSend.Checksum)
             {
-                poke.SendNotification(this, $"Partner did not complete trade {currentTradeIndex + 1}/{totalBatchTrades}. Canceling the remaining trades.");
+                poke.SendNotification(this, $"交易伙伴未完成第 {currentTradeIndex + 1}/{totalBatchTrades} 次交易，正在取消剩余交易。");
                 SendCollectedPokemonAndCleanup();
                 await ExitTrade(false, token).ConfigureAwait(false);
                 return PokeTradeResult.TrainerTooSlow;
@@ -487,7 +487,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
 
             BatchTracker.AddReceivedPokemon(originalTrainerID, received);
             completedTrades = currentTradeIndex + 1;
-            Log($"Added received Pokémon {received.Species} (Checksum: {received.Checksum:X8}) to batch tracker for trainer {originalTrainerID} (Trade {completedTrades}/{totalBatchTrades})");
+            Log($"已将接收的宝可梦 {received.Species}（校验和：{received.Checksum:X8}）加入训练家 {originalTrainerID} 的批量记录（交易 {completedTrades}/{totalBatchTrades}）。");
 
             // Store the last offered Pokemon state for the next trade
             if (completedTrades < totalBatchTrades)
@@ -499,21 +499,21 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
             if (completedTrades == totalBatchTrades)
             {
                 var allReceived = BatchTracker.GetReceivedPokemon(originalTrainerID);
-                Log($"Batch trades complete. Found {allReceived.Count} Pokémon stored for trainer {originalTrainerID}");
+                Log($"批量交易完成，训练家 {originalTrainerID} 共存储了 {allReceived.Count} 只宝可梦。");
 
-                poke.SendNotification(this, "All batch trades completed! Thank you for trading!");
+                poke.SendNotification(this, "所有批量交易已完成！感谢你的交易！");
 
                 if (hub.Config.Discord.ReturnPKMs && allReceived.Count > 0)
                 {
-                    poke.SendNotification(this, $"Here are the {allReceived.Count} Pokémon you traded to me:");
+                    poke.SendNotification(this, $"这是你交易给我的 {allReceived.Count} 只宝可梦：");
 
                     for (int j = 0; j < allReceived.Count; j++)
                     {
                         var pokemon = allReceived[j];
                         var speciesName = SpeciesName.GetSpeciesName(pokemon.Species, 2);
-                        Log($"  - Returning: {speciesName} (Checksum: {pokemon.Checksum:X8})");
+                        Log($"  - 归还：{speciesName}（校验和：{pokemon.Checksum:X8}）");
 
-                        poke.SendNotification(this, pokemon, $"Pokémon you traded to me: {speciesName}");
+                        poke.SendNotification(this, pokemon, $"你交易给我的宝可梦：{speciesName}");
                         await Task.Delay(500, token).ConfigureAwait(false);
                     }
                 }
@@ -534,7 +534,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
             else
             {
                 // Notify about the next trade
-                poke.SendNotification(this, $"Trade {completedTrades} completed! Preparing for trade {completedTrades + 1}/{totalBatchTrades}...");
+                poke.SendNotification(this, $"第 {completedTrades} 次交易完成！正在准备第 {completedTrades + 1}/{totalBatchTrades} 次交易...");
             }
         }
 
@@ -599,11 +599,11 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
             {
                 detail.IsRetry = true;
                 hub.Queues.Enqueue(type, detail, Math.Min(priority, PokeTradePriorities.Tier2));
-                detail.SendNotification(this, "Oops! Something happened during your batch trade. I'll requeue you for another attempt.");
+                detail.SendNotification(this, "糟糕！批量交易出现异常，我会重新为你排队再试一次。");
             }
             else
             {
-                detail.SendNotification(this, $"Batch trade failed: {result}");
+                detail.SendNotification(this, $"批量交易失败：{result}");
                 detail.TradeCanceled(this, result);
                 await ExitTrade(false, token).ConfigureAwait(false);
             }
@@ -621,11 +621,11 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         {
             detail.IsRetry = true;
             hub.Queues.Enqueue(type, detail, Math.Min(priority, PokeTradePriorities.Tier2));
-            detail.SendNotification(this, "Oops! Something happened. I'll requeue you for another attempt.");
+            detail.SendNotification(this, "糟糕！发生了异常，我会重新为你排队再试一次。");
         }
         else
         {
-            detail.SendNotification(this, $"Oops! Something happened. Canceling the trade: {result}.");
+            detail.SendNotification(this, $"糟糕！发生了异常。正在取消本次交易：{result}。");
             detail.TradeCanceled(this, result);
         }
     }
@@ -646,7 +646,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         // Check if trade was canceled by user
         if (poke.IsCanceled)
         {
-            Log($"Trade for {poke.Trainer.TrainerName} was canceled by user.");
+            Log($"训练家 {poke.Trainer.TrainerName} 取消了此次交易。");
             poke.TradeCanceled(this, PokeTradeResult.UserCanceled);
             return PokeTradeResult.UserCanceled;
         }
@@ -672,17 +672,17 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
 
         while (await CheckIfSearchingForLinkTradePartner(token).ConfigureAwait(false))
         {
-            Log("Still searching, resetting bot position.");
+            Log("仍在搜索，正在重置机器人位置。");
             await ResetTradePosition(token).ConfigureAwait(false);
         }
 
-        Log("Opening Y-Comm menu.");
+        Log("正在打开 Y 通讯菜单。");
         await Click(Y, 2_000, token).ConfigureAwait(false);
 
-        Log("Selecting Link Trade.");
+        Log("正在选择连线交换。");
         await Click(A, 1_500, token).ConfigureAwait(false);
 
-        Log("Selecting Link Trade code.");
+        Log("正在选择连线交换密码。");
         await Click(DDOWN, 500, token).ConfigureAwait(false);
 
         for (int i = 0; i < 2; i++)
@@ -698,7 +698,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         await Task.Delay(hub.Config.Timings.ExtraTimeOpenCodeEntry, token).ConfigureAwait(false);
 
         var code = poke.Code;
-        Log($"Entering Link Trade code: {code:0000 0000}...");
+        Log($"正在输入连线交换密码：{code:0000 0000}...");
         await EnterLinkCode(code, hub.Config, token).ConfigureAwait(false);
 
         // Wait for Barrier to trigger all bots simultaneously.
@@ -746,8 +746,8 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         var trainerTID = await GetTradePartnerTID7(TradeMethod.LinkTrade, token).ConfigureAwait(false);
         var trainerSID = await GetTradePartnerSID7(TradeMethod.LinkTrade, token).ConfigureAwait(false);
         var trainerNID = await GetTradePartnerNID(token).ConfigureAwait(false);
-        RecordUtil<PokeTradeBotSWSH>.Record($"Initiating\t{trainerNID:X16}\t{trainerName}\t{poke.Trainer.TrainerName}\t{poke.Trainer.ID}\t{poke.ID}\t{toSend.EncryptionConstant:X8}");
-        Log($"Found Link Trade partner: {trainerName}. **TID**: {trainerTID}  **SID**: {trainerSID}. Waiting for a Pokémon...");
+        RecordUtil<PokeTradeBotSWSH>.Record($"开始\t{trainerNID:X16}\t{trainerName}\t{poke.Trainer.TrainerName}\t{poke.Trainer.ID}\t{poke.ID}\t{toSend.EncryptionConstant:X8}");
+        Log($"已找到连线交换对象：{trainerName}。**TID**：{trainerTID}  **SID**：{trainerSID}。等待对方提供宝可梦…");
 
         var tradeCodeStorage = new TradeCodeStorage();
         var existingTradeDetails = tradeCodeStorage.GetTradeDetails(poke.Trainer.ID);
@@ -790,7 +790,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
                 await Click(A, 0_500, token).ConfigureAwait(false);
         }
 
-        poke.SendNotification(this, $"Found Link Trade partner: {trainerName}. **TID**: {trainerTID}  **SID**: {trainerSID}. Waiting for a Pokémon...");
+        poke.SendNotification(this, $"已找到连线交换对象：{trainerName}。**TID**：{trainerTID}  **SID**：{trainerSID}。等待对方提供宝可梦…");
 
         if (poke.Type == PokeTradeType.Dump)
             return await ProcessDumpTradeAsync(poke, token).ConfigureAwait(false);
@@ -816,7 +816,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         if (poke.Type == PokeTradeType.Seed && itemReq == SpecialTradeType.None)
         {
             // Immediately exit, we aren't trading anything.
-            poke.SendNotification(this, "No held item or valid request! Cancelling this trade.");
+            poke.SendNotification(this, "未检测到携带道具或有效请求！正在取消本次交易。");
             await ExitTrade(false, token).ConfigureAwait(false);
             return PokeTradeResult.TrainerRequestBad;
         }
@@ -827,7 +827,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         {
             if (itemReq != SpecialTradeType.None)
             {
-                poke.SendNotification(this, "Your request isn't legal. Please try a different Pokémon or request.");
+                poke.SendNotification(this, "你的请求不合法，请尝试其他宝可梦或请求内容。");
             }
             await ExitTrade(false, token).ConfigureAwait(false);
             return update;
@@ -850,24 +850,24 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         var received = await ReadBoxPokemon(0, 0, token).ConfigureAwait(false);
         if (SearchUtil.HashByDetails(received) == SearchUtil.HashByDetails(toSend) && received.Checksum == toSend.Checksum)
         {
-            Log($"Trade not completed. User did not trade their Pokémon.");
-            RecordUtil<PokeTradeBotSWSH>.Record($"Cancelled\t{trainerNID:X16}\t{trainerName}\t{poke.Trainer.TrainerName}\t{poke.ID}\t{toSend.Species}\t{toSend.EncryptionConstant:X8}\t{offered.Species}\t{offered.EncryptionConstant:X8}");
+            Log("交易未完成，用户未交换其宝可梦。");
+            RecordUtil<PokeTradeBotSWSH>.Record($"已取消\t{trainerNID:X16}\t{trainerName}\t{poke.Trainer.TrainerName}\t{poke.ID}\t{toSend.Species}\t{toSend.EncryptionConstant:X8}\t{offered.Species}\t{offered.EncryptionConstant:X8}");
             await ExitTrade(false, token).ConfigureAwait(false);
             return PokeTradeResult.TrainerTooSlow;
         }
 
         // Now that we confirmed the trade was successful, send the appropriate notification
         if (itemReq == SpecialTradeType.WonderCard)
-            poke.SendNotification(this, "Distribution success!");
+            poke.SendNotification(this, "派发成功！");
         else if (itemReq != SpecialTradeType.None && itemReq != SpecialTradeType.Shinify)
-            poke.SendNotification(this, "Special request successful!");
+            poke.SendNotification(this, "特殊请求完成！");
         else if (itemReq == SpecialTradeType.Shinify)
-            poke.SendNotification(this, "Shinify success! Thanks for being part of the community!");
+            poke.SendNotification(this, "闪光处理成功！感谢你对社区的支持！");
 
         // Continue with the rest of the successful trade logic
-        Log($"Trade completed. Received {GameInfo.GetStrings("en").Species[received.Species]} from user, sent {GameInfo.GetStrings("en").Species[toSend.Species]}.");
+        Log($"交易完成。收到用户提供的 {GameInfo.GetStrings("zh").Species[received.Species]}，送出 {GameInfo.GetStrings("zh").Species[toSend.Species]}。");
         poke.TradeFinished(this, received);
-        RecordUtil<PokeTradeBotSWSH>.Record($"Finished\t{trainerNID:X16}\t{trainerName}\t{poke.Trainer.TrainerName}\t{poke.ID}\t{toSend.Species}\t{toSend.EncryptionConstant:X8}\t{received.Species}\t{received.EncryptionConstant:X8}");
+        RecordUtil<PokeTradeBotSWSH>.Record($"已完成\t{trainerNID:X16}\t{trainerName}\t{poke.Trainer.TrainerName}\t{poke.ID}\t{toSend.Species}\t{toSend.EncryptionConstant:X8}\t{received.Species}\t{received.EncryptionConstant:X8}");
 
         // Only log if we completed the trade.
         UpdateCountsAndExport(poke, received, toSend);
@@ -881,7 +881,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
 
     protected virtual Task<bool> WaitForTradePartnerOffer(CancellationToken token)
     {
-        Log("Waiting for trainer...");
+        Log("正在等待交易伙伴...");
         return WaitForPokemonChanged(LinkTradePartnerPokemonOffset, hub.Config.Trade.TradeConfiguration.TradeWaitTime * 1_000, 0_200, token);
     }
 
@@ -965,18 +965,18 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
     private async Task<(PK8 toSend, PokeTradeResult check)> HandleClone(SAV8SWSH sav, PokeTradeDetail<PK8> poke, PK8 offered, byte[] oldEC, CancellationToken token)
     {
         if (hub.Config.Discord.ReturnPKMs)
-            poke.SendNotification(this, offered, $"Here's what you showed me - {GameInfo.GetStrings("en").Species[offered.Species]}");
+            poke.SendNotification(this, offered, $"这是你展示的宝可梦——{GameInfo.GetStrings("zh").Species[offered.Species]}");
 
         var la = new LegalityAnalysis(offered);
         if (!la.Valid)
         {
-            Log($"Clone request (from {poke.Trainer.TrainerName}) has detected an invalid Pokémon: {GameInfo.GetStrings("en").Species[offered.Species]}.");
+            Log($"来自 {poke.Trainer.TrainerName} 的克隆请求检测到不合法的宝可梦：{GameInfo.GetStrings("zh").Species[offered.Species]}。");
             if (DumpSetting.Dump)
                 DumpPokemon(DumpSetting.DumpFolder, "hacked", offered);
 
             var report = la.Report();
             Log(report);
-            poke.SendNotification(this, "This Pokémon is not legal per PKHeX's legality checks. I am forbidden from cloning this. Exiting trade.");
+            poke.SendNotification(this, "根据 PKHeX 的合法性检测，此宝可梦不合法，无法进行克隆。正在退出交易。");
             poke.SendNotification(this, report);
 
             return (offered, PokeTradeResult.IllegalTrade);
@@ -986,15 +986,15 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         if (hub.Config.Legality.ResetHOMETracker)
             clone.Tracker = 0;
 
-        poke.SendNotification(this, $"**Cloned your {GameInfo.GetStrings("en").Species[clone.Species]}!**\nNow press B to cancel your offer and trade me a Pokémon you don't want.");
-        Log($"Cloned a {(Species)clone.Species}. Waiting for user to change their Pokémon...");
+        poke.SendNotification(this, $"**克隆了你的 {GameInfo.GetStrings("zh").Species[clone.Species]}！**\n现在按 B 取消你的宝可梦，并交换一只你不想要的宝可梦给我。");
+        Log($"已克隆 {(Species)clone.Species}，正在等待用户更换宝可梦...");
 
         // Separate this out from WaitForPokemonChanged since we compare to old EC from original read.
         var partnerFound = await ReadUntilChanged(LinkTradePartnerPokemonOffset, oldEC, 15_000, 0_200, false, token).ConfigureAwait(false);
 
         if (!partnerFound)
         {
-            poke.SendNotification(this, "**HEY CHANGE IT NOW OR I AM LEAVING!!!**");
+            poke.SendNotification(this, "**快换掉当前宝可梦，否则我就要离开了！**");
 
             // They get one more chance.
             partnerFound = await ReadUntilChanged(LinkTradePartnerPokemonOffset, oldEC, 15_000, 0_200, false, token).ConfigureAwait(false);
@@ -1003,7 +1003,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         var pk2 = await ReadUntilPresent(LinkTradePartnerPokemonOffset, 3_000, 1_000, BoxFormatSlotSize, token).ConfigureAwait(false);
         if (!partnerFound || pk2 == null || SearchUtil.HashByDetails(pk2) == SearchUtil.HashByDetails(offered))
         {
-            Log("Trade partner did not change their Pokémon.");
+            Log("交易伙伴没有更换宝可梦。");
             return (offered, PokeTradeResult.TrainerTooSlow);
         }
 
@@ -1025,9 +1025,9 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         {
             if (trade.Type == LedyResponseType.AbuseDetected)
             {
-                var msg = $"Found {partner.TrainerName} has been detected for abusing Ledy trades.";
+                var msg = $"检测到 {partner.TrainerName} 滥用 Ledy 交易。";
                 if (AbuseSettings.EchoNintendoOnlineIDLedy)
-                    msg += $"\nID: {partner.TrainerOnlineID}";
+                    msg += $"\nID：{partner.TrainerOnlineID}";
                 if (!string.IsNullOrWhiteSpace(AbuseSettings.LedyAbuseEchoMention))
                     msg = $"{AbuseSettings.LedyAbuseEchoMention} {msg}";
                 EchoUtil.Echo(msg);
@@ -1038,15 +1038,15 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
             toSend = trade.Receive;
             poke.TradeData = toSend;
 
-            poke.SendNotification(this, "Injecting the requested Pokémon.");
+            poke.SendNotification(this, "正在注入你请求的宝可梦。");
             await Click(A, 0_800, token).ConfigureAwait(false);
             await SetBoxPokemon(toSend, 0, 0, token, sav).ConfigureAwait(false);
             await Task.Delay(2_500, token).ConfigureAwait(false);
         }
         else if (config.LedyQuitIfNoMatch)
         {
-            var nickname = offered.IsNicknamed ? $" (Nickname: \"{offered.Nickname}\")" : string.Empty;
-            poke.SendNotification(this, $"No match found for the offered {GameInfo.GetStrings("en").Species[offered.Species]}{nickname}.");
+            var nickname = offered.IsNicknamed ? $"（昵称：\"{offered.Nickname}\"）" : string.Empty;
+            poke.SendNotification(this, $"未找到与提供的 {GameInfo.GetStrings("zh").Species[offered.Species]}{nickname} 匹配的请求。");
             return (toSend, PokeTradeResult.TrainerRequestBad);
         }
 
@@ -1063,7 +1063,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
     // For pointer offsets that don't change per session are accessed frequently, so set these each time we start.
     private async Task InitializeSessionOffsets(CancellationToken token)
     {
-        Log("Caching session offsets...");
+        Log("正在缓存会话偏移...");
         OverworldOffset = await SwitchConnection.PointerAll(Offsets.OverworldPointer, token).ConfigureAwait(false);
     }
 
@@ -1109,31 +1109,31 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
 
             var la = new LegalityAnalysis(pk);
             var verbose = $"```{la.Report(true)}```";
-            Log($"Shown Pokémon is: {(la.Valid ? "Valid" : "Invalid")}.");
+            Log($"展示的宝可梦合法性：{(la.Valid ? "合法" : "不合法")}。");
 
             ctr++;
-            var msg = hub.Config.Trade.TradeConfiguration.DumpTradeLegalityCheck ? verbose : $"File {ctr}";
+            var msg = hub.Config.Trade.TradeConfiguration.DumpTradeLegalityCheck ? verbose : $"文件 {ctr}";
 
             // Extra information about trainer data for people requesting with their own trainer data.
             var ot = pk.OriginalTrainerName;
-            var ot_gender = pk.OriginalTrainerGender == 0 ? "Male" : "Female";
+            var ot_gender = pk.OriginalTrainerGender == 0 ? "男" : "女";
             var tid = pk.GetDisplayTID().ToString(pk.GetTrainerIDFormat().GetTrainerIDFormatStringTID());
             var sid = pk.GetDisplaySID().ToString(pk.GetTrainerIDFormat().GetTrainerIDFormatStringSID());
             msg += $"\n**Trainer Data**\n```OT: {ot}\nOTGender: {ot_gender}\nTID: {tid}\nSID: {sid}```";
 
             // Extra information for shiny eggs, because of people dumping to skip hatching.
-            var eggstring = pk.IsEgg ? "Egg " : string.Empty;
-            msg += pk.IsShiny ? $"\n**This Pokémon {eggstring}is shiny!**" : string.Empty;
+            var eggstring = pk.IsEgg ? "（蛋）" : string.Empty;
+            msg += pk.IsShiny ? $"\n**该宝可梦{eggstring}为闪光！**" : string.Empty;
             detail.SendNotification(this, pk, msg);
         }
 
-        Log($"Ended Dump loop after processing {ctr} Pokémon.");
+        Log($"处理 {ctr} 只宝可梦后结束导出循环。");
         await ExitSeedCheckTrade(token).ConfigureAwait(false);
         if (ctr == 0)
             return PokeTradeResult.TrainerTooSlow;
 
         TradeSettings.CountStatsSettings.AddCompletedDumps();
-        detail.Notifier.SendNotification(this, detail, $"Dumped {ctr} Pokémon.");
+        detail.Notifier.SendNotification(this, detail, $"已导出 {ctr} 只宝可梦。");
         detail.Notifier.TradeFinished(this, detail, detail.TradeData); // blank pk8
         return PokeTradeResult.Success;
     }
@@ -1150,7 +1150,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         if (await CheckIfSoftBanned(token).ConfigureAwait(false))
             await UnSoftBan(token).ConfigureAwait(false);
 
-        Log("Starting next Surprise Trade. Getting data...");
+        Log("开始下一次惊喜交换，正在获取数据...");
         await SetBoxPokemon(pkm, 0, 0, token, sav).ConfigureAwait(false);
 
         if (!await IsOnOverworld(OverworldOffset, token).ConfigureAwait(false))
@@ -1161,17 +1161,17 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
 
         if (await CheckIfSearchingForSurprisePartner(token).ConfigureAwait(false))
         {
-            Log("Still searching, resetting bot position.");
+            Log("仍在搜索，正在重置机器人位置。");
             await ResetTradePosition(token).ConfigureAwait(false);
         }
 
-        Log("Opening Y-Comm menu.");
+        Log("正在打开 Y 通讯菜单。");
         await Click(Y, 1_500, token).ConfigureAwait(false);
 
         if (token.IsCancellationRequested)
             return PokeTradeResult.RoutineCancel;
 
-        Log("Selecting Surprise Trade.");
+        Log("正在选择惊喜交换。");
         await Click(DDOWN, 0_500, token).ConfigureAwait(false);
         await Click(A, 2_000, token).ConfigureAwait(false);
 
@@ -1186,7 +1186,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
             return PokeTradeResult.RecoverPostLinkCode;
         }
 
-        Log($"Selecting Pokémon: {pkm.FileName}");
+        Log($"正在选择宝可梦：{pkm.FileName}");
 
         // Box 1 Slot 1; no movement required.
         await Click(A, 0_700, token).ConfigureAwait(false);
@@ -1194,7 +1194,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         if (token.IsCancellationRequested)
             return PokeTradeResult.RoutineCancel;
 
-        Log("Confirming...");
+        Log("正在确认...");
         while (!await IsOnOverworld(OverworldOffset, token).ConfigureAwait(false))
             await Click(A, 0_800, token).ConfigureAwait(false);
 
@@ -1211,7 +1211,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         }
 
         // Wait 30 Seconds for Trainer...
-        Log("Waiting for Surprise Trade partner...");
+        Log("正在等待惊喜交换伙伴...");
 
         // Wait for an offer...
         var oldEC = await Connection.ReadBytesAsync(SurpriseTradeSearchOffset, 4, token).ConfigureAwait(false);
@@ -1233,7 +1233,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         var TrainerTID = await GetTradePartnerTID7(TradeMethod.SurpriseTrade, token).ConfigureAwait(false);
         var SurprisePoke = await ReadSurpriseTradePokemon(token).ConfigureAwait(false);
 
-        Log($"Found Surprise Trade partner: {TrainerName}-{TrainerTID}, Pokémon: {(Species)SurprisePoke.Species}");
+        Log($"已找到惊喜交换伙伴：{TrainerName}-{TrainerTID}，宝可梦：{(Species)SurprisePoke.Species}");
 
         // Clear out the received trade data; we want to skip the trade animation.
         // The box slot locks have been removed prior to searching.
@@ -1253,7 +1253,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
             return PokeTradeResult.RoutineCancel;
 
         if (await IsOnOverworld(OverworldOffset, token).ConfigureAwait(false))
-            Log("Trade complete!");
+            Log("交易完成！");
         else
             await ExitTrade(true, token).ConfigureAwait(false);
 
@@ -1283,7 +1283,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
             }
             catch (Exception ex)
             {
-                detail.SendNotification(this, $"Unable to calculate seeds: {ex.Message}\r\n{ex.StackTrace}");
+                detail.SendNotification(this, $"无法计算种子：{ex.Message}\r\n{ex.StackTrace}");
             }
         }, token);
 #pragma warning restore 4014
@@ -1295,12 +1295,12 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
 
     private void ReplyWithSeedCheckResults(PokeTradeDetail<PK8> detail, PK8 result)
     {
-        detail.SendNotification(this, "Calculating your seed(s)...");
+        detail.SendNotification(this, "正在计算你的种子…");
 
         if (result.IsShiny)
         {
-            Log("The Pokémon is already shiny!"); // Do not bother checking for next shiny frame
-            detail.SendNotification(this, "This Pokémon is already shiny! Raid seed calculation was not done.");
+            Log("该宝可梦已经是闪光状态！");
+            detail.SendNotification(this, "该宝可梦已经是闪光，未执行团战种子计算。");
 
             if (DumpSetting.Dump && !string.IsNullOrEmpty(DumpSetting.DumpFolder))
                 DumpPokemon(DumpSetting.DumpFolder, "seed", result);
@@ -1310,7 +1310,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         }
 
         SeedChecker.CalculateAndNotify(result, detail, hub.Config.SeedCheckSWSH, this);
-        Log("Seed calculation completed.");
+        Log("种子计算完成。");
     }
 
     private void WaitAtBarrierIfApplicable(CancellationToken token)
@@ -1334,7 +1334,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         }
 
         FailedBarrier++;
-        Log($"Barrier sync timed out after {timeoutAfter} seconds. Continuing.");
+        Log($"屏障同步在 {timeoutAfter} 秒后超时，继续执行。");
     }
 
     /// <summary>
@@ -1351,12 +1351,12 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         if (shouldWait)
         {
             hub.BotSync.Barrier.AddParticipant();
-            Log($"Joined the Barrier. Count: {hub.BotSync.Barrier.ParticipantCount}");
+            Log($"已加入屏障。计数：{hub.BotSync.Barrier.ParticipantCount}");
         }
         else
         {
             hub.BotSync.Barrier.RemoveParticipant();
-            Log($"Left the Barrier. Count: {hub.BotSync.Barrier.ParticipantCount}");
+            Log($"已离开屏障。计数：{hub.BotSync.Barrier.ParticipantCount}");
         }
     }
 
@@ -1370,7 +1370,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
     private async Task ExitTrade(bool unexpected, CancellationToken token)
     {
         if (unexpected)
-            Log("Unexpected behavior, recovering position.");
+            Log("检测到异常行为，正在恢复位置。");
 
         int attempts = 0;
         int softBanAttempts = 0;
@@ -1413,7 +1413,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
 
     private async Task ResetTradePosition(CancellationToken token)
     {
-        Log("Resetting bot position.");
+        Log("正在重置机器人位置。");
 
         // Shouldn't ever be used while not on overworld.
         if (!await IsOnOverworld(OverworldOffset, token).ConfigureAwait(false))
@@ -1481,13 +1481,13 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
     private async Task<(PK8 toSend, PokeTradeResult check)> HandleFixOT(SAV8SWSH sav, PokeTradeDetail<PK8> poke, PK8 offered, PartnerDataHolder partner, CancellationToken token)
     {
         if (hub.Config.Discord.ReturnPKMs)
-            poke.SendNotification(this, offered, $"Here's what you showed me - {GameInfo.GetStrings("en").Species[offered.Species]}");
+            poke.SendNotification(this, offered, $"这是你展示的宝可梦——{GameInfo.GetStrings("zh").Species[offered.Species]}");
 
         var adOT = TradeExtensions<PK8>.HasAdName(offered, out _);
         var laInit = new LegalityAnalysis(offered);
         if (!adOT && laInit.Valid)
         {
-            poke.SendNotification(this, "No ad detected in Nickname or OT, and the Pokémon is legal. Exiting trade.");
+            poke.SendNotification(this, "未在昵称或 OT 中检测到广告信息，且宝可梦合法。正在退出交易。");
             return (offered, PokeTradeResult.TrainerRequestBad);
         }
 
@@ -1497,12 +1497,12 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
 
         string shiny = string.Empty;
         if (!TradeExtensions<PK8>.ShinyLockCheck(offered.Species, TradeExtensions<PK8>.FormOutput(offered.Species, offered.Form, out _), $"{(Ball)offered.Ball}"))
-            shiny = $"\nShiny: {(offered.ShinyXor == 0 ? "Square" : offered.IsShiny ? "Star" : "No")}";
-        else shiny = "\nShiny: No";
+            shiny = $"\n闪光：{(offered.ShinyXor == 0 ? "方块闪" : offered.IsShiny ? "星星闪" : "否")}";
+        else shiny = "\n闪光：否";
 
         var name = partner.TrainerName;
-        var ball = $"\n{(Ball)offered.Ball}";
-        var extraInfo = $"OT: {name}{ball}{shiny}";
+        var ball = $"\n精灵球：{(Ball)offered.Ball}";
+        var extraInfo = $"OT：{name}{ball}{shiny}";
         var set = ShowdownParsing.GetShowdownText(offered).Split('\n').ToList();
         var shinyRes = set.Find(x => x.Contains("Shiny"));
         if (shinyRes != null)
@@ -1511,10 +1511,10 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
 
         if (!laInit.Valid)
         {
-            Log($"FixOT request has detected an illegal Pokémon from {name}: {(Species)offered.Species}");
+            Log($"FixOT 请求检测到来自 {name} 的不合法宝可梦：{(Species)offered.Species}");
             var report = laInit.Report();
             Log(laInit.Report());
-            poke.SendNotification(this, $"**Shown Pokémon is not legal. Attempting to regenerate...**\n\n```{report}```");
+            poke.SendNotification(this, $"**展示的宝可梦不合法，正在尝试重新生成…**\n\n```{report}```");
             if (DumpSetting.Dump)
                 DumpPokemon(DumpSetting.DumpFolder, "hacked", offered);
         }
@@ -1540,26 +1540,26 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         la = new LegalityAnalysis(clone);
         if (!la.Valid)
         {
-            poke.SendNotification(this, "This Pokémon is not legal per PKHeX's legality checks. I was unable to fix this. Exiting trade.");
+            poke.SendNotification(this, "根据 PKHeX 的合法性检测，此宝可梦仍然不合法，无法修复。正在退出交易。");
             return (clone, PokeTradeResult.IllegalTrade);
         }
 
         TradeExtensions<PK8>.HasAdName(offered, out string detectedAd);
-        poke.SendNotification(this, $"{(!laInit.Valid ? "**Legalized" : "**Fixed Nickname/OT for")} {(Species)clone.Species}** (found ad: {detectedAd})! Now confirm the trade!");
-        Log($"{(!laInit.Valid ? "Legalized" : "Fixed Nickname/OT for")} {(Species)clone.Species}!");
+        poke.SendNotification(this, $"{(!laInit.Valid ? "**已合法化" : "**已修正昵称/OT 的")} {(Species)clone.Species}**（检测到广告：{detectedAd}）！请立即确认交易！");
+        Log($"{(!laInit.Valid ? "已合法化" : "已修正昵称/OT")} {(Species)clone.Species}！");
 
         await Click(A, 0_800, token).ConfigureAwait(false);
         await SetBoxPokemon(clone, 0, 0, token, sav).ConfigureAwait(false);
         await Click(A, 0_500, token).ConfigureAwait(false);
-        poke.SendNotification(this, "Now confirm the trade!");
+        poke.SendNotification(this, "请立即确认交易！");
 
         await Task.Delay(6_000, token).ConfigureAwait(false);
         var pk2 = await ReadUntilPresent(LinkTradePartnerPokemonOffset, 1_000, 0_500, BoxFormatSlotSize, token).ConfigureAwait(false);
         bool changed = pk2 == null || clone.Species != pk2.Species || offered.OriginalTrainerName != pk2.OriginalTrainerName;
         if (changed)
         {
-            Log($"{name} changed the shown Pokémon ({(Species)clone.Species}){(pk2 != null ? $" to {(Species)pk2.Species}" : "")}");
-            poke.SendNotification(this, "**Send away the originally shown Pokémon, please!**");
+            Log($"{name} 更换了展示的宝可梦（{(Species)clone.Species}{(pk2 != null ? $" → {(Species)pk2.Species}" : string.Empty)}）。");
+            poke.SendNotification(this, "**请发送最初展示的那只宝可梦！**");
             var timer = 10_000;
             while (changed)
             {
@@ -1574,8 +1574,8 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
 
         if (changed)
         {
-            poke.SendNotification(this, "Pokémon was swapped and not changed back. Exiting trade.");
-            Log("Trading partner did not wish to send away their ad-mon.");
+            poke.SendNotification(this, "交易伙伴更换了宝可梦并未换回，正在退出交易。");
+            Log("交易伙伴不愿意发送其广告宝可梦。");
             return (offered, PokeTradeResult.TrainerTooSlow);
         }
 
@@ -1603,7 +1603,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
                 if (!toSend.ChecksumValid)
                     goClone.RefreshChecksum();
 
-                Log("Applied only OT name to Pokémon from GO (has HOME tracker).");
+                Log("已为来自 GO 且带有 HOME 追踪器的宝可梦仅应用 OT 名称。");
                 await SetBoxPokemon(goClone, 0, 0, token, sav).ConfigureAwait(false);
                 return goClone;
             }
@@ -1626,7 +1626,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
                 if (!toSend.ChecksumValid)
                     goClone.RefreshChecksum();
 
-                Log("Applied OT, TID, and SID to Pokémon from GO (no HOME tracker).");
+                Log("已为来自 GO 且无 HOME 追踪器的宝可梦应用 OT、TID 与 SID。");
                 await SetBoxPokemon(goClone, 0, 0, token, sav).ConfigureAwait(false);
                 return goClone;
             }
@@ -1634,7 +1634,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
 
         if (toSend is IHomeTrack pk && pk.HasTracker)
         {
-            Log("Home tracker detected. Can't apply AutoOT.");
+            Log("检测到 HOME 追踪器，无法应用自动 OT。");
             return toSend;
         }
 
@@ -1647,7 +1647,7 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
 
         if (isMysteryGift)
         {
-            Log("Mystery Gift detected. Only applying OT info, preserving language.");
+            Log("检测到神秘礼物，仅应用 OT 信息并保留语言设置。");
             // Only set OT-related info for Mystery Gifts without preset OT/TID/SID
             cln.OriginalTrainerGender = data[6];
             cln.TrainerTID7 = tidsid % 1_000_000;
@@ -1678,13 +1678,13 @@ public class PokeTradeBotSWSH(PokeTradeHub<PK8> hub, PokeBotState config) : Poke
         var tradeswsh = new LegalityAnalysis(cln);
         if (tradeswsh.Valid)
         {
-            Log("Pokemon is valid with Trade Partner Info applied. Swapping details.");
+            Log("宝可梦在应用交易对象信息后仍合法，正在写入相关信息。");
             await SetBoxPokemon(cln, 0, 0, token, sav).ConfigureAwait(false);
             return cln;
         }
         else
         {
-            Log("Pokemon not valid after using Trade Partner Info.");
+            Log("宝可梦在应用交易对象信息后不合法，保持原样。");
             return toSend;
         }
     }

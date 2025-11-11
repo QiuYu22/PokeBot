@@ -17,10 +17,10 @@ public class RemoteControlBotPLZA(PokeBotState Config) : PokeRoutineExecutor9PLZ
     {
         try
         {
-            Log("Identifying trainer data of the host console.");
+            Log("正在识别主机的训练家数据。");
             await IdentifyTrainer(token).ConfigureAwait(false);
 
-            Log("Starting main loop, then waiting for commands.");
+            Log("主循环已启动，等待指令。");
             Config.IterateNextRoutine();
             while (!token.IsCancellationRequested)
             {
@@ -33,7 +33,7 @@ public class RemoteControlBotPLZA(PokeBotState Config) : PokeRoutineExecutor9PLZ
             Log(e.Message);
         }
 
-        Log($"Ending {nameof(RemoteControlBotPLZA)} loop.");
+        Log($"结束 {nameof(RemoteControlBotPLZA)} 循环。");
         await HardStop().ConfigureAwait(false);
     }
 
@@ -45,7 +45,7 @@ public class RemoteControlBotPLZA(PokeBotState Config) : PokeRoutineExecutor9PLZ
         await Task.Delay(2_000, t).ConfigureAwait(false);
         if (!t.IsCancellationRequested)
         {
-            Log("Restarting the main loop.");
+            Log("正在重新启动主循环。");
             await MainLoop(t).ConfigureAwait(false);
         }
     }

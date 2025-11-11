@@ -23,14 +23,14 @@ public class Z3SeedSearchHandler<T> : ISeedSearchHandler<T> where T : PKM, new()
         {
             foreach (var match in Z3Search.GetAllSeeds(ec, pid, IVs, settings.ResultDisplayMode))
             {
-                var lump = new PokeTradeSummary("Calculated Seed:", match);
+                var lump = new PokeTradeSummary("计算得到的种子：", match);
                 detail.SendNotification(bot, lump);
             }
         }
         else
         {
             var match = Z3Search.GetFirstSeed(ec, pid, IVs, settings.ResultDisplayMode);
-            var lump = new PokeTradeSummary("Calculated Seed:", match);
+            var lump = new PokeTradeSummary("计算得到的种子：", match);
             detail.SendNotification(bot, lump);
         }
     }
@@ -47,7 +47,7 @@ public class Z3SeedSearchHandler<T> : ISeedSearchHandler<T> where T : PKM, new()
 
         var flawless = enc is IFlawlessIVCount f ? f.FlawlessIVCount : 0;
         var result = new SeedSearchResult(Z3SearchResult.Success, seed, flawless, settings.ResultDisplayMode);
-        var lump = new PokeTradeSummary("Calculated Seed:", result);
+        var lump = new PokeTradeSummary("计算得到的种子：", result);
         detail.SendNotification(bot, lump);
         return true;
     }

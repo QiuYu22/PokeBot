@@ -26,10 +26,6 @@ public class PokeDataOffsetsPLZA
     // Returns 1 when connected to internet, 0 when offline
     public IReadOnlyList<long> IsConnectedPointer { get; } = [0x3CE1510, 0x08];
 
-    // ✅ VERIFIED - Current link code value in search box
-    // Returns the 4-byte integer link code currently entered (0x0 if empty)
-    public IReadOnlyList<long> LinkCodeTradePointer { get; } = [0x3CC8C20, 0x24];
-
     // ✅ UNVERIFIED - Trade partner NID (Nintendo ID)
     // Returns 8-byte ulong Nintendo ID of connected trade partner
     // Works correctly on first trade and all subsequent trades

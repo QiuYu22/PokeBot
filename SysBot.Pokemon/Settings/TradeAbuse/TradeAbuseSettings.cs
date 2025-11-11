@@ -4,51 +4,66 @@ namespace SysBot.Pokemon;
 
 public class TradeAbuseSettings
 {
-    private const string Monitoring = nameof(Monitoring);
-    public override string ToString() => "Trade Abuse Monitoring Settings";
+    private const string Monitoring = "滥用监控";
+    public override string ToString() => "交易滥用监控";
 
-    [Category(Monitoring), Description("When a person appears again in less than this setting's value (minutes), a notification will be sent.")]
+    [DisplayName("交易冷却时间（分钟）")]
+    [Category(Monitoring), Description("同一用户再次出现低于该时长（分钟）时触发提醒。")]
     public double TradeCooldown { get; set; }
 
-    [Category(Monitoring), Description("When a person ignores a trade cooldown, the echo message will include their Nintendo Account ID.")]
+    [DisplayName("记录冷却违规账号")]
+    [Category(Monitoring), Description("当用户忽略交易冷却时，在提醒中附上其任天堂账号 ID。")]
     public bool EchoNintendoOnlineIDCooldown { get; set; } = true;
 
-    [Category(Monitoring), Description("If not empty, the provided string will be appended to Echo alerts to notify whomever you specify when a user violates trade cooldown. For Discord, use <@userIDnumber> to mention.")]
+    [DisplayName("冷却违规提醒附加文本")]
+    [Category(Monitoring), Description("为冷却违规提醒附加额外文本，可用于 @ 指定人员。")]
     public string CooldownAbuseEchoMention { get; set; } = string.Empty;
 
-    [Category(Monitoring), Description("When a person appears with a different Discord/Twitch account in less than this setting's value (minutes), a notification will be sent.")]
+    [DisplayName("多账号检测窗口（分钟）")]
+    [Category(Monitoring), Description("在该时间窗口内出现不同 Discord/Twitch 账号时触发提醒。")]
     public double TradeAbuseExpiration { get; set; } = 120;
 
-    [Category(Monitoring), Description("When a person using multiple Discord/Twitch accounts is detected, the echo message will include their Nintendo Account ID.")]
+    [DisplayName("记录多账号 ID")]
+    [Category(Monitoring), Description("检测到使用多个 Discord/Twitch 账号时，在提醒中附上任天堂账号 ID。")]
     public bool EchoNintendoOnlineIDMulti { get; set; } = true;
 
-    [Category(Monitoring), Description("When a person sending to multiple in-game accounts is detected, the echo message will include their Nintendo Account ID.")]
+    [DisplayName("记录多接收账号 ID")]
+    [Category(Monitoring), Description("检测到向多个游戏账号发送时，在提醒中附上任天堂账号 ID。")]
     public bool EchoNintendoOnlineIDMultiRecipients { get; set; } = true;
 
-    [Category(Monitoring), Description("When a person using multiple Discord/Twitch accounts is detected, this action is taken.")]
+    [DisplayName("多账号处理方式")]
+    [Category(Monitoring), Description("检测到多个 Discord/Twitch 账号时采取的操作。")]
     public TradeAbuseAction TradeAbuseAction { get; set; } = TradeAbuseAction.Quit;
 
-    [Category(Monitoring), Description("When a person is blocked in-game for multiple accounts, their online ID is added to BannedIDs.")]
+    [DisplayName("封禁时记录 ID")]
+    [Category(Monitoring), Description("当因多个账号被封禁时，将其联机 ID 添加到黑名单。")]
     public bool BanIDWhenBlockingUser { get; set; } = true;
 
-    [Category(Monitoring), Description("If not empty, the provided string will be appended to Echo alerts to notify whomever you specify when a user is found using multiple accounts. For Discord, use <@userIDnumber> to mention.")]
+    [DisplayName("多账号提醒附加文本")]
+    [Category(Monitoring), Description("为多账号违规提醒附加额外文本，可用于 @ 指定人员。")]
     public string MultiAbuseEchoMention { get; set; } = string.Empty;
 
-    [Category(Monitoring), Description("If not empty, the provided string will be appended to Echo alerts to notify whomever you specify when a user is found sending to multiple players in-game. For Discord, use <@userIDnumber> to mention.")]
+    [DisplayName("多接收提醒附加文本")]
+    [Category(Monitoring), Description("为多接收违规提醒附加额外文本，可用于 @ 指定人员。")]
     public string MultiRecipientEchoMention { get; set; } = string.Empty;
 
-    [Category(Monitoring), Description("Banned online IDs that will trigger trade exit or in-game block.")]
+    [DisplayName("黑名单 ID")]
+    [Category(Monitoring), Description("触发强制退出或封禁的联机 ID 列表。")]
     public RemoteControlAccessList BannedIDs { get; set; } = new();
 
-    [Category(Monitoring), Description("When a person is encountered with a banned ID, block them in-game before quitting the trade.")]
+    [DisplayName("遇到黑名单时封禁")]
+    [Category(Monitoring), Description("遇到黑名单 ID 时在退出交易前在游戏内封禁对方。")]
     public bool BlockDetectedBannedUser { get; set; } = true;
 
-    [Category(Monitoring), Description("If not empty, the provided string will be appended to Echo alerts to notify whomever you specify when a user matches a banned ID. For Discord, use <@userIDnumber> to mention.")]
+    [DisplayName("黑名单提醒附加文本")]
+    [Category(Monitoring), Description("为黑名单匹配提醒附加额外文本，可用于 @ 指定人员。")]
     public string BannedIDMatchEchoMention { get; set; } = string.Empty;
 
-    [Category(Monitoring), Description("When a person using Ledy nickname swaps is detected of abuse, the echo message will include their Nintendo Account ID.")]
+    [DisplayName("记录 Ledy 滥用 ID")]
+    [Category(Monitoring), Description("检测到 Ledy 昵称交换滥用时，在提醒中附上任天堂账号 ID。")]
     public bool EchoNintendoOnlineIDLedy { get; set; } = true;
 
-    [Category(Monitoring), Description("If not empty, the provided string will be appended to Echo alerts to notify whomever you specify when a user violates Ledy trade rules. For Discord, use <@userIDnumber> to mention.")]
+    [DisplayName("Ledy 滥用提醒附加文本")]
+    [Category(Monitoring), Description("为 Ledy 规则违规提醒附加额外文本，可用于 @ 指定人员。")]
     public string LedyAbuseEchoMention { get; set; } = string.Empty;
 }
