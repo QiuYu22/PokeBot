@@ -23,7 +23,7 @@ public sealed class RequireQueueRoleAttribute(string RoleName) : PreconditionAtt
 
         // Check if this user is a Guild User, which is the only context where roles exist
         if (context.User is not SocketGuildUser gUser)
-            return Task.FromResult(PreconditionResult.FromError("You must be sending the message from a guild to run this command."));
+            return Task.FromResult(PreconditionResult.FromError("该命令需要在服务器频道中执行。"));
 
         var roles = gUser.Roles;
         if (mgr.CanUseSudo(roles.Select(z => z.Name)))
@@ -31,10 +31,10 @@ public sealed class RequireQueueRoleAttribute(string RoleName) : PreconditionAtt
 
         bool canQueue = SysCordSettings.HubConfig.Queues.CanQueue;
         if (!canQueue)
-            return Task.FromResult(PreconditionResult.FromError("Sorry, I am not currently accepting queue requests!"));
+            return Task.FromResult(PreconditionResult.FromError("抱歉，我目前不接受新的排队请求！"));
 
         if (!mgr.GetHasRoleAccess(RoleName, roles.Select(z => z.Name)))
-            return Task.FromResult(PreconditionResult.FromError("You do not have the required role to run this command."));
+            return Task.FromResult(PreconditionResult.FromError("你没有执行此命令所需的角色权限。"));
 
         return Task.FromResult(PreconditionResult.FromSuccess());
     }

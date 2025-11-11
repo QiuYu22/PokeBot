@@ -43,18 +43,18 @@ public static class ReusableActions
             newShowdown.Add(line);
 
         if (pkm.IsEgg)
-            newShowdown.Add("\nPokémon is an egg");
+            newShowdown.Add("\n宝可梦处于蛋状态");
         if (pkm.Ball > (int)Ball.None)
-            newShowdown.Insert(newShowdown.FindIndex(z => z.Contains("Nature")), $"Ball: {(Ball)pkm.Ball} Ball");
+            newShowdown.Insert(newShowdown.FindIndex(z => z.Contains("Nature")), $"精灵球：{(Ball)pkm.Ball}");
         if (pkm.IsShiny)
         {
             var index = newShowdown.FindIndex(x => x.Contains("Shiny: Yes"));
             if (pkm.ShinyXor == 0 || pkm.FatefulEncounter)
-                newShowdown[index] = "Shiny: Square\r";
-            else newShowdown[index] = "Shiny: Star\r";
+                newShowdown[index] = "Shiny:Square\r";
+            else newShowdown[index] = "Shiny:Star\r";
         }
 
-        newShowdown.InsertRange(1, [$"OT: {pkm.OriginalTrainerName}", $"TID: {pkm.DisplayTID}", $"SID: {pkm.DisplaySID}", $"OTGender: {(Gender)pkm.OriginalTrainerGender}", $"Language: {(LanguageID)pkm.Language}"]);
+        newShowdown.InsertRange(1, [$"OT: {pkm.OriginalTrainerName}", $"TID: {pkm.DisplayTID}", $"SID: {pkm.DisplaySID}", $"OTGender: {(Gender)pkm.OriginalTrainerGender}", $"语言: {(LanguageID)pkm.Language}"]);
         return Format.Code(string.Join("\n", newShowdown).TrimEnd());
     }
 
@@ -83,14 +83,14 @@ public static class ReusableActions
         var speciesImageUrl = TradeExtensions<PK9>.PokeImg(pkm, canGmax, false);
 
         var embed = new EmbedBuilder()
-            .WithTitle("Pokémon Showdown Set")
+            .WithTitle("宝可梦 Showdown 配置")
             .WithDescription(txt)
             .WithColor(Color.Blue)
             .WithThumbnailUrl(speciesImageUrl)
             .Build();
 
         var botMessage = await channel.SendMessageAsync(embed: embed).ConfigureAwait(false); // Send the embed
-        var warningMessage = await channel.SendMessageAsync("This message will self-destruct in 15 seconds. Please copy your data.").ConfigureAwait(false);
+        var warningMessage = await channel.SendMessageAsync("此消息将在 15 秒后自毁，请及时复制数据。").ConfigureAwait(false);
 
         _ = Task.Run(async () =>
         {
@@ -134,7 +134,7 @@ public static class ReusableActions
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error deleting temporary file: {ex.Message}");
+                Console.WriteLine($"删除临时文件时出错：{ex.Message}");
             }
         }
     }
@@ -167,7 +167,7 @@ public static class ReusableActions
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error deleting temporary file: {ex.Message}");
+                Console.WriteLine($"删除临时文件时出错：{ex.Message}");
             }
         }
     }

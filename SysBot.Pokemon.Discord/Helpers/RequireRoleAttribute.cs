@@ -19,13 +19,13 @@ public sealed class RequireRoleAttribute(string RoleName) : PreconditionAttribut
 
         // Check if this user is a Guild User, which is the only context where roles exist
         if (context.User is not SocketGuildUser gUser)
-            return Task.FromResult(PreconditionResult.FromError("You must be in a guild to run this command."));
+            return Task.FromResult(PreconditionResult.FromError("该命令需要在服务器频道中执行。"));
 
         // If this command was executed by a user with the appropriate role, return a success
         if (gUser.Roles.Any(r => r.Name == RoleName))
             return Task.FromResult(PreconditionResult.FromSuccess());
 
         // Since it wasn't, fail
-        return Task.FromResult(PreconditionResult.FromError($"You must have a role named {RoleName} to run this command."));
+        return Task.FromResult(PreconditionResult.FromError($"你必须拥有名为 {RoleName} 的角色才能执行此命令。"));
     }
 }

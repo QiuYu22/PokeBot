@@ -13,7 +13,7 @@ public static class RecoveryNotificationHelper
 {
     private static DiscordSocketClient? _client;
     private static ulong? _notificationChannelId;
-    private static string _hubName = "Bot Hub";
+    private static string _hubName = "机器人枢纽";
 
     /// <summary>
     /// Initializes the recovery notification system with Discord client and channel.
@@ -42,12 +42,12 @@ public static class RecoveryNotificationHelper
     private static async Task OnBotCrashed(BotCrashEventArgs e)
     {
         var embed = new EmbedBuilder()
-            .WithTitle("⚠️ Bot Crash Detected")
-            .WithDescription($"**Bot**: {e.BotName}\n**Time**: {e.CrashTime:yyyy-MM-dd HH:mm:ss} UTC")
+            .WithTitle("⚠️ 检测到机器人崩溃")
+            .WithDescription($"**机器人：** {e.BotName}\n**时间：** {e.CrashTime:yyyy-MM-dd HH:mm:ss} UTC")
             .WithColor(Color.Orange)
             .WithTimestamp(DateTimeOffset.UtcNow)
-            .AddField("Status", "Attempting automatic recovery...", false)
-            .WithFooter($"{_hubName} Recovery System")
+            .AddField("状态", "正在尝试自动恢复…", false)
+            .WithFooter($"{_hubName} 恢复系统")
             .Build();
 
         await SendNotificationAsync(embed);
@@ -58,11 +58,11 @@ public static class RecoveryNotificationHelper
         if (!e.IsSuccess) // Only notify on attempts, not successes (handled separately)
         {
             var embed = new EmbedBuilder()
-                .WithTitle("🔄 Recovery Attempt")
-                .WithDescription($"**Bot**: {e.BotName}\n**Attempt**: {e.AttemptNumber}")
+                .WithTitle("🔄 正在尝试恢复")
+                .WithDescription($"**机器人：** {e.BotName}\n**第 {e.AttemptNumber} 次尝试**")
                 .WithColor(Color.Blue)
                 .WithTimestamp(DateTimeOffset.UtcNow)
-                .WithFooter($"{_hubName} Recovery System")
+                .WithFooter($"{_hubName} 恢复系统")
                 .Build();
 
             await SendNotificationAsync(embed);
@@ -72,12 +72,12 @@ public static class RecoveryNotificationHelper
     private static async Task OnRecoverySucceeded(BotRecoveryEventArgs e)
     {
         var embed = new EmbedBuilder()
-            .WithTitle("✅ Bot Recovery Successful")
-            .WithDescription($"**Bot**: {e.BotName}\n**Attempts**: {e.AttemptNumber}")
+            .WithTitle("✅ 机器人恢复成功")
+            .WithDescription($"**机器人：** {e.BotName}\n**尝试次数：** {e.AttemptNumber}")
             .WithColor(Color.Green)
             .WithTimestamp(DateTimeOffset.UtcNow)
-            .AddField("Status", "Bot is now running normally", false)
-            .WithFooter($"{_hubName} Recovery System")
+            .AddField("状态", "机器人已恢复正常运行", false)
+            .WithFooter($"{_hubName} 恢复系统")
             .Build();
 
         await SendNotificationAsync(embed);
@@ -86,13 +86,13 @@ public static class RecoveryNotificationHelper
     private static async Task OnRecoveryFailed(BotRecoveryEventArgs e)
     {
         var embed = new EmbedBuilder()
-            .WithTitle("❌ Bot Recovery Failed")
-            .WithDescription($"**Bot**: {e.BotName}\n**Attempts**: {e.AttemptNumber}")
+            .WithTitle("❌ 机器人恢复失败")
+            .WithDescription($"**机器人：** {e.BotName}\n**尝试次数：** {e.AttemptNumber}")
             .WithColor(Color.Red)
             .WithTimestamp(DateTimeOffset.UtcNow)
-            .AddField("Reason", e.FailureReason ?? "Unknown error", false)
-            .AddField("Action Required", "Manual intervention needed to restart this bot", false)
-            .WithFooter($"{_hubName} Recovery System")
+            .AddField("原因", e.FailureReason ?? "未知错误", false)
+            .AddField("需采取的行动", "需要人工干预以重新启动该机器人", false)
+            .WithFooter($"{_hubName} 恢复系统")
             .Build();
 
         await SendNotificationAsync(embed);
@@ -112,7 +112,7 @@ public static class RecoveryNotificationHelper
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Failed to send recovery notification to Discord: {ex.Message}", "RecoveryNotification");
+            LogUtil.LogError("恢复通知", $"向 Discord 发送恢复通知失败：{ex.Message}");
         }
     }
 
@@ -126,7 +126,7 @@ public static class RecoveryNotificationHelper
             .WithDescription(description)
             .WithColor(color)
             .WithTimestamp(DateTimeOffset.UtcNow)
-            .WithFooter($"{_hubName} Recovery System")
+            .WithFooter($"{_hubName} 恢复系统")
             .Build();
 
         await SendNotificationAsync(embed);
@@ -139,20 +139,20 @@ public static class RecoveryNotificationHelper
         where T : class, IConsoleBotConfig
     {
         var embedBuilder = new EmbedBuilder()
-            .WithTitle("📊 Bot Recovery Summary")
+            .WithTitle("📊 机器人恢复摘要")
             .WithColor(Color.Blue)
             .WithTimestamp(DateTimeOffset.UtcNow)
-            .WithFooter($"{_hubName} Recovery System");
+            .WithFooter($"{_hubName} 恢复系统");
 
         foreach (var bot in runner.Bots)
         {
             var state = bot.GetRecoveryState();
             if (state != null && (state.ConsecutiveFailures > 0 || state.CrashHistory.Count > 0))
             {
-                var status = bot.IsRunning ? "🟢 Running" : "🔴 Stopped";
-                var fieldValue = $"Status: {status}\n" +
-                                $"Crashes: {state.CrashHistory.Count}\n" +
-                                $"Failed Attempts: {state.ConsecutiveFailures}";
+                var status = bot.IsRunning ? "🟢 正在运行" : "🔴 已停止";
+                var fieldValue = $"状态：{status}\n" +
+                                $"崩溃次数：{state.CrashHistory.Count}\n" +
+                                $"连续失败：{state.ConsecutiveFailures}";
                 
                 embedBuilder.AddField(bot.Bot.Connection.Name, fieldValue, true);
             }
@@ -160,7 +160,7 @@ public static class RecoveryNotificationHelper
 
         if (embedBuilder.Fields.Count == 0)
         {
-            embedBuilder.WithDescription("All bots are running normally with no recent crashes.");
+            embedBuilder.WithDescription("所有机器人运行正常，近期没有崩溃记录。");
         }
 
         await SendNotificationAsync(embedBuilder.Build());

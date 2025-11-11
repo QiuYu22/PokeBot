@@ -86,7 +86,7 @@ namespace SysBot.Pokemon.Twitch
                     }
                 }
 
-                var reason = result == "Timeout" ? "Set took too long to generate." : "Unable to legalize the Pokémon.";
+                var reason = result == "超时" ? "Set took too long to generate." : "Unable to legalize the Pokémon.";
                 msg = $"Skipping trade, @{username}: {reason}";
             }
             catch (Exception ex)

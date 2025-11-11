@@ -7,7 +7,7 @@ using System.Threading;
 namespace SysBot.Base;
 
 /// <summary>
-/// Abstract class representing the communication over USB.
+/// 抽象类，用于表示通过 USB 的通信。
 /// </summary>
 public abstract class SwitchUSB : IConsoleConnection
 {
@@ -45,9 +45,9 @@ public abstract class SwitchUSB : IConsoleConnection
     {
         SwDevice = TryFindUSB();
         if (SwDevice == null)
-            throw new Exception("USB device not found.");
+            throw new Exception("未找到 USB 设备。");
         if (SwDevice is not IUsbDevice usb)
-            throw new Exception("Device is using a WinUSB driver. Use libusbK and create a filter.");
+            throw new Exception("检测到设备正在使用 WinUSB 驱动，请改用 libusbK 并创建过滤器。");
 
         lock (_sync)
         {
@@ -132,7 +132,7 @@ public abstract class SwitchUSB : IConsoleConnection
         {
             byte[] sizeOfReturn = new byte[4];
             if (reader == null)
-                throw new Exception("USB device not found or not connected.");
+                throw new Exception("未找到 USB 设备或设备未连接。");
 
             reader.Read(sizeOfReturn, 5000, out _);
             int size = BitConverter.ToInt32(sizeOfReturn, 0);
@@ -144,7 +144,7 @@ public abstract class SwitchUSB : IConsoleConnection
                 var ec = reader.Read(buffer, transfSize, Math.Min(reader.ReadBufferSize, size - transfSize), 5000, out int lenVal);
                 if (ec != ErrorCode.None)
                 {
-                    LogError($"Error while getting screenshot: {UsbDevice.LastErrorString}");
+                    LogError($"获取截图时发生错误：{UsbDevice.LastErrorString}");
                     Disconnect();
                     break;
                 }
@@ -169,7 +169,7 @@ public abstract class SwitchUSB : IConsoleConnection
         lock (_sync)
         {
             if (reader == null)
-                throw new Exception("USB device not found or not connected.");
+                throw new Exception("未找到 USB 设备或设备未连接。");
 
             // Let usb-botbase tell us the response size.
             byte[] sizeOfReturn = new byte[4];
@@ -214,7 +214,7 @@ public abstract class SwitchUSB : IConsoleConnection
     {
         byte[] sizeOfReturn = new byte[4];
         if (reader == null)
-            throw new Exception("USB device not found or not connected.");
+                throw new Exception("未找到 USB 设备或设备未连接。");
 
         reader.Read(sizeOfReturn, 5000, out _);
         reader.Read(buffer, 5000, out var lenVal);
@@ -224,7 +224,7 @@ public abstract class SwitchUSB : IConsoleConnection
     private int SendInternal(byte[] buffer)
     {
         if (writer == null)
-            throw new Exception("USB device not found or not connected.");
+            throw new Exception("未找到 USB 设备或设备未连接。");
 
         uint pack = (uint)buffer.Length + 2;
         var ec = writer.Write(BitConverter.GetBytes(pack), 2000, out _);

@@ -111,7 +111,7 @@ namespace SysBot.Pokemon.WinForms
 
         private void ConfigureButtonAppearance()
         {
-            btnActions.Text = "\u27a4 BOT MENU";
+            btnActions.Text = "\u27a4 控制菜单";
             btnActions.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnActions.ForeColor = Color.White;
             btnActions.FlatStyle = FlatStyle.Flat;
@@ -148,35 +148,36 @@ namespace SysBot.Pokemon.WinForms
                 {
                     ForeColor = Color.White,
                     BackColor = Color.Transparent,
-                    Font = new Font("Segoe UI", 9F)
+                    Font = new Font("Segoe UI", 9F),
+                    Tag = cmd
                 };
                 item.Click += (_, __) => SendCommand(cmd);
 
                 switch (cmd)
                 {
                     case BotControlCommand.Start:
-                        item.Text = "▶  Start";
+                        item.Text = "▶  启动";
                         break;
                     case BotControlCommand.Stop:
-                        item.Text = "■  Stop";
+                        item.Text = "■  停止";
                         break;
                     case BotControlCommand.Idle:
-                        item.Text = "❚❚  Idle";
+                        item.Text = "❚❚  空闲";
                         break;
                     case BotControlCommand.Resume:
-                        item.Text = "⏵  Resume";
+                        item.Text = "⏵  继续";
                         break;
                     case BotControlCommand.Restart:
-                        item.Text = "↻  Restart";
+                        item.Text = "↻  重启连接";
                         break;
                     case BotControlCommand.RebootAndStop:
-                        item.Text = "⚡  Reboot & Stop";
+                        item.Text = "⚡  重启并停止";
                         break;
                     case BotControlCommand.ScreenOnAll:
-                        item.Text = "☀  Screen On";
+                        item.Text = "☀  开启屏幕";
                         break;
                     case BotControlCommand.ScreenOffAll:
-                        item.Text = "🌙  Screen Off";
+                        item.Text = "🌙  关闭屏幕";
                         break;
                 }
 
@@ -186,7 +187,7 @@ namespace SysBot.Pokemon.WinForms
             contextMenu.Items.Add(new ToolStripSeparator());
 
             // Add recovery status item
-            var recoveryItem = new ToolStripMenuItem("📊 Recovery Status")
+            var recoveryItem = new ToolStripMenuItem("📊 恢复状态")
             {
                 ForeColor = Color.White,
                 BackColor = Color.Transparent,
@@ -195,11 +196,12 @@ namespace SysBot.Pokemon.WinForms
             recoveryItem.Click += ShowRecoveryStatus;
             contextMenu.Items.Add(recoveryItem);
 
-            var remove = new ToolStripMenuItem("╳  Remove Bot")
+            var remove = new ToolStripMenuItem("╳  移除机器人")
             {
                 ForeColor = CuztomRed,
                 BackColor = CuztomDarkBackground,
-                Font = new Font("Segoe UI", 8.5F)
+                Font = new Font("Segoe UI", 8.5F),
+                Tag = "RemoveBot"
             };
             remove.Click += (_, __) => TryRemove();
             contextMenu.Items.Add(remove);
@@ -237,12 +239,17 @@ namespace SysBot.Pokemon.WinForms
 
             foreach (var tsi in contextMenu.Items.OfType<ToolStripMenuItem>())
             {
-                if (tsi.Text != null && tsi.Text.Length >= 3)
+                switch (tsi.Tag)
                 {
-                    var text = tsi.Text[3..].Trim();
-                    tsi.Enabled = Enum.TryParse(text.Replace(" ", "").Replace("&", "And"), out BotControlCommand cmd)
-                        ? cmd.IsUsable(bot.IsRunning, bot.IsPaused)
-                        : !bot.IsRunning;
+                    case BotControlCommand cmd:
+                        tsi.Enabled = cmd.IsUsable(bot.IsRunning, bot.IsPaused);
+                        break;
+                    case string tag when tag == "RemoveBot":
+                        tsi.Enabled = !bot.IsRunning;
+                        break;
+                    default:
+                        tsi.Enabled = true;
+                        break;
                 }
             }
         }
@@ -252,7 +259,7 @@ namespace SysBot.Pokemon.WinForms
             Runner = runner;
             State = cfg;
             ReloadStatus();
-            lblConnectionInfo.Text = "Initializing...";
+            lblConnectionInfo.Text = "正在初始化...";
         }
 
         public void ReloadStatus()
@@ -278,23 +285,37 @@ namespace SysBot.Pokemon.WinForms
             // Line 3: Trade type with current time (12-hour format)
             var routineType = bot.Config.CurrentRoutineType == PokeRoutineType.Idle ? 
                 State.InitialRoutine.ToString() : bot.Config.CurrentRoutineType.ToString();
-            lblRoutineType.Text = $"{routineType} @ {DateTime.Now:h:mm:ss tt}";
+            lblRoutineType.Text = $"{routineType} @ {DateTime.Now:HH:mm:ss}";
             
             // Line 4: Current activity with arrow
             lblConnectionInfo.Text = $"\u21aa {bot.LastLogged}";
 
             var botState = ReadBotState();
             // Line 1: Status text next to pulsing indicator
-            lblStatusValue.Text = botState.ToUpper();
+            var stateUpper = botState.ToUpperInvariant();
+            var localizedStatus = stateUpper switch
+            {
+                "STOPPED" => "已停止",
+                "STOPPING" => "正在停止",
+                "IDLE" => "空闲",
+                "IDLING" => "暂停中",
+                "ERROR" => "错误",
+                "REBOOTING" => "正在重启",
+                "RECOVERING" => "正在恢复",
+                "RUNNING" => "运行中",
+                "UNKNOWN" => "未知",
+                _ => botState
+            };
+            lblStatusValue.Text = localizedStatus;
 
             // Check for recovery status
             var recoveryState = b.GetRecoveryState();
             if (recoveryState is { ConsecutiveFailures: > 0 })
             {
-                lblConnectionInfo.Text += $" [Recovery Attempts: {recoveryState.ConsecutiveFailures}]";
+                lblConnectionInfo.Text += $" [恢复尝试：{recoveryState.ConsecutiveFailures}]";
             }
 
-            switch (botState)
+            switch (stateUpper)
             {
                 case "STOPPED":
                     currentStatusColor = Color.FromArgb(100, 100, 100);
@@ -304,7 +325,7 @@ namespace SysBot.Pokemon.WinForms
                     {
                         currentStatusColor = CuztomOrange;
                         lblStatusValue.ForeColor = CuztomOrange;
-                        lblStatusValue.Text = "RECOVERING";
+                        lblStatusValue.Text = "正在恢复";
                     }
                     break;
                 case "IDLE":
@@ -402,13 +423,13 @@ namespace SysBot.Pokemon.WinForms
         {
             if (Runner?.Config.SkipConsoleBotCreation != false)
             {
-                LogUtil.LogError("No bots were created because SkipConsoleBotCreation is on!", "Hub");
+                LogUtil.LogError("SkipConsoleBotCreation 已启用，未创建任何机器人！", "Hub");
                 return;
             }
             var bot = GetBot();
             if (bot is null)
             {
-                LogUtil.LogError("Bot is null!", "BotController");
+                LogUtil.LogError("机器人实例为空！", "BotController");
                 return;
             }
 
@@ -432,7 +453,7 @@ namespace SysBot.Pokemon.WinForms
                     break;
                 case BotControlCommand.Restart:
                     {
-                        var prompt = WinFormsUtil.Prompt(MessageBoxButtons.YesNo, "Are you sure you want to restart the connection?");
+                        var prompt = WinFormsUtil.Prompt(MessageBoxButtons.YesNo, "确定要重新启动连接吗？");
                         if (prompt != DialogResult.Yes)
                             return;
 
@@ -464,7 +485,7 @@ namespace SysBot.Pokemon.WinForms
                     ExecuteScreenCommand(false);
                     break;
                 default:
-                    WinFormsUtil.Alert($"{cmd} is not a command that can be sent to the Bot.");
+                    WinFormsUtil.Alert($"{cmd} 不是可发送给机器人的指令。");
                     return;
             }
         }
@@ -473,7 +494,7 @@ namespace SysBot.Pokemon.WinForms
         {
             if (Runner is null)
             {
-                LogUtil.LogError("Runner is null - cannot execute screen command", "BotController");
+                LogUtil.LogError("Runner 为空，无法发送屏幕指令。", "BotController");
                 return;
             }
 
@@ -484,7 +505,7 @@ namespace SysBot.Pokemon.WinForms
                     var bots = Runner.Bots;
                     if (bots is null or { Count: 0 })
                     {
-                        LogUtil.LogError("No bots available to execute screen command", "BotController");
+                        LogUtil.LogError("没有可用于执行屏幕指令的机器人。", "BotController");
                         return;
                     }
 
@@ -501,24 +522,24 @@ namespace SysBot.Pokemon.WinForms
                                 var crlf = bot is SwitchRoutineExecutor<PokeBotState> { UseCRLF: true };
                                 await bot.Connection.SendAsync(SwitchCommand.SetScreen(screenOn ? ScreenState.On : ScreenState.Off, crlf), CancellationToken.None);
                                 successCount++;
-                                LogUtil.LogInfo($"Screen turned {(screenOn ? "ON" : "OFF")} for {bot.Connection.Name}", "BotController");
+                                LogUtil.LogInfo($"已为 {bot.Connection.Name}{(screenOn ? " 打开" : " 关闭")}屏幕", "BotController");
                             }
                             else
                             {
-                                LogUtil.LogError($"Cannot send screen command - bot {bot?.Connection?.Name ?? "unknown"} is not connected", "BotController");
+                                LogUtil.LogError($"无法发送屏幕指令——机器人 {bot?.Connection?.Name ?? "未知"} 未连接。", "BotController");
                             }
                         }
                         catch (Exception ex)
                         {
-                            LogUtil.LogError($"Failed to send screen command to bot: {ex.Message}", "BotController");
+                            LogUtil.LogError($"向机器人发送屏幕指令失败：{ex.Message}", "BotController");
                         }
                     }
 
-                    LogUtil.LogInfo($"Screen command sent to {successCount} of {totalCount} bots", "BotController");
+                    LogUtil.LogInfo($"已向 {successCount}/{totalCount} 个机器人发送屏幕指令", "BotController");
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.LogError($"Failed to execute screen command for all bots: {ex.Message}", "BotController");
+                    LogUtil.LogError($"批量执行屏幕指令失败：{ex.Message}", "BotController");
                 }
             });
         }
@@ -528,26 +549,26 @@ namespace SysBot.Pokemon.WinForms
             var bot = GetBot();
             if (bot is null)
             {
-                MessageBox.Show("Bot not found.", "Recovery Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("未找到机器人。", "恢复状态", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             var recoveryState = bot.GetRecoveryState();
             if (recoveryState is null)
             {
-                MessageBox.Show("Recovery service is not enabled for this bot.", "Recovery Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("该机器人未启用恢复服务。", "恢复状态", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            var status = $"Bot: {bot.Bot.Connection.Name}\n" +
-                        $"Status: {(bot.IsRunning ? "Running" : "Stopped")}\n" +
-                        $"Recovery Attempts: {recoveryState.ConsecutiveFailures}\n" +
-                        $"Total Crashes: {recoveryState.CrashHistory.Count}\n" +
-                        $"Is Recovering: {(recoveryState.IsRecovering ? "Yes" : "No")}\n";
+            var status = $"机器人：{bot.Bot.Connection.Name}\n" +
+                        $"状态：{(bot.IsRunning ? "运行中" : "已停止")}\n" +
+                        $"恢复尝试次数：{recoveryState.ConsecutiveFailures}\n" +
+                        $"总崩溃次数：{recoveryState.CrashHistory.Count}\n" +
+                        $"是否正在恢复：{(recoveryState.IsRecovering ? "是" : "否")}\n";
 
             if (recoveryState.LastRecoveryAttempt is not null)
             {
-                status += $"Last Recovery: {recoveryState.LastRecoveryAttempt.Value:yyyy-MM-dd HH:mm:ss}\n";
+                status += $"上次恢复时间：{recoveryState.LastRecoveryAttempt.Value:yyyy-MM-dd HH:mm:ss}\n";
             }
 
             if (recoveryState.CrashHistory.Count > 0)
@@ -555,11 +576,11 @@ namespace SysBot.Pokemon.WinForms
                 var lastCrash = recoveryState.CrashHistory.OrderByDescending(c => c).FirstOrDefault();
                 if (lastCrash != default)
                 {
-                    status += $"Last Crash: {lastCrash:yyyy-MM-dd HH:mm:ss}\n";
+                    status += $"最后一次崩溃：{lastCrash:yyyy-MM-dd HH:mm:ss}\n";
                 }
             }
 
-            MessageBox.Show(status, "Recovery Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(status, "恢复状态", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         public string ReadBotState()
@@ -605,7 +626,7 @@ namespace SysBot.Pokemon.WinForms
             }
             catch (Exception ex)
             {
-                LogUtil.LogError($"Error reading bot state: {ex.Message}", "BotController");
+                LogUtil.LogError($"读取机器人状态时出错：{ex.Message}", "BotController");
                 return "ERROR";
             }
         }
@@ -625,7 +646,7 @@ namespace SysBot.Pokemon.WinForms
             }
             catch (Exception ex)
             {
-                LogUtil.LogError($"Error getting bot: {ex.Message}", "BotController");
+                LogUtil.LogError($"获取机器人实例时出错：{ex.Message}", "BotController");
                 return null;
             }
         }
@@ -675,7 +696,7 @@ namespace SysBot.Pokemon.WinForms
                             }
                             catch (Exception ex)
                             {
-                                LogUtil.LogError($"Error updating bot status: {ex.Message}", "BotController");
+                                LogUtil.LogError($"更新机器人状态时出错：{ex.Message}", "BotController");
                             }
                         }
                     }));
@@ -691,7 +712,7 @@ namespace SysBot.Pokemon.WinForms
                     }
                     catch (Exception ex)
                     {
-                        LogUtil.LogError($"Error updating bot status: {ex.Message}", "BotController");
+                        LogUtil.LogError($"更新机器人状态时出错：{ex.Message}", "BotController");
                     }
                 }
             }

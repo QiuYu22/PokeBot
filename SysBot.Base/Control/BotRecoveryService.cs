@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace SysBot.Base;
 
 /// <summary>
-/// Service that monitors bot health and automatically attempts to recover crashed bots.
+/// 监控机器人健康状态并在崩溃后自动尝试恢复的服务。
 /// </summary>
 public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsoleBotConfig
 {
@@ -32,7 +32,7 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
         _config = config ?? throw new ArgumentNullException(nameof(config));
         ValidateConfiguration(_config);
         
-        // Use PeriodicTimer for better async support
+        // 使用 PeriodicTimer 以获得更好的异步支持
         _periodicTimer = new PeriodicTimer(TimeSpan.FromSeconds(5));
         _monitorTask = MonitorBotsAsync(_cancellationTokenSource.Token);
     }
@@ -40,15 +40,15 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
     private static void ValidateConfiguration(RecoveryConfiguration config)
     {
         if (config.MaxRecoveryAttempts < 1)
-            throw new ArgumentException("MaxRecoveryAttempts must be at least 1", nameof(config));
+            throw new ArgumentException("MaxRecoveryAttempts 至少应为 1。", nameof(config));
         if (config.InitialRecoveryDelaySeconds < 0)
-            throw new ArgumentException("InitialRecoveryDelaySeconds cannot be negative", nameof(config));
+            throw new ArgumentException("InitialRecoveryDelaySeconds 不能为负数。", nameof(config));
         if (config.BackoffMultiplier < 1.0)
-            throw new ArgumentException("BackoffMultiplier must be at least 1.0", nameof(config));
+            throw new ArgumentException("BackoffMultiplier 至少应为 1.0。", nameof(config));
     }
 
     /// <summary>
-    /// Registers a bot for crash monitoring and recovery.
+    /// 注册机器人以执行崩溃监控与自动恢复。
     /// </summary>
     public void RegisterBot(BotSource<T> bot)
     {
@@ -63,7 +63,7 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
     }
 
     /// <summary>
-    /// Marks a bot as intentionally stopped to prevent recovery.
+    /// 将机器人标记为人工停止，以避免触发恢复。
     /// </summary>
     public void MarkIntentionallyStopped(string botName)
     {
@@ -74,7 +74,7 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
     }
 
     /// <summary>
-    /// Clears the intentionally stopped flag for a bot.
+    /// 清除机器人的人工停止标记。
     /// </summary>
     public void ClearIntentionallyStopped(string botName)
     {
@@ -99,12 +99,12 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
             }
             catch (OperationCanceledException)
             {
-                // Expected when cancellation is requested
+                // 当收到取消请求时属于预期行为
                 break;
             }
             catch (Exception ex)
             {
-                LogUtil.LogError($"Error in bot recovery monitor: {ex.Message}", "Recovery");
+                LogUtil.LogError("恢复", $"机器人恢复监视器出错：{ex.Message}");
             }
         }
     }
@@ -122,10 +122,10 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
                 if (!_recoveryStates.TryGetValue(botName, out var state))
                     continue;
 
-                // Check if bot has crashed or stopped
+                // 检查机器人是否已崩溃或停止
                 if (!bot.IsRunning && !bot.IsStopping && !state.IsRecovering)
                 {
-                    // Check if we should attempt recovery
+                    // 判断是否应该尝试恢复
                     if (ShouldAttemptRecovery(bot, state))
                     {
                         botsToRecover.Add((bot, state));
@@ -134,12 +134,12 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
                 }
                 else if (bot.IsRunning && state.ConsecutiveFailures > 0)
                 {
-                    // Bot is running, check if it's been stable long enough to reset attempts
+                    // 机器人正在运行，检查稳定时间是否足以重置尝试次数
                     var uptime = DateTime.UtcNow - state.LastStartTime;
                     if (uptime.TotalSeconds >= _config.MinimumStableUptimeSeconds)
                     {
                         state.ConsecutiveFailures = 0;
-                        LogUtil.LogInfo("Recovery", $"Bot {botName} has been stable for {uptime.TotalMinutes:F1} minutes. Resetting recovery attempts.");
+                        LogUtil.LogInfo("恢复", $"机器人 {botName} 已稳定运行 {uptime.TotalMinutes:F1} 分钟，正在重置恢复尝试次数。");
                     }
                 }
             }
@@ -149,7 +149,7 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
             _recoveryLock.Release();
         }
 
-        // Attempt recovery for crashed bots
+        // 尝试恢复发生崩溃的机器人
         foreach (var (bot, state) in botsToRecover)
         {
             if (cancellationToken.IsCancellationRequested)
@@ -163,31 +163,31 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
     {
         var botName = bot.Bot.Connection.Name;
 
-        // Don't recover if intentionally stopped and config doesn't allow it
+        // 如果是人工停止且配置不允许恢复，则直接跳过
         if (state.IsIntentionallyStopped && !_config.RecoverIntentionalStops)
         {
             return false;
         }
 
-        // Check if we've exceeded max attempts
+        // 检查是否超过最大尝试次数
         if (state.ConsecutiveFailures >= _config.MaxRecoveryAttempts)
         {
-            LogUtil.LogError($"Bot {botName} has exceeded maximum recovery attempts ({_config.MaxRecoveryAttempts})", "Recovery");
+            LogUtil.LogError("恢复", $"机器人 {botName} 的恢复尝试次数已达到上限（{_config.MaxRecoveryAttempts} 次）。");
             return false;
         }
 
-        // Clean up old crash history
+        // 清理过期的崩溃记录
         state.RemoveOldCrashes(crash => 
             (DateTime.UtcNow - crash).TotalMinutes > _config.CrashHistoryWindowMinutes);
 
-        // Check crash frequency
+        // 检查崩溃频率是否超标
         if (state.CrashHistory.Count >= _config.MaxCrashesInWindow)
         {
-            LogUtil.LogError($"Bot {botName} has crashed {state.CrashHistory.Count} times in the last {_config.CrashHistoryWindowMinutes} minutes. Disabling recovery.", "Recovery");
+            LogUtil.LogError("恢复", $"机器人 {botName} 在最近 {_config.CrashHistoryWindowMinutes} 分钟内崩溃 {state.CrashHistory.Count} 次，已停用自动恢复。");
             return false;
         }
 
-        // Check cooldown period
+        // 检查冷却时间是否已过
         if (state.LastRecoveryAttempt.HasValue)
         {
             var timeSinceLastAttempt = DateTime.UtcNow - state.LastRecoveryAttempt.Value;
@@ -217,7 +217,7 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
 
         try
         {
-            // Notify about crash
+            // 触发崩溃通知
             BotCrashed?.Invoke(this, new BotCrashEventArgs 
             { 
                 BotName = botName, 
@@ -225,7 +225,7 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
                 AttemptNumber = state.ConsecutiveFailures 
             });
 
-            LogUtil.LogInfo($"Attempting recovery for bot {botName} (attempt {state.ConsecutiveFailures}/{_config.MaxRecoveryAttempts})", "Recovery");
+            LogUtil.LogInfo("恢复", $"正在尝试恢复机器人 {botName}（第 {state.ConsecutiveFailures}/{_config.MaxRecoveryAttempts} 次）。");
 
             if (_config.NotifyOnRecoveryAttempt)
             {
@@ -237,11 +237,11 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
                 });
             }
 
-            // Wait for backoff delay
+            // 等待退避延迟
             var delay = CalculateBackoffDelay(state.ConsecutiveFailures - 1);
             await Task.Delay(TimeSpan.FromSeconds(delay), cancellationToken).ConfigureAwait(false);
 
-            // Attempt to restart the bot
+            // 尝试重新启动机器人
             await Task.Run(() =>
             {
                 try
@@ -252,17 +252,17 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.LogError($"Failed to start bot {botName}: {ex.Message}", "Recovery");
+                    LogUtil.LogError("恢复", $"启动机器人 {botName} 失败：{ex.Message}");
                     throw;
                 }
             }).ConfigureAwait(false);
 
-            // Wait a bit to see if the bot stays running
+            // 等待片刻以确认机器人是否保持运行
             await Task.Delay(TimeSpan.FromSeconds(10), cancellationToken).ConfigureAwait(false);
 
             if (bot.IsRunning)
             {
-                LogUtil.LogInfo($"Successfully recovered bot {botName}", "Recovery");
+                LogUtil.LogInfo("恢复", $"机器人 {botName} 已成功恢复。");
                 RecoverySucceeded?.Invoke(this, new BotRecoveryEventArgs 
                 { 
                     BotName = botName, 
@@ -272,12 +272,12 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
             }
             else
             {
-                throw new Exception("Bot stopped immediately after restart");
+                throw new Exception("机器人在重启后立刻停止。");
             }
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Recovery failed for bot {botName}: {ex.Message}", "Recovery");
+            LogUtil.LogError("恢复", $"恢复机器人 {botName} 失败：{ex.Message}");
             
             if (state.ConsecutiveFailures >= _config.MaxRecoveryAttempts && _config.NotifyOnRecoveryFailure)
             {
@@ -303,17 +303,17 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
 
         _isDisposed = true;
         
-        // Cancel monitoring task
+        // 取消监控任务
         _cancellationTokenSource.Cancel();
         
         try
         {
-            // Wait for monitor task to complete
+            // 等待监控任务结束
             _monitorTask.Wait(TimeSpan.FromSeconds(5));
         }
         catch (AggregateException)
         {
-            // Task was cancelled, this is expected
+            // 任务已取消，属于预期行为
         }
         
         _periodicTimer.Dispose();
@@ -322,7 +322,7 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
     }
 
     /// <summary>
-    /// Gets the current recovery state for a bot.
+    /// 获取指定机器人的当前恢复状态。
     /// </summary>
     public BotRecoveryState? GetRecoveryState(string botName)
     {
@@ -330,7 +330,7 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
     }
 
     /// <summary>
-    /// Resets the recovery state for a bot.
+    /// 重置指定机器人的恢复状态。
     /// </summary>
     public void ResetRecoveryState(string botName)
     {
@@ -344,26 +344,26 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
     }
     
     /// <summary>
-    /// Enables the recovery service.
+    /// 启用恢复服务。
     /// </summary>
     public void EnableRecovery()
     {
         _config.EnableRecovery = true;
-        LogUtil.LogInfo("Bot recovery service enabled", "Recovery");
+        LogUtil.LogInfo("恢复", "机器人恢复服务已启用。");
     }
     
     /// <summary>
-    /// Disables the recovery service.
+    /// 停用恢复服务。
     /// </summary>
     public void DisableRecovery()
     {
         _config.EnableRecovery = false;
-        LogUtil.LogInfo("Bot recovery service disabled", "Recovery");
+        LogUtil.LogInfo("恢复", "机器人恢复服务已停用。");
     }
 }
 
 /// <summary>
-/// Configuration for the recovery service (simplified version of RecoverySettings).
+/// 恢复服务的配置项（RecoverySettings 的精简版本）。
 /// </summary>
 public class RecoveryConfiguration
 {
@@ -381,7 +381,7 @@ public class RecoveryConfiguration
 }
 
 /// <summary>
-/// Tracks the recovery state of an individual bot.
+/// 跟踪单个机器人的恢复状态。
 /// </summary>
 public class BotRecoveryState
 {
@@ -435,7 +435,7 @@ public class BotRecoveryState
 }
 
 /// <summary>
-/// Event arguments for bot recovery events.
+/// 机器人恢复事件的参数。
 /// </summary>
 public class BotRecoveryEventArgs : EventArgs
 {
@@ -446,7 +446,7 @@ public class BotRecoveryEventArgs : EventArgs
 }
 
 /// <summary>
-/// Event arguments for bot crash events.
+/// 机器人崩溃事件的参数。
 /// </summary>
 public class BotCrashEventArgs : EventArgs
 {

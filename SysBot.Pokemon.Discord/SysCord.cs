@@ -141,7 +141,7 @@ public sealed class SysCord<T> where T : PKM, new()
 
         _client.Disconnected += (exception) =>
         {
-            LogUtil.LogText($"Discord connection lost. Reason: {exception?.Message ?? "Unknown"}");
+            LogUtil.LogText($"Discord 连接已断开。原因：{exception?.Message ?? "未知"}");
             Task.Run(() => ReconnectAsync());
             return Task.CompletedTask;
         };
@@ -157,7 +157,7 @@ public sealed class SysCord<T> where T : PKM, new()
         // Prevent multiple concurrent reconnection attempts
         if (!await _reconnectSemaphore.WaitAsync(0).ConfigureAwait(false))
         {
-            LogUtil.LogText("Client is already attempting to reconnect.");
+            LogUtil.LogText("客户端正在尝试重新连接。");
             return;
         }
 
@@ -180,7 +180,7 @@ public sealed class SysCord<T> where T : PKM, new()
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    LogUtil.LogText("Reconnection attempt cancelled.");
+                    LogUtil.LogText("已取消重新连接尝试。");
                     return;
                 }
 
@@ -188,32 +188,32 @@ public sealed class SysCord<T> where T : PKM, new()
                 {
                     if (_client.ConnectionState == ConnectionState.Connected)
                     {
-                        LogUtil.LogText("Client reconnected automatically.");
+                        LogUtil.LogText("客户端已自动重新连接。");
                         return; // Already reconnected
                     }
 
                     // Check if the client is in the process of reconnecting
                     if (_client.ConnectionState == ConnectionState.Connecting)
                     {
-                        LogUtil.LogText("Waiting for automatic reconnection...");
+                        LogUtil.LogText("正在等待自动重新连接...");
                         await Task.Delay(delayBetweenRetries, cancellationToken).ConfigureAwait(false);
                         continue;
                     }
 
                     await _client.StartAsync().ConfigureAwait(false);
-                    LogUtil.LogText("Reconnected successfully.");
+                    LogUtil.LogText("重新连接成功。");
                     return;
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.LogText($"Reconnection attempt {i + 1} failed: {ex.Message}");
+                    LogUtil.LogText($"第 {i + 1} 次重新连接失败：{ex.Message}");
                     if (i < maxRetries - 1)
                         await Task.Delay(delayBetweenRetries, cancellationToken).ConfigureAwait(false);
                 }
             }
 
             // If all attempts to reconnect fail, stop and restart the bot
-            LogUtil.LogText("Failed to reconnect after maximum attempts. Restarting the bot...");
+            LogUtil.LogText("多次尝试重新连接失败，正在重启机器人...");
 
             try
             {
@@ -226,20 +226,20 @@ public sealed class SysCord<T> where T : PKM, new()
 
                 // Restart the bot
                 await _client.StartAsync().ConfigureAwait(false);
-                LogUtil.LogText("Bot restarted successfully.");
+                LogUtil.LogText("机器人重启成功。");
             }
             catch (Exception ex)
             {
-                LogUtil.LogText($"Failed to restart bot: {ex.Message}");
+                LogUtil.LogText($"机器人重启失败：{ex.Message}");
             }
         }
         catch (OperationCanceledException)
         {
-            LogUtil.LogText("Reconnection cancelled.");
+            LogUtil.LogText("已取消重新连接。");
         }
         catch (Exception ex)
         {
-            LogUtil.LogText($"Unexpected error in ReconnectAsync: {ex.Message}");
+            LogUtil.LogText($"ReconnectAsync 中出现未预期的错误：{ex.Message}");
         }
         finally
         {
@@ -253,13 +253,19 @@ public sealed class SysCord<T> where T : PKM, new()
             return;
 
         var botName = string.IsNullOrEmpty(SysCordSettings.HubConfig.BotName) ? "SysBot" : SysCordSettings.HubConfig.BotName;
-        var fullStatusMessage = $"**Status**: {botName} is {status}!";
+        var statusText = status switch
+        {
+            "Online" => "上线",
+            "Offline" => "离线",
+            _ => status
+        };
+        var fullStatusMessage = $"**状态**：{botName} 当前{statusText}！";
         var thumbnailUrl = status == "Online"
             ? "https://raw.githubusercontent.com/hexbyt3/sprites/main/botgo.png"
             : "https://raw.githubusercontent.com/hexbyt3/sprites/main/botstop.png";
 
         var embed = new EmbedBuilder()
-            .WithTitle("Bot Status Report")
+            .WithTitle("机器人状态报告")
             .WithDescription(fullStatusMessage)
             .WithColor(EmbedColorConverter.ToDiscordColor(color))
             .WithThumbnailUrl(thumbnailUrl)
@@ -307,26 +313,26 @@ public sealed class SysCord<T> where T : PKM, new()
                         }
                         catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions)
                         {
-                            LogUtil.LogInfo("SysCord", $"Cannot update channel name for {channelId}: Missing Manage Channel permission");
+                            LogUtil.LogInfo("SysCord", $"无法更新频道 {channelId} 的名称：缺少“管理频道”权限");
                         }
                         catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.RequestEntityTooLarge)
                         {
-                            LogUtil.LogInfo("SysCord", $"Cannot update channel name for {channelId}: Rate limited");
+                            LogUtil.LogInfo("SysCord", $"无法更新频道 {channelId} 的名称：受到速率限制");
                         }
                         catch (Exception ex)
                         {
-                            LogUtil.LogInfo("SysCord", $"Failed to update channel name for {channelId}: {ex.Message}");
+                            LogUtil.LogInfo("SysCord", $"更新频道 {channelId} 名称失败：{ex.Message}");
                         }
                     }
                 }
                 else
                 {
-                    LogUtil.LogInfo("SysCord", $"Channel {channelId} is not a text channel or could not be found");
+                    LogUtil.LogInfo("SysCord", $"频道 {channelId} 不是文本频道或无法找到");
                 }
             }
             catch (Exception ex)
             {
-                LogUtil.LogInfo("SysCord", $"AnnounceBotStatus: Exception in channel {channelId}: {ex.Message}");
+                LogUtil.LogInfo("SysCord", $"AnnounceBotStatus：频道 {channelId} 发生异常：{ex.Message}");
             }
         }
     }
@@ -339,7 +345,7 @@ public sealed class SysCord<T> where T : PKM, new()
         }
         catch (Exception ex)
         {
-            LogUtil.LogText($"HandleBotStart: Exception when announcing bot start: {ex.Message}");
+            LogUtil.LogText($"HandleBotStart：在广播机器人启动时发生异常：{ex.Message}");
         }
     }
 
@@ -351,7 +357,7 @@ public sealed class SysCord<T> where T : PKM, new()
         }
         catch (Exception ex)
         {
-            LogUtil.LogText($"HandleBotStop: Exception when announcing bot stop: {ex.Message}");
+            LogUtil.LogText($"HandleBotStop：在广播机器人停止时发生异常：{ex.Message}");
         }
     }
 
@@ -380,7 +386,7 @@ public sealed class SysCord<T> where T : PKM, new()
         // Hook up the recovery events
         RecoveryNotificationHelper.HookRecoveryEvents(recoveryService);
         
-        LogUtil.LogInfo("Recovery notifications initialized for Discord", "Recovery");
+        LogUtil.LogInfo("Recovery", "已为 Discord 初始化恢复通知");
     }
 
     public async Task InitCommands()
@@ -437,9 +443,9 @@ public sealed class SysCord<T> where T : PKM, new()
         catch (OperationCanceledException)
         {
             // Handle the cancellation and perform cleanup tasks
-            LogUtil.LogText("MainAsync: Bot is disconnecting due to cancellation...");
+            LogUtil.LogText("MainAsync：因取消操作，机器人正在断开连接...");
             await AnnounceBotStatus("Offline", EmbedColorOption.Red);
-            LogUtil.LogText("MainAsync: Cleanup tasks completed.");
+            LogUtil.LogText("MainAsync：清理任务已完成。");
         }
         finally
         {
@@ -487,12 +493,12 @@ public sealed class SysCord<T> where T : PKM, new()
 
     private static Task Log(LogMessage msg)
     {
-        var text = $"[{msg.Severity,8}] {msg.Source}: {msg.Message} {msg.Exception}";
+        var text = $"[{msg.Severity,8}] {msg.Source}：{msg.Message} {msg.Exception}";
         Console.ForegroundColor = GetTextColor(msg.Severity);
         Console.WriteLine($"{DateTime.Now,-19} {text}");
         Console.ResetColor();
 
-        LogUtil.LogText($"SysCord: {text}");
+        LogUtil.LogText($"SysCord：{text}");
 
         return Task.CompletedTask;
     }
@@ -505,16 +511,16 @@ public sealed class SysCord<T> where T : PKM, new()
 
         var responses = new List<string>
         {
-            "You're welcome! ❤️",
-            "No problem at all!",
-            "Anytime, glad to help!",
-            "It's my pleasure! ❤️",
-            "Not a problem! You're welcome!",
-            "Always here to help!",
-            "Glad I could assist!",
-            "Happy to serve!",
-            "Of course! You're welcome!",
-            "Sure thing!"
+            "不客气！❤️",
+            "完全没问题！",
+            "随时恭候，很高兴帮到你！",
+            "乐意效劳！❤️",
+            "别客气！欢迎继续使用！",
+            "一直都在为你提供帮助！",
+            "很高兴能协助你！",
+            "服务就是我的使命！",
+            "当然可以！不必客气！",
+            "包在我身上！"
         };
 
         var randomResponse = responses[new Random().Next(responses.Count)];
@@ -590,7 +596,7 @@ public sealed class SysCord<T> where T : PKM, new()
                 var command = content.Split(' ')[0][1..];
                 if (_validCommands.Contains(command))
                 {
-                    await SafeSendMessageAsync(msg.Channel, $"Incorrect prefix! The correct command is **{correctPrefix}{command}**").ConfigureAwait(false);
+                    await SafeSendMessageAsync(msg.Channel, $"前缀使用错误！正确的指令为 **{correctPrefix}{command}**").ConfigureAwait(false);
                     return;
                 }
             }
@@ -602,21 +608,21 @@ public sealed class SysCord<T> where T : PKM, new()
         }
         catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions) // Missing Permissions
         {
-            await Log(new LogMessage(LogSeverity.Warning, "Command", $"Missing permissions to handle a message in channel {arg.Channel.Name}")).ConfigureAwait(false);
+            await Log(new LogMessage(LogSeverity.Warning, "指令", $"缺少在频道 {arg.Channel.Name} 处理中消息所需的权限")).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
-            await Log(new LogMessage(LogSeverity.Error, "Command", $"Unhandled exception in HandleMessageAsync: {ex.Message}", ex)).ConfigureAwait(false);
+            await Log(new LogMessage(LogSeverity.Error, "指令", $"HandleMessageAsync 中出现未处理的异常：{ex.Message}", ex)).ConfigureAwait(false);
         }
         finally
         {
             stopwatch.Stop();
             if (stopwatch.ElapsedMilliseconds > 1000) // Log if processing takes more than 1 second
             {
-                await Log(new LogMessage(LogSeverity.Warning, "Gateway",
-                    $"A MessageReceived handler is blocking the gateway task. " +
-                    $"Method: HandleMessageAsync, Execution Time: {stopwatch.ElapsedMilliseconds}ms, " +
-                    $"Message Content: {arg.Content[..Math.Min(arg.Content.Length, 100)]}...")).ConfigureAwait(false);
+                await Log(new LogMessage(LogSeverity.Warning, "网关",
+                    $"MessageReceived 处理程序阻塞了网关任务。" +
+                    $" 方法：HandleMessageAsync，执行耗时：{stopwatch.ElapsedMilliseconds} 毫秒，" +
+                    $"消息内容：{arg.Content[..Math.Min(arg.Content.Length, 100)]}...")).ConfigureAwait(false);
             }
         }
     }
@@ -640,7 +646,7 @@ public sealed class SysCord<T> where T : PKM, new()
         TradeStartModule<T>.RestoreTradeStarting(_client);
 
         // Don't let it load more than once in case of Discord hiccups.
-        await Log(new LogMessage(LogSeverity.Info, "LoadLoggingAndEcho()", "Logging and Echo channels loaded!")).ConfigureAwait(false);
+        await Log(new LogMessage(LogSeverity.Info, "加载日志与回声", "日志与回声频道已加载！")).ConfigureAwait(false);
         MessageChannelsLoaded = true;
 
         var game = Hub.Config.Discord.BotGameStatus;
@@ -714,26 +720,26 @@ public sealed class SysCord<T> where T : PKM, new()
             // Check if the user is in the bannedIDs list
             if (msg.Author is SocketGuildUser user && AbuseSettings.BannedIDs.List.Any(z => z.ID == user.Id))
             {
-                await SysCord<T>.SafeSendMessageAsync(msg.Channel, "You are banned from using this bot.").ConfigureAwait(false);
+                await SysCord<T>.SafeSendMessageAsync(msg.Channel, "你已被禁止使用此机器人。").ConfigureAwait(false);
                 return true;
             }
 
             var mgr = Manager;
             if (!mgr.CanUseCommandUser(msg.Author.Id))
             {
-                await SysCord<T>.SafeSendMessageAsync(msg.Channel, "You are not permitted to use this command.").ConfigureAwait(false);
+                await SysCord<T>.SafeSendMessageAsync(msg.Channel, "你没有权限使用该指令。").ConfigureAwait(false);
                 return true;
             }
 
             if (!mgr.CanUseCommandChannel(msg.Channel.Id) && msg.Author.Id != mgr.Owner)
             {
                 if (Hub.Config.Discord.ReplyCannotUseCommandInChannel)
-                    await SysCord<T>.SafeSendMessageAsync(msg.Channel, "You can't use that command here.").ConfigureAwait(false);
+                    await SysCord<T>.SafeSendMessageAsync(msg.Channel, "此频道无法使用该指令。").ConfigureAwait(false);
                 return true;
             }
 
-            var guild = msg.Channel is SocketGuildChannel g ? g.Guild.Name : "Unknown Guild";
-            await Log(new LogMessage(LogSeverity.Info, "Command", $"Executing command from {guild}#{msg.Channel.Name}:@{msg.Author.Username}. Content: {msg}")).ConfigureAwait(false);
+            var guild = msg.Channel is SocketGuildChannel g ? g.Guild.Name : "未知服务器";
+            await Log(new LogMessage(LogSeverity.Info, "指令", $"正在执行来自 {guild}#{msg.Channel.Name} 的指令：@{msg.Author.Username}。内容：{msg}")).ConfigureAwait(false);
 
             var result = await _commands.ExecuteAsync(context, pos, _services).ConfigureAwait(false);
 
@@ -747,7 +753,7 @@ public sealed class SysCord<T> where T : PKM, new()
         }
         catch (Exception ex)
         {
-            await Log(new LogMessage(LogSeverity.Error, "Command", $"Error executing command: {ex.Message}", ex)).ConfigureAwait(false);
+            await Log(new LogMessage(LogSeverity.Error, "指令", $"执行指令时出错：{ex.Message}", ex)).ConfigureAwait(false);
             return false;
         }
     }
@@ -760,11 +766,11 @@ public sealed class SysCord<T> where T : PKM, new()
         }
         catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions) // Missing Permissions
         {
-            await Log(new LogMessage(LogSeverity.Warning, "Command", $"Missing permissions to send message in channel {channel.Name}")).ConfigureAwait(false);
+            await Log(new LogMessage(LogSeverity.Warning, "指令", $"缺少在频道 {channel.Name} 发送消息的权限")).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
-            await Log(new LogMessage(LogSeverity.Error, "Command", $"Error sending message: {ex.Message}", ex)).ConfigureAwait(false);
+            await Log(new LogMessage(LogSeverity.Error, "指令", $"发送消息时出错：{ex.Message}", ex)).ConfigureAwait(false);
         }
     }
 }
