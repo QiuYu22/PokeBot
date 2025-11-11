@@ -157,11 +157,7 @@ public static class Helpers<T> where T : PKM, new()
         {
             return Task.FromResult(new ProcessedPokemonResult<T>
             {
-<<<<<<< HEAD
-                Error = $"无法解析 Showdown 配置：\n{string.Join("\n", set.InvalidLines)}",
-=======
-                Error = $"Unable to parse Showdown Set:\n{string.Join("\n", actualInvalidLines.Select(l => l.Value))}",
->>>>>>> 2fb379e (Fix Discord bot to allow batch commands in showdown sets)
+                Error = $"无法解析 Showdown 配置：\n{string.Join("\n", actualInvalidLines.Select(l => l.Value))}",
                 ShowdownSet = set
             });
         }

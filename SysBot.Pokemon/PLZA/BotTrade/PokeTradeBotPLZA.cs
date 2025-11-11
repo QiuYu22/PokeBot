@@ -194,7 +194,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             var gameState = await GetGameState(token).ConfigureAwait(false);
             if (gameState != 0x01 && gameState != 0x02)
             {
-                Log("Connection interrupted. Restarting...");
+                Log("连接中断，正在重新启动...");
                 return TradePartnerWaitResult.KickedToMenu;
             }
 
@@ -204,7 +204,7 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
                 var currentCode = await GetCurrentLinkCode(token).ConfigureAwait(false);
                 if (currentCode == 0)
                 {
-                    Log("Connection error. Restarting...");
+                    Log("连接错误，正在重新启动...");
                     return TradePartnerWaitResult.KickedToMenu;
                 }
             }
@@ -662,6 +662,13 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
         var finalOffset = await ResolvePointer(Offsets.BoxStartPokemonPointer, token).ConfigureAwait(false);
         _cachedBoxOffset = finalOffset;
         return finalOffset;
+    }
+   
+    private async Task<int> GetCurrentLinkCode(CancellationToken token)
+    {
+        var offset = await SwitchConnection.PointerAll(Offsets.LinkCodeTradePointer, token).ConfigureAwait(false);
+        var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, 4, token).ConfigureAwait(false);
+        return BitConverter.ToInt32(data, 0);
     }
 
     private async Task<bool> CheckIfOnOverworld(CancellationToken token)
