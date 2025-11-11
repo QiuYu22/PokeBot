@@ -1857,13 +1857,13 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
 
         // Show them what we received if they have ReturnPKMs enabled
         if (Hub.Config.Discord.ReturnPKMs)
-            poke.SendNotification(this, offered, $"Here's what you showed me - {GameInfo.GetStrings("en").Species[offered.Species]}");
+            poke.SendNotification(this, offered, $"这是你展示的宝可梦 —— {GameInfo.GetStrings("zh-Hans").Species[offered.Species]}");
 
         // Make sure the Pokemon is legal before we clone it
         var la = new LegalityAnalysis(offered);
         if (!la.Valid)
         {
-            Log($"Clone request (from {poke.Trainer.TrainerName}) has detected an invalid Pokémon: {GameInfo.GetStrings("en").Species[offered.Species]}.");
+            Log($"克隆请求（来自 {poke.Trainer.TrainerName}）检测到一只不合法的宝可梦：{GameInfo.GetStrings("zh-Hans").Species[offered.Species]}。");
             if (DumpSetting.Dump)
                 DumpPokemon(DumpSetting.DumpFolder, "hacked", offered);
 
@@ -1882,12 +1882,12 @@ public class PokeTradeBotPLZA(PokeTradeHub<PA9> Hub, PokeBotState Config) : Poke
             clone.Tracker = 0;
 
         // Put the cloned Pokemon in our trade box
-        Log($"Cloning {GameInfo.GetStrings("en").Species[clone.Species]}...");
+        Log($"正在克隆 {GameInfo.GetStrings("zh-Hans").Species[clone.Species]}……");
         var boxOffset = await GetBoxStartOffset(token).ConfigureAwait(false);
         await SetBoxPokemonAbsolute(boxOffset, clone, token, sav).ConfigureAwait(false);
 
-        poke.SendNotification(this, $"**Cloned your {GameInfo.GetStrings("en").Species[clone.Species]}!** Now press B to cancel your offer and trade me a Pokémon you don't want.");
-        Log($"Cloned a {GameInfo.GetStrings("en").Species[clone.Species]}. Waiting for user to change their Pokémon...");
+        poke.SendNotification(this, $"**已克隆你的 {GameInfo.GetStrings("zh-Hans").Species[clone.Species]}！**现在按下 B 取消当前出示，并提供你不介意的宝可梦。");
+        Log($"已经克隆一只 {GameInfo.GetStrings("zh-Hans").Species[clone.Species]}。等待对方更换展示的宝可梦……");
 
         // Wait for user to change their Pokemon (compare to the original offered Pokemon's EC)
         var offeredEC = await SwitchConnection.ReadBytesAbsoluteAsync(TradePartnerOfferedOffset, 8, token).ConfigureAwait(false);

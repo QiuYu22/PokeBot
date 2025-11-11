@@ -25,7 +25,7 @@ namespace SysBot.Pokemon.Twitch
             BatchTradeNumber = batchTradeNumber;
             TotalBatchTrades = totalBatchTrades;
 
-            LogUtil.LogText($"Created trade details for {Username} - {Code}");
+            LogUtil.LogText($"已创建 {Username} 的交易详情 - {Code}");
         }
 
         public Action<PokeRoutineExecutor<T>>? OnFinish { private get; set; }
@@ -80,7 +80,7 @@ namespace SysBot.Pokemon.Twitch
 
         public void SendNotification(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, T result, string message)
         {
-            var msg = $"Details for {result.FileName}: " + message;
+            var msg = $"文件 {result.FileName} 的详情: {message}";
             LogUtil.LogText(msg);
             SendMessage(msg, Settings.NotifyDestination);
         }
@@ -88,7 +88,7 @@ namespace SysBot.Pokemon.Twitch
         public void TradeCanceled(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeResult msg)
         {
             OnFinish?.Invoke(routine);
-            var line = $"@{info.Trainer.TrainerName}: Trade canceled, {msg}";
+            var line = $"@{info.Trainer.TrainerName}: 交易已取消，{msg.ToLocalizedString()}";
             LogUtil.LogText(line);
             SendMessage(line, Settings.TradeCanceledDestination);
         }
@@ -103,16 +103,16 @@ namespace SysBot.Pokemon.Twitch
             {
                 if (BatchTradeNumber == TotalBatchTrades)
                 {
-                    message = $"@{info.Trainer.TrainerName}: All {TotalBatchTrades} trades completed! Thank you for trading!";
+                    message = $"@{info.Trainer.TrainerName}: 已完成全部 {TotalBatchTrades} 次交易！感谢你的参与！";
                 }
                 else
                 {
-                    message = $"@{info.Trainer.TrainerName}: Trade {BatchTradeNumber}/{TotalBatchTrades} completed!";
+                    message = $"@{info.Trainer.TrainerName}: 已完成第 {BatchTradeNumber}/{TotalBatchTrades} 次交易！";
                 }
             }
             else
             {
-                message = $"@{info.Trainer.TrainerName}: " + (tradedToUser != 0 ? $"Trade finished. Enjoy your {(Species)tradedToUser}!" : "Trade finished!");
+                message = $"@{info.Trainer.TrainerName}: " + (tradedToUser != 0 ? $"交易已完成。祝你喜爱 {(Species)tradedToUser}！" : "交易已完成！");
             }
 
             LogUtil.LogText(message);
@@ -122,10 +122,10 @@ namespace SysBot.Pokemon.Twitch
         public void TradeInitialize(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info)
         {
             var receive = Data.Species == 0 ? string.Empty : Data.IsEgg || (Data.Species == 132 && Data.IsNicknamed) ? $" ({Data.Species} ({Data.Nickname}))" : $" ({Data.Nickname})";
-            var msg = $"@{info.Trainer.TrainerName} (ID: {info.ID}): Initializing trade{receive} with you. Please be ready. Use the code you whispered me to search!";
+            var msg = $"@{info.Trainer.TrainerName} (ID: {info.ID}): 正在为你初始化交易{receive}。请做好准备。使用你私信给我的密码进行搜索！";
             var dest = Settings.TradeStartDestination;
             if (dest == TwitchMessageDestination.Whisper)
-                msg += $" Your trade code is: {info.Code:0000 0000}";
+                msg += $" 你的交易密码是: {info.Code:0000 0000}";
             LogUtil.LogText(msg);
             SendMessage(msg, dest);
         }
@@ -134,12 +134,12 @@ namespace SysBot.Pokemon.Twitch
         {
             var name = Info.TrainerName;
             var trainer = string.IsNullOrEmpty(name) ? string.Empty : $", @{name}";
-            var message = $"I'm waiting for you{trainer}! My IGN is {routine.InGameName}.";
+            var message = $"我正在等待你{trainer}！我的游戏内名称是 {routine.InGameName}。";
             var dest = Settings.TradeSearchDestination;
             if (dest == TwitchMessageDestination.Channel)
-                message += " Use the code you whispered me to search!";
+                message += " 使用你私信给我的密码进行搜索！";
             else if (dest == TwitchMessageDestination.Whisper)
-                message += $" Your trade code is: {info.Code:0000 0000}";
+                message += $" 你的交易密码是: {info.Code:0000 0000}";
             LogUtil.LogText(message);
             SendMessage($"@{info.Trainer.TrainerName} {message}", dest);
         }

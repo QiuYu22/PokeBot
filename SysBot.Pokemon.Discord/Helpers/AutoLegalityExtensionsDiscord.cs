@@ -3,6 +3,7 @@ using Discord.WebSocket;
 using PKHeX.Core;
 using PKHeX.Core.AutoMod;
 using SysBot.Base;
+using SysBot.Pokemon;
 using SysBot.Pokemon.Helpers;
 using System;
 using System.Threading.Tasks;
@@ -64,7 +65,7 @@ public static class AutoLegalityExtensionsDiscord
 
     public static Task ReplyWithLegalizedSetAsync(this ISocketMessageChannel channel, string content, byte gen)
     {
-        content = ReusableActions.StripCodeBlock(content);
+        content = StripAndTranslateByGeneration(content, gen);
         var set = new ShowdownSet(content);
         var sav = AutoLegalityWrapper.GetTrainerInfo(gen);
         return channel.ReplyWithLegalizedSetAsync(sav, set);
@@ -73,6 +74,7 @@ public static class AutoLegalityExtensionsDiscord
     public static Task ReplyWithLegalizedSetAsync<T>(this ISocketMessageChannel channel, string content) where T : PKM, new()
     {
         content = ReusableActions.StripCodeBlock(content);
+        content = ShowdownTranslator<T>.TranslateIfChinese(content);
         var set = new ShowdownSet(content);
         var sav = AutoLegalityWrapper.GetTrainerInfo<T>();
         return channel.ReplyWithLegalizedSetAsync(sav, set);
@@ -105,5 +107,18 @@ public static class AutoLegalityExtensionsDiscord
 
         var msg = $"这是你的合法化 PKM：{download.SanitizedFileName}！\n{ReusableActions.GetFormattedShowdownText(legal)}";
         await channel.SendPKMAsync(legal, msg).ConfigureAwait(false);
+    }
+
+    private static string StripAndTranslateByGeneration(string content, byte gen)
+    {
+        content = ReusableActions.StripCodeBlock(content);
+
+        return gen switch
+        {
+            9 => ShowdownTranslator<PK9>.TranslateIfChinese(content),
+            8 when content.Contains("头目", StringComparison.Ordinal) => ShowdownTranslator<PA8>.TranslateIfChinese(content),
+            8 => ShowdownTranslator<PK8>.TranslateIfChinese(content),
+            _ => ShowdownTranslator<PK9>.TranslateIfChinese(content),
+        };
     }
 }

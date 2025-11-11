@@ -5,6 +5,7 @@ using Discord.WebSocket;
 using PKHeX.Core;
 using PKHeX.Core.AutoMod;
 using SysBot.Base;
+using SysBot.Pokemon;
 using SysBot.Pokemon.Helpers;
 using System;
 using System.Collections.Generic;
@@ -124,6 +125,8 @@ public static class Helpers<T> where T : PKM, new()
     public static Task<ProcessedPokemonResult<T>> ProcessShowdownSetAsync(string content, bool ignoreAutoOT = false)
     {
         content = ReusableActions.StripCodeBlock(content);
+
+        content = ShowdownTranslator<T>.TranslateIfChinese(content);
         bool isEgg = TradeExtensions<T>.IsEggCheck(content);
 
         if (!ShowdownParsing.TryParseAnyLanguage(content, out ShowdownSet? set) || set == null || set.Species == 0)

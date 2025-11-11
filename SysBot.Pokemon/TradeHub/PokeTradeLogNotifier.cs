@@ -65,7 +65,7 @@ public class PokeTradeLogNotifier<T> : IPokeTradeNotifier<T> where T : PKM, new(
     public void TradeCanceled(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeResult msg)
     {
         var batchInfo = info.TotalBatchTrades > 1 ? $"[批量交易 {BatchTradeNumber}/{info.TotalBatchTrades}] " : "";
-        LogUtil.LogInfo(routine.Connection.Label, $"{batchInfo}正在取消与 {info.Trainer.TrainerName} 的交易，原因：{msg}。");
+        LogUtil.LogInfo(routine.Connection.Label, $"{batchInfo}正在取消与 {info.Trainer.TrainerName} 的交易，原因：{msg.ToLocalizedString()}。");
         OnFinish?.Invoke(routine);
     }
 

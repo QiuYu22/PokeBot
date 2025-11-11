@@ -37,7 +37,7 @@ public sealed record QueueCheckResult<T> where T : PKM, new()
 
         var pk = Detail.Trade.TradeData;
         if (pk.Species != 0)
-            msg += $"，预计获得：{GameInfo.GetStrings("en").Species[pk.Species]}";
+            msg += $"，预计获得：{GameInfo.GetStrings("zh-Hans").Species[pk.Species]}";
 
         if (TotalBatchTrades > 1)
             msg += $"（批量交易 {BatchNumber}/{TotalBatchTrades}）";

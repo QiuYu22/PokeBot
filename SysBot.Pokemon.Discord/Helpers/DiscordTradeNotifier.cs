@@ -257,9 +257,10 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
         OnFinish?.Invoke(routine);
         StopPeriodicUpdates();
 
+        var reason = msg.ToLocalizedString();
         var cancelMessage = TotalBatchTrades > 1
-            ? $"批量交易已取消：{msg}。剩余的交易均已终止。"
-            : msg.ToString();
+            ? $"批量交易已取消：{reason}。剩余的交易均已终止。"
+            : reason;
 
         EmbedHelper.SendTradeCanceledEmbedAsync(Trader, cancelMessage).ConfigureAwait(false);
     }

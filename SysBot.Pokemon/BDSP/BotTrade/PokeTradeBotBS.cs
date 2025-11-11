@@ -586,12 +586,12 @@ public class PokeTradeBotBS : PokeRoutineExecutor8BS, ICountBot, ITradeBot, IDis
     private async Task<(PB8 toSend, PokeTradeResult check)> HandleClone(SAV8BS sav, PokeTradeDetail<PB8> poke, PB8 offered, CancellationToken token)
     {
         if (Hub.Config.Discord.ReturnPKMs)
-            poke.SendNotification(this, offered, $"这是你展示的宝可梦 —— {GameInfo.GetStrings("en").Species[offered.Species]}");
+            poke.SendNotification(this, offered, $"这是你展示的宝可梦 —— {GameInfo.GetStrings("zh-Hans").Species[offered.Species]}");
 
         var la = new LegalityAnalysis(offered);
         if (!la.Valid)
         {
-            Log($"克隆请求（来自 {poke.Trainer.TrainerName}）检测到一只不合法的宝可梦：{GameInfo.GetStrings("en").Species[offered.Species]}。");
+            Log($"克隆请求（来自 {poke.Trainer.TrainerName}）检测到一只不合法的宝可梦：{GameInfo.GetStrings("zh-Hans").Species[offered.Species]}。");
             if (DumpSetting.Dump)
                 DumpPokemon(DumpSetting.DumpFolder, "hacked", offered);
 
@@ -607,8 +607,8 @@ public class PokeTradeBotBS : PokeRoutineExecutor8BS, ICountBot, ITradeBot, IDis
         if (Hub.Config.Legality.ResetHOMETracker)
             clone.Tracker = 0;
 
-        poke.SendNotification(this, $"**已克隆你的 {GameInfo.GetStrings("en").Species[clone.Species]}！**\n现在按下 B 取消当前出示，并提供你不介意的宝可梦。");
-        Log($"已克隆一只 {GameInfo.GetStrings("en").Species[clone.Species]}。等待玩家更换展示的宝可梦…");
+        poke.SendNotification(this, $"**已克隆你的 {GameInfo.GetStrings("zh-Hans").Species[clone.Species]}！**\n现在按下 B 取消当前出示，并提供你不介意的宝可梦。");
+        Log($"已克隆一只 {GameInfo.GetStrings("zh-Hans").Species[clone.Species]}。等待玩家更换展示的宝可梦…");
 
         // For BDSP, we need to read from LinkTradePokemonOffset instead of TradePartnerOfferedOffset
         var partnerFound = await ReadUntilChanged(LinkTradePokemonOffset, await SwitchConnection.ReadBytesAbsoluteAsync(LinkTradePokemonOffset, 8, token).ConfigureAwait(false), 15_000, 0_200, false, true, token).ConfigureAwait(false);
@@ -647,7 +647,7 @@ public class PokeTradeBotBS : PokeRoutineExecutor8BS, ICountBot, ITradeBot, IDis
         if (token.IsCancellationRequested) return (offered, PokeTradeResult.RoutineCancel);
 
         if (Hub.Config.Discord.ReturnPKMs)
-            poke.SendNotification(this, offered, $"这是你展示的宝可梦 —— {GameInfo.GetStrings("en").Species[offered.Species]}");
+            poke.SendNotification(this, offered, $"这是你展示的宝可梦 —— {GameInfo.GetStrings("zh-Hans").Species[offered.Species]}");
 
         var adOT = TradeExtensions<PB8>.HasAdName(offered, out _);
         var laInit = new LegalityAnalysis(offered);
@@ -779,7 +779,7 @@ public class PokeTradeBotBS : PokeRoutineExecutor8BS, ICountBot, ITradeBot, IDis
         else if (config.LedyQuitIfNoMatch)
         {
             var nickname = offered.IsNicknamed ? $"（昵称：\"{offered.Nickname}\"）" : string.Empty;
-            poke.SendNotification(this, $"未找到与 {GameInfo.GetStrings("en").Species[offered.Species]}{nickname} 相匹配的交换请求。");
+            poke.SendNotification(this, $"未找到与 {GameInfo.GetStrings("zh-Hans").Species[offered.Species]}{nickname} 相匹配的交换请求。");
             return (toSend, PokeTradeResult.TrainerRequestBad);
         }
 

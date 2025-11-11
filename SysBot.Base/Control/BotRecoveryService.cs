@@ -40,11 +40,11 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
     private static void ValidateConfiguration(RecoveryConfiguration config)
     {
         if (config.MaxRecoveryAttempts < 1)
-            throw new ArgumentException("MaxRecoveryAttempts 至少应为 1。", nameof(config));
+            throw new ArgumentException("配置参数 '最大连续恢复次数' 必须至少为 1。", nameof(config));
         if (config.InitialRecoveryDelaySeconds < 0)
-            throw new ArgumentException("InitialRecoveryDelaySeconds 不能为负数。", nameof(config));
+            throw new ArgumentException("配置参数 '首次恢复延迟（秒）' 不能为负数。", nameof(config));
         if (config.BackoffMultiplier < 1.0)
-            throw new ArgumentException("BackoffMultiplier 至少应为 1.0。", nameof(config));
+            throw new ArgumentException("配置参数 '延迟倍增系数' 必须至少为 1.0。", nameof(config));
     }
 
     /// <summary>

@@ -50,8 +50,8 @@ public static class ReusableActions
         {
             var index = newShowdown.FindIndex(x => x.Contains("Shiny: Yes"));
             if (pkm.ShinyXor == 0 || pkm.FatefulEncounter)
-                newShowdown[index] = "Shiny:Square\r";
-            else newShowdown[index] = "Shiny:Star\r";
+                newShowdown[index] = "Shiny:square\r";
+            else newShowdown[index] = "Shiny:star\r";
         }
 
         newShowdown.InsertRange(1, [$"OT: {pkm.OriginalTrainerName}", $"TID: {pkm.DisplayTID}", $"SID: {pkm.DisplaySID}", $"OTGender: {(Gender)pkm.OriginalTrainerGender}", $"语言: {(LanguageID)pkm.Language}"]);

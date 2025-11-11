@@ -9,65 +9,126 @@ namespace SysBot.Pokemon.Helpers;
 
 public abstract class TradeExtensions<T> where T : PKM, new()
 {
-    public static readonly string[] MarkTitle =
+    public static readonly string[] MarkTitleEn =
+    [
+        " The Peckish",
+            " The Sleepy",
+            " The Dozy",
+            " The Early Riser",
+            " The Cloud Watcher",
+            " The Sodden",
+            " The Thunderstruck",
+            " The Snow Frolicker",
+            " The Shivering",
+            " The Parched",
+            " The Sandswept",
+            " The Mist Drifter",
+            " The Chosen One",
+            " The Catch of The Day",
+            " The Curry Connoisseur",
+            " The Sociable",
+            " The Recluse",
+            " The Rowdy",
+            " The Spacey",
+            " The Anxious",
+            " The Giddy",
+            " The Radiant",
+            " The Serene",
+            " The Feisty",
+            " The Daydreamer",
+            " The Joyful",
+            " The Furious",
+            " The Beaming",
+            " The Teary-Eyed",
+            " The Chipper",
+            " The Grumpy",
+            " The Scholar",
+            " The Rampaging",
+            " The Opportunist",
+            " The Stern",
+            " The Kindhearted",
+            " The Easily Flustered",
+            " The Driven",
+            " The Apathetic",
+            " The Arrogant",
+            " The Reluctant",
+            " The Humble",
+            " The Pompous",
+            " The Lively",
+            " The Worn-Out",
+            " Of The Distant Past",
+            " The Twinkling Star",
+            " The Paldea Champion",
+            " The Great",
+            " The Teeny",
+            " The Treasure Hunter",
+            " The Reliable Partner",
+            " The Gourmet",
+            " The One-in-a-Million",
+            " The Former Alpha",
+            " The Unrivaled",
+            " The Former Titan",
+    ];
+
+    public static readonly string[] MarkTitleZh =
     [
         " 饥肠辘辘",
-        " 困意绵绵",
-        " 昏昏欲睡",
-        " 清晨早行",
-        " 云海遐想",
-        " 风雨飘摇",
-        " 雷鸣惊魂",
-        " 雪域嬉戏",
-        " 寒意逼人",
-        " 干渴焦灼",
-        " 沙尘旅人",
-        " 雾中漂泊",
-        " 天选之子",
-        " 今日之星",
-        " 咖喱鉴赏家",
-        " 社交达人",
-        " 独来独往",
-        " 吵闹不休",
-        " 恍恍惚惚",
-        " 胆战心惊",
-        " 欢欣雀跃",
-        " 光彩耀目",
-        " 泰然自若",
-        " 勇猛果敢",
-        " 幻想家",
-        " 心花怒放",
-        " 热血沸腾",
-        " 笑逐颜开",
-        " 泪眼婆娑",
-        " 活力满满",
-        " 闷闷不乐",
-        " 博闻强识",
-        " 狂暴之姿",
-        " 伺机而动",
-        " 刚正不阿",
-        " 心地善良",
-        " 容易害羞",
-        " 锲而不舍",
-        " 漠不关心",
-        " 自命不凡",
-        " 勉为其难",
-        " 谦逊有礼",
-        " 趾高气昂",
-        " 朝气蓬勃",
-        " 身心俱疲",
-        " 远古回响",
-        " 闪烁之星",
-        " 帕底亚冠军",
-        " 庄严伟岸",
-        " 小巧玲珑",
-        " 寻宝能手",
-        " 可靠伙伴",
-        " 美食行家",
-        " 独一无二",
-        " 往昔霸主",
-        " 无可匹敌",
-        " 曾经的巨灵",
+            " 困意绵绵",
+            " 昏昏欲睡",
+            " 清晨早行",
+            " 云海遐想",
+            " 风雨飘摇",
+            " 雷鸣惊魂",
+            " 雪域嬉戏",
+            " 寒意逼人",
+            " 干渴焦灼",
+            " 沙尘旅人",
+            " 雾中漂泊",
+            " 天选之子",
+            " 今日之星",
+            " 咖喱鉴赏家",
+            " 社交达人",
+            " 独来独往",
+            " 吵闹不休",
+            " 恍恍惚惚",
+            " 胆战心惊",
+            " 欢欣雀跃",
+            " 光彩耀目",
+            " 泰然自若",
+            " 勇猛果敢",
+            " 幻想家",
+            " 心花怒放",
+            " 热血沸腾",
+            " 笑逐颜开",
+            " 泪眼婆娑",
+            " 活力满满",
+            " 闷闷不乐",
+            " 博闻强识",
+            " 狂暴之姿",
+            " 伺机而动",
+            " 刚正不阿",
+            " 心地善良",
+            " 容易害羞",
+            " 锲而不舍",
+            " 漠不关心",
+            " 自命不凡",
+            " 勉为其难",
+            " 谦逊有礼",
+            " 趾高气昂",
+            " 朝气蓬勃",
+            " 身心俱疲",
+            " 远古回响",
+            " 闪烁之星",
+            " 帕底亚冠军",
+            " 庄严伟岸",
+            " 小巧玲珑",
+            " 寻宝能手",
+            " 可靠伙伴",
+            " 美食行家",
+            " 独一无二",
+            " 往昔霸主",
+            " 无可匹敌",
+            " 曾经的巨灵",
     ];
 
     public static readonly ushort[] ShinyLock = [  (ushort)Species.Victini, (ushort)Species.Keldeo, (ushort)Species.Volcanion, (ushort)Species.Cosmog, (ushort)Species.Cosmoem, (ushort)Species.Magearna, (ushort)Species.Marshadow, (ushort)Species.Eternatus,
@@ -160,7 +221,7 @@ public abstract class TradeExtensions<T> where T : PKM, new()
 
     public static string FormOutput(ushort species, byte form, out string[] formString)
     {
-        var strings = GameInfo.GetStrings("en");
+        var strings = GameInfo.GetStrings("zh-Hans");
         formString = FormConverter.GetFormList(species, strings.Types, strings.forms, GameInfo.GenderSymbolASCII, typeof(T) == typeof(PK8) ? EntityContext.Gen8 : EntityContext.Gen4);
         if (formString.Length is 0)
             return string.Empty;
@@ -183,7 +244,20 @@ public abstract class TradeExtensions<T> where T : PKM, new()
         return ot || nick;
     }
 
-    public static bool HasMark(IRibbonIndex pk, out RibbonIndex result, out string markTitle)
+    private const string AlphaTitleEn = " The Alpha";
+    private const string AlphaTitleZh = " 头目";
+    private const string FormerAlphaTitleEn = " The Former Alpha";
+    private const string FormerAlphaTitleZh = " 往昔霸主";
+    private const string UnrivaledTitleEn = " The Unrivaled";
+    private const string UnrivaledTitleZh = " 无可匹敌";
+    private const string FormerTitanTitleEn = " The Former Titan";
+    private const string FormerTitanTitleZh = " 曾经的巨灵";
+    private const string GreatTitleEn = " The Great";
+    private const string GreatTitleZh = " 庄严伟岸";
+    private const string TeenyTitleEn = " The Teeny";
+    private const string TeenyTitleZh = " 小巧玲珑";
+
+    public static bool HasMark(IRibbonIndex pk, out RibbonIndex result, out string markTitle, bool preferChinese = false)
     {
         result = default;
         markTitle = string.Empty;
@@ -193,7 +267,7 @@ public abstract class TradeExtensions<T> where T : PKM, new()
             if (ribbonSetMark.RibbonMarkMightiest)
             {
                 result = RibbonIndex.MarkMightiest;
-                markTitle = " The Unrivaled";
+                markTitle = preferChinese ? UnrivaledTitleZh : UnrivaledTitleEn;
                 return true;
             }
             else if (ribbonSetMark.RibbonMarkAlpha)
@@ -205,30 +279,32 @@ public abstract class TradeExtensions<T> where T : PKM, new()
                 {
                     var la = new LegalityAnalysis(pa9);
                     bool isNative = la.EncounterOriginal.Context == pa9.Context;
-                    markTitle = isNative ? " The Alpha" : " The Former Alpha";
+                    markTitle = isNative
+                        ? (preferChinese ? AlphaTitleZh : AlphaTitleEn)
+                        : (preferChinese ? FormerAlphaTitleZh : FormerAlphaTitleEn);
                 }
                 else
                 {
-                    markTitle = " The Former Alpha";
+                    markTitle = preferChinese ? FormerAlphaTitleZh : FormerAlphaTitleEn;
                 }
                 return true;
             }
             else if (ribbonSetMark.RibbonMarkTitan)
             {
                 result = RibbonIndex.MarkTitan;
-                markTitle = " The Former Titan";
+                markTitle = preferChinese ? FormerTitanTitleZh : FormerTitanTitleEn;
                 return true;
             }
             else if (ribbonSetMark.RibbonMarkJumbo)
             {
                 result = RibbonIndex.MarkJumbo;
-                markTitle = " The Great";
+                markTitle = preferChinese ? GreatTitleZh : GreatTitleEn;
                 return true;
             }
             else if (ribbonSetMark.RibbonMarkMini)
             {
                 result = RibbonIndex.MarkMini;
-                markTitle = " The Teeny";
+                markTitle = preferChinese ? TeenyTitleZh : TeenyTitleEn;
                 return true;
             }
         }
@@ -238,7 +314,8 @@ public abstract class TradeExtensions<T> where T : PKM, new()
             if (pk.GetRibbon((int)mark))
             {
                 result = mark;
-                markTitle = MarkTitle[(int)mark - (int)RibbonIndex.MarkLunchtime];
+                int index = (int)mark - (int)RibbonIndex.MarkLunchtime;
+                markTitle = preferChinese ? MarkTitleZh[index] : MarkTitleEn[index];
                 return true;
             }
         }

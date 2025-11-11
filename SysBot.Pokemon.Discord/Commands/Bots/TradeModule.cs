@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using PKHeX.Core;
 using PKHeX.Core.AutoMod;
 using SysBot.Base;
+using SysBot.Pokemon;
 using SysBot.Pokemon.Helpers;
 using System;
 using System.Collections.Generic;
@@ -196,6 +197,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         }
 
         content = ReusableActions.StripCodeBlock(content);
+        content = ShowdownTranslator<T>.TranslateIfChinese(content);
         var set = new ShowdownSet(content);
         var template = AutoLegalityWrapper.GetTemplate(set);
 

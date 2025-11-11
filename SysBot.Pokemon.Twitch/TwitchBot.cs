@@ -61,14 +61,14 @@ namespace SysBot.Pokemon.Twitch
             client.OnLeftChannel += Client_OnLeftChannel;
 
             client.OnMessageSent += (_, e)
-                => LogUtil.LogText($"[{client.TwitchUsername}] - Message Sent in {e.SentMessage.Channel}: {e.SentMessage.Message}");
+                => LogUtil.LogText($"[{client.TwitchUsername}] - 已在 {e.SentMessage.Channel} 发送消息: {e.SentMessage.Message}");
             client.OnWhisperSent += (_, e)
-                => LogUtil.LogText($"[{client.TwitchUsername}] - Whisper Sent to @{e.Receiver}: {e.Message}");
+                => LogUtil.LogText($"[{client.TwitchUsername}] - 已向 @{e.Receiver} 发送私信: {e.Message}");
 
             client.OnMessageThrottled += (_, e)
-                => LogUtil.LogError($"Message Throttled: {e.Message}", "TwitchBot");
+                => LogUtil.LogError($"消息被限速: {e.Message}", "TwitchBot");
             client.OnWhisperThrottled += (_, e)
-                => LogUtil.LogError($"Whisper Throttled: {e.Message}", "TwitchBot");
+                => LogUtil.LogError($"私信被限速: {e.Message}", "TwitchBot");
 
             client.OnError += (_, e) =>
                 LogUtil.LogError(e.Exception.Message + Environment.NewLine + e.Exception.StackTrace, "TwitchBot");
@@ -124,7 +124,7 @@ namespace SysBot.Pokemon.Twitch
             if (NonTradableItemsPLZA.IsPLZAMode(Hub) && NonTradableItemsPLZA.IsBlocked(pk))
             {
                 var itemName = pk.HeldItem > 0 ? PKHeX.Core.GameInfo.GetStrings("en").Item[pk.HeldItem] : "(none)";
-                msg = $"@{name}: Trade blocked — the held item '{itemName}' cannot be traded in PLZA.";
+                msg = $"@{name}: 交易已被阻止——携带道具 '{itemName}' 在 PLZA 中不可交易。";
                 return false;
             }
             var tt = type == PokeRoutineType.SeedCheck ? PokeTradeType.Seed : PokeTradeType.Specific;
@@ -136,7 +136,7 @@ namespace SysBot.Pokemon.Twitch
 
             if (added == QueueResultAdd.AlreadyInQueue)
             {
-                msg = $"@{name}: Sorry, you are already in the queue.";
+                msg = $"@{name}: 抱歉，你已经在队列中。";
                 return false;
             }
 
@@ -144,18 +144,18 @@ namespace SysBot.Pokemon.Twitch
             {
                 var held = pk.HeldItem;
                 var itemName = held > 0 ? PKHeX.Core.GameInfo.GetStrings("en").Item[held] : "(none)";
-                msg = $"@{name}: Trade blocked — the held item '{itemName}' cannot be traded in PLZA.";
+                msg = $"@{name}: 交易已被阻止——携带道具 '{itemName}' 在 PLZA 中不可交易。";
                 return false;
             }
 
             var position = Info.CheckPosition(userID, uniqueTradeID, type);
-            msg = $"@{name}: Added to the {type} queue, unique ID: {detail.ID}. Current Position: {position.Position}";
+            msg = $"@{name}: 已加入 {type} 队列，唯一 ID: {detail.ID}。当前排位: {position.Position}";
 
             var botct = Info.Hub.Bots.Count;
             if (position.Position > botct)
             {
                 var eta = Info.Hub.Config.Queues.EstimateDelay(position.Position, botct);
-                msg += $". Estimated: {eta:F1} minutes.";
+                msg += $"。预计需要 {eta:F1} 分钟。";
             }
             return true;
         }
@@ -178,12 +178,12 @@ namespace SysBot.Pokemon.Twitch
 
         private void Client_OnConnected(object? sender, OnConnectedArgs e)
         {
-            LogUtil.LogText($"[{client.TwitchUsername}] - Connected {e.AutoJoinChannel} as {e.BotUsername}");
+            LogUtil.LogText($"[{client.TwitchUsername}] - 已以 {e.BotUsername} 身份连接到 {e.AutoJoinChannel}");
         }
 
         private async void Client_OnDisconnected(object? sender, OnDisconnectedEventArgs e)
         {
-            LogUtil.LogText($"[{client.TwitchUsername}] - Disconnected.");
+            LogUtil.LogText($"[{client.TwitchUsername}] - 已断开连接。");
             while (!client.IsConnected)
             {
                 client.Reconnect();
@@ -193,13 +193,13 @@ namespace SysBot.Pokemon.Twitch
 
         private void Client_OnJoinedChannel(object? sender, OnJoinedChannelArgs e)
         {
-            LogUtil.LogInfo($"Joined {e.Channel}", e.BotUsername);
-            client.SendMessage(e.Channel, "Connected!");
+            LogUtil.LogInfo($"已加入 {e.Channel}", e.BotUsername);
+            client.SendMessage(e.Channel, "连接成功！");
         }
 
         private void Client_OnLeftChannel(object? sender, OnLeftChannelArgs e)
         {
-            LogUtil.LogText($"[{client.TwitchUsername}] - Left channel {e.Channel}");
+            LogUtil.LogText($"[{client.TwitchUsername}] - 已离开频道 {e.Channel}");
             client.JoinChannel(e.Channel);
         }
 
@@ -210,7 +210,7 @@ namespace SysBot.Pokemon.Twitch
 
         private void Client_OnMessageReceived(object? sender, OnMessageReceivedArgs e)
         {
-            LogUtil.LogText($"[{client.TwitchUsername}] - Received message: @{e.ChatMessage.Username}: {e.ChatMessage.Message}");
+            LogUtil.LogText($"[{client.TwitchUsername}] - 收到消息: @{e.ChatMessage.Username}: {e.ChatMessage.Message}");
             if (client.JoinedChannels.Count == 0)
                 client.JoinChannel(e.ChatMessage.Channel);
         }
@@ -237,7 +237,7 @@ namespace SysBot.Pokemon.Twitch
             {
                 var removed = QueuePool[0];
                 QueuePool.RemoveAt(0); // First in, first out
-                client.SendMessage(Channel, $"Removed @{removed.DisplayName} ({(Species)removed.Pokemon.Species}) from the waiting list: stale request.");
+                client.SendMessage(Channel, $"已将 @{removed.DisplayName} ({(Species)removed.Pokemon.Species}) 从等待列表移除：请求超时。");
             }
 
             var user = QueuePool.FindLast(q => q.UserName == e.WhisperMessage.Username);
@@ -278,10 +278,10 @@ namespace SysBot.Pokemon.Twitch
             {
                 // User Usable Commands
                 case "donate":
-                    return Settings.DonationLink.Length > 0 ? $"Here's the donation link! Thank you for your support :3 {Settings.DonationLink}" : string.Empty;
+                    return Settings.DonationLink.Length > 0 ? $"这是打赏链接！感谢你的支持 :3 {Settings.DonationLink}" : string.Empty;
 
                 case "discord":
-                    return Settings.DiscordLink.Length > 0 ? $"Here's the Discord Server Link, have a nice stay :3 {Settings.DiscordLink}" : string.Empty;
+                    return Settings.DiscordLink.Length > 0 ? $"这是 Discord 服务器链接，祝你玩得开心 :3 {Settings.DiscordLink}" : string.Empty;
 
                 case "tutorial":
                 case "help":
@@ -290,8 +290,8 @@ namespace SysBot.Pokemon.Twitch
                 case "trade":
                 case "t":
                     var _ = TwitchCommandsHelper<T>.AddToWaitingList(args, m.DisplayName, m.Username, ulong.Parse(m.UserId), subscriber(), out string msg);
-                    if (msg.Contains("Please read what you are supposed to type") && Settings.TutorialLink.Length > 0)
-                        msg += $"\nUsage Tutorial: {Settings.TutorialLink}";
+                    if (msg.Contains("请阅读命令参数应当如何填写") && Settings.TutorialLink.Length > 0)
+                        msg += $"\n使用教程: {Settings.TutorialLink}";
                     return msg;
 
                 case "ts":
@@ -306,7 +306,7 @@ namespace SysBot.Pokemon.Twitch
                     }
                     else
                     {
-                        return $"@{m.Username}: You are not currently in the queue.";
+                        return $"@{m.Username}: 你当前不在队列中。";
                     }
                 case "tc":
                 case "cancel":
@@ -322,22 +322,22 @@ namespace SysBot.Pokemon.Twitch
                 case "pc" when !sudo():
                 case "tt" when !sudo():
                 case "tcu" when !sudo():
-                    return "This command is locked for sudo users only!";
+                    return "此指令仅限 sudo 用户使用！";
 
                 case "tca":
                     Info.ClearAllQueues();
-                    return "Cleared all queues!";
+                    return "已清空所有队列！";
 
                 case "pr":
-                    return Info.Hub.Ledy.Pool.Reload(Hub.Config.Folder.DistributeFolder) ? $"Reloaded from folder. Pool count: {Info.Hub.Ledy.Pool.Count}" : "Failed to reload from folder.";
+                    return Info.Hub.Ledy.Pool.Reload(Hub.Config.Folder.DistributeFolder) ? $"已从文件夹重新载入。当前池子数量: {Info.Hub.Ledy.Pool.Count}" : "从文件夹重新载入失败。";
 
                 case "pc":
-                    return $"The pool count is: {Info.Hub.Ledy.Pool.Count}";
+                    return $"当前池子数量: {Info.Hub.Ledy.Pool.Count}";
 
                 case "tt":
                     return Info.Hub.Queues.Info.ToggleQueue()
-                        ? "Users are now able to join the trade queue."
-                        : "Changed queue settings: **Users CANNOT join the queue until it is turned back on.**";
+                        ? "用户现在可以加入交易队列。"
+                        : "队列设置已变更：**用户在重新开启前无法加入队列。**";
 
                 case "tcu":
                     return TwitchCommandsHelper<T>.ClearTrade(args);
