@@ -13,7 +13,7 @@ namespace SysBot.Pokemon.Discord
     public class BotModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
     {
         [Command("botStatus")]
-        [Summary("Gets the status of the bots.")]
+        [Summary("获取机器人的状态。")]
         [RequireSudo]
         public async Task GetStatusAsync()
         {
@@ -21,7 +21,7 @@ namespace SysBot.Pokemon.Discord
             var bots = me.Bots.Select(z => z.Bot).OfType<PokeRoutineExecutorBase>().ToArray();
             if (bots.Length == 0)
             {
-                await ReplyAsync("No bots configured.").ConfigureAwait(false);
+                await ReplyAsync("未配置任何机器人。").ConfigureAwait(false);
                 return;
             }
 
@@ -58,9 +58,9 @@ namespace SysBot.Pokemon.Discord
         }
 
         [Command("botStart")]
-        [Summary("Starts the currently running bot.")]
+        [Summary("启动当前运行的机器人。")]
         [RequireSudo]
-        public async Task StartBotAsync([Summary("IP address of the bot")] string? ip = null)
+        public async Task StartBotAsync([Summary("机器人的 IP 地址")] string? ip = null)
         {
             if (ip == null)
                 ip = BotModule<T>.GetBotIPFromJsonConfig();
@@ -68,18 +68,18 @@ namespace SysBot.Pokemon.Discord
             var bot = SysCord<T>.Runner.GetBot(ip);
             if (bot == null)
             {
-                await ReplyAsync($"No bot has that IP address ({ip}).").ConfigureAwait(false);
+                await ReplyAsync($"没有机器人使用该 IP 地址 ({ip})。").ConfigureAwait(false);
                 return;
             }
 
             bot.Start();
-            await ReplyAsync("Bot has been started.").ConfigureAwait(false);
+            await ReplyAsync("机器人已启动。").ConfigureAwait(false);
         }
 
         [Command("botStop")]
-        [Summary("Stops the currently running bot.")]
+        [Summary("停止当前运行的机器人。")]
         [RequireSudo]
-        public async Task StopBotAsync([Summary("IP address of the bot")] string? ip = null)
+        public async Task StopBotAsync([Summary("机器人的 IP 地址")] string? ip = null)
         {
             if (ip == null)
                 ip = BotModule<T>.GetBotIPFromJsonConfig();
@@ -87,19 +87,19 @@ namespace SysBot.Pokemon.Discord
             var bot = SysCord<T>.Runner.GetBot(ip);
             if (bot == null)
             {
-                await ReplyAsync($"No bot has that IP address ({ip}).").ConfigureAwait(false);
+                await ReplyAsync($"没有机器人使用该 IP 地址 ({ip})。").ConfigureAwait(false);
                 return;
             }
 
             bot.Stop();
-            await ReplyAsync("Bot has been stopped.").ConfigureAwait(false);
+            await ReplyAsync("机器人已停止。").ConfigureAwait(false);
         }
 
         [Command("botIdle")]
         [Alias("botPause")]
-        [Summary("Commands the currently running bot to Idle.")]
+        [Summary("命令当前运行的机器人进入空闲状态。")]
         [RequireSudo]
-        public async Task IdleBotAsync([Summary("IP address of the bot")] string? ip = null)
+        public async Task IdleBotAsync([Summary("机器人的 IP 地址")] string? ip = null)
         {
             if (ip == null)
                 ip = BotModule<T>.GetBotIPFromJsonConfig();
@@ -107,18 +107,18 @@ namespace SysBot.Pokemon.Discord
             var bot = SysCord<T>.Runner.GetBot(ip);
             if (bot == null)
             {
-                await ReplyAsync($"No bot has that IP address ({ip}).").ConfigureAwait(false);
+                await ReplyAsync($"没有机器人使用该 IP 地址 ({ip})。").ConfigureAwait(false);
                 return;
             }
 
             bot.Pause();
-            await ReplyAsync("Bot has been set to idle.").ConfigureAwait(false);
+            await ReplyAsync("机器人已设置为空闲状态。").ConfigureAwait(false);
         }
 
         [Command("botChange")]
-        [Summary("Changes the routine of the currently running bot (trades).")]
+        [Summary("更改当前运行机器人的例程（交易）。")]
         [RequireSudo]
-        public async Task ChangeTaskAsync([Summary("Routine enum name")] PokeRoutineType task, [Summary("IP address of the bot")] string? ip = null)
+        public async Task ChangeTaskAsync([Summary("例程枚举名称")] PokeRoutineType task, [Summary("机器人的 IP 地址")] string? ip = null)
         {
             if (ip == null)
                 ip = BotModule<T>.GetBotIPFromJsonConfig();
@@ -126,18 +126,18 @@ namespace SysBot.Pokemon.Discord
             var bot = SysCord<T>.Runner.GetBot(ip);
             if (bot == null)
             {
-                await ReplyAsync($"No bot has that IP address ({ip}).").ConfigureAwait(false);
+                await ReplyAsync($"没有机器人使用该 IP 地址 ({ip})。").ConfigureAwait(false);
                 return;
             }
 
             bot.Bot.Config.Initialize(task);
-            await ReplyAsync($"Bot has changed its routine to {task}.").ConfigureAwait(false);
+            await ReplyAsync($"机器人已将其例程更改为 {task}。").ConfigureAwait(false);
         }
 
         [Command("botRestart")]
-        [Summary("Restarts the currently running bot(s).")]
+        [Summary("重启当前运行的机器人。")]
         [RequireSudo]
-        public async Task RestartBotAsync([Summary("IP address of the bot")] string? ip = null)
+        public async Task RestartBotAsync([Summary("机器人的 IP 地址")] string? ip = null)
         {
             if (ip == null)
                 ip = BotModule<T>.GetBotIPFromJsonConfig();
@@ -145,14 +145,14 @@ namespace SysBot.Pokemon.Discord
             var bot = SysCord<T>.Runner.GetBot(ip);
             if (bot == null)
             {
-                await ReplyAsync($"No bot has that IP address ({ip}).").ConfigureAwait(false);
+                await ReplyAsync($"没有机器人使用该 IP 地址 ({ip})。").ConfigureAwait(false);
                 return;
             }
 
             var c = bot.Bot.Connection;
             c.Reset();
             bot.Start();
-            await ReplyAsync("Bot has been restarted.").ConfigureAwait(false);
+            await ReplyAsync("机器人已重启。").ConfigureAwait(false);
         }
     }
 }

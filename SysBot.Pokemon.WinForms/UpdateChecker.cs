@@ -38,8 +38,8 @@ namespace SysBot.Pokemon.WinForms
                 {
                     if (forceShow)
                     {
-                        MessageBox.Show("Failed to fetch release information. Please check your internet connection.",
-                            "Update Check Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("获取发布信息失败。请检查您的网络连接。",
+                            "更新检查失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     return (false, false, string.Empty);
                 }
@@ -60,8 +60,8 @@ namespace SysBot.Pokemon.WinForms
             {
                 if (forceShow)
                 {
-                    MessageBox.Show($"Error checking for updates: {ex.Message}",
-                        "Update Check Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"检查更新时出错: {ex.Message}",
+                        "更新检查失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 return (false, false, string.Empty);
             }
@@ -72,11 +72,11 @@ namespace SysBot.Pokemon.WinForms
             try
             {
                 ReleaseInfo? latestRelease = await FetchLatestReleaseAsync();
-                return latestRelease?.Body ?? "Failed to fetch the latest release information.";
+                return latestRelease?.Body ?? "获取最新发布信息失败。";
             }
             catch (Exception ex)
             {
-                return $"Error fetching changelog: {ex.Message}";
+                return $"获取更新日志时出错: {ex.Message}";
             }
         }
 

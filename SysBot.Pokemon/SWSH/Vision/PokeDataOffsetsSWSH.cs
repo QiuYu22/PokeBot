@@ -124,13 +124,13 @@ public class PokeDataOffsetsSWSH
     {
         TradeMethod.LinkTrade => LinkTradePartnerNameOffset,
         TradeMethod.SurpriseTrade => SurpriseTradePartnerNameOffset,
-        _ => throw new ArgumentException("Trainer name offset is not available for this trade method.", nameof(tradeMethod)),
+        _ => throw new ArgumentException("此交易方式不支持训练家名称偏移量。", nameof(tradeMethod)),
     };
 
     public static uint GetTrainerTIDSIDOffset(TradeMethod tradeMethod) => tradeMethod switch
     {
         TradeMethod.LinkTrade => LinkTradePartnerTIDSIDOffset,
         TradeMethod.SurpriseTrade => SurpriseTradePartnerTIDSIDOffset,
-        _ => throw new ArgumentException("Trainer TID/SID offset is not available for this trade method.", nameof(tradeMethod)),
+        _ => throw new ArgumentException("此交易方式不支持训练家 TID/SID 偏移量。", nameof(tradeMethod)),
     };
 }

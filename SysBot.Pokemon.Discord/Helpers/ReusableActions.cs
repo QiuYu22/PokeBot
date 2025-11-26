@@ -83,14 +83,14 @@ public static class ReusableActions
         var speciesImageUrl = TradeExtensions<PK9>.PokeImg(pkm, canGmax, false);
 
         var embed = new EmbedBuilder()
-            .WithTitle("Pokémon Showdown Set")
+            .WithTitle("宝可梦 Showdown 配置")
             .WithDescription(txt)
             .WithColor(Color.Blue)
             .WithThumbnailUrl(speciesImageUrl)
             .Build();
 
         var botMessage = await channel.SendMessageAsync(embed: embed).ConfigureAwait(false); // Send the embed
-        var warningMessage = await channel.SendMessageAsync("This message will self-destruct in 15 seconds. Please copy your data.").ConfigureAwait(false);
+        var warningMessage = await channel.SendMessageAsync("此消息将在 15 秒后自动删除。请复制您的数据。").ConfigureAwait(false);
 
         _ = Task.Run(async () =>
         {

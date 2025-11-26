@@ -27,10 +27,10 @@ public abstract class PokeRoutineExecutor7LGPE : PokeRoutineExecutor<PB7>
     {
         if (settings.ScreenOff)
         {
-            Log("Turning on screen.");
+            Log("正在打开屏幕。");
             await SetScreen(ScreenState.On, token).ConfigureAwait(false);
         }
-        Log("Detaching controllers on routine exit.");
+        Log("程序退出时分离控制器。");
         await DetachController(token).ConfigureAwait(false);
     }
 
@@ -48,7 +48,7 @@ public abstract class PokeRoutineExecutor7LGPE : PokeRoutineExecutor<PB7>
         await Click(HOME, 2_000 + timing.ExtraTimeReturnHome, token).ConfigureAwait(false);
         await Click(X, 1_000, token).ConfigureAwait(false);
         await Click(A, 5_000 + timing.ExtraTimeCloseGame, token).ConfigureAwait(false);
-        Log("Closed out of the game!");
+        Log("已关闭游戏！");
     }
 
     public ulong GetBoxOffset(int box) => BoxStart + (ulong)((SlotSize + GapSize) * SlotCount * box);
@@ -95,20 +95,20 @@ public abstract class PokeRoutineExecutor7LGPE : PokeRoutineExecutor<PB7>
         InitSaveData(sav);
 
         if (!IsValidTrainerData())
-            throw new Exception("Trainer data is not valid. Refer to the SysBot.NET wiki for bad or no trainer data.");
+            throw new Exception("训练家数据无效。请参阅 SysBot.NET Wiki 了解无效或缺失训练家数据的解决方案。");
         if (await GetTextSpeed(token).ConfigureAwait(false) < TextSpeedOption.Fast)
-            throw new Exception("Text speed should be set to FAST. Fix this for correct operation.");
+            throw new Exception("文字速度应设置为\"快\"。请修正此设置以确保正常运行。");
 
         return sav;
     }
 
     public async Task InitializeHardware(IBotStateSettings settings, CancellationToken token)
     {
-        Log("Detaching on startup.");
+        Log("启动时分离控制器。");
         await DetachController(token).ConfigureAwait(false);
         if (settings.ScreenOff)
         {
-            Log("Turning off screen.");
+            Log("正在关闭屏幕。");
             await SetScreen(ScreenState.Off, token).ConfigureAwait(false);
         }
         await SetController(ControllerType.JoyRight1, token);
@@ -238,14 +238,14 @@ public abstract class PokeRoutineExecutor7LGPE : PokeRoutineExecutor<PB7>
 
         await Click(A, 0_600, token).ConfigureAwait(false);
 
-        Log("Restarting the game!");
+        Log("正在重启游戏！");
         await Task.Delay(4_000 + timing.ExtraTimeLoadGame, token).ConfigureAwait(false);
         await DetachController(token).ConfigureAwait(false);
 
         while (!await IsOnOverworldStandard(token).ConfigureAwait(false))
             await Click(A, 1_000, token).ConfigureAwait(false);
 
-        Log("Back in the overworld!");
+        Log("已返回大地图！");
     }
 
     public async Task WriteBoxPokemon(PB7 pk, int box, int slot, CancellationToken token)

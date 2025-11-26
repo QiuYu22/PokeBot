@@ -16,8 +16,8 @@ public class ProcessedPokemonResult<T> where T : PKM, new()
 public class BatchTradeError
 {
     public int TradeNumber { get; set; }
-    public string SpeciesName { get; set; } = "Unknown";
-    public string ErrorMessage { get; set; } = "Unknown error";
+    public string SpeciesName { get; set; } = "未知";
+    public string ErrorMessage { get; set; } = "未知错误";
     public string? LegalizationHint { get; set; }
     public string ShowdownSet { get; set; } = "";
 }

@@ -8,7 +8,7 @@ namespace SysBot.Pokemon.Discord;
 public class LegalityCheckModule : ModuleBase<SocketCommandContext>
 {
     [Command("lc"), Alias("check", "validate", "verify")]
-    [Summary("Verifies the attachment for legality.")]
+    [Summary("验证附件的合法性。")]
     public async Task LegalityCheck()
     {
         foreach (var att in (System.Collections.Generic.IReadOnlyCollection<Attachment>)Context.Message.Attachments)
@@ -16,7 +16,7 @@ public class LegalityCheckModule : ModuleBase<SocketCommandContext>
     }
 
     [Command("lcv"), Alias("verbose")]
-    [Summary("Verifies the attachment for legality with a verbose output.")]
+    [Summary("验证附件的合法性并输出详细信息。")]
     public async Task LegalityCheckVerbose()
     {
         foreach (var att in (System.Collections.Generic.IReadOnlyCollection<Attachment>)Context.Message.Attachments)
@@ -37,16 +37,16 @@ public class LegalityCheckModule : ModuleBase<SocketCommandContext>
         var builder = new EmbedBuilder
         {
             Color = la.Valid ? Color.Green : Color.Red,
-            Description = $"Legality Report for {download.SanitizedFileName}:",
+            Description = $"{download.SanitizedFileName} 的合法性报告:",
         };
 
         builder.AddField(x =>
         {
-            x.Name = la.Valid ? "Valid" : "Invalid";
+            x.Name = la.Valid ? "合法" : "不合法";
             x.Value = la.Report(verbose);
             x.IsInline = false;
         });
 
-        await ReplyAsync("Here's the legality report!", false, builder.Build()).ConfigureAwait(false);
+        await ReplyAsync("这是合法性报告！", false, builder.Build()).ConfigureAwait(false);
     }
 }

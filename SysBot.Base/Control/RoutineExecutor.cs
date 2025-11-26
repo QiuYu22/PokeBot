@@ -19,7 +19,7 @@ namespace SysBot.Base
             Connection = cfg.CreateAsynchronous();
         }
 
-        public string LastLogged { get; private set; } = "Not Started";
+        public string LastLogged { get; private set; } = "未启动";
 
         public DateTime LastTime { get; private set; } = DateTime.Now;
 
@@ -57,7 +57,7 @@ namespace SysBot.Base
         public async Task RunAsync(CancellationToken token)
         {
             Connection.Connect();
-            Log("Initializing connection with console...");
+            Log("正在初始化与主机的连接...");
             await InitialStartup(token).ConfigureAwait(false);
             await SetController(ControllerType.ProController, token);
             await MainLoop(token).ConfigureAwait(false);

@@ -32,23 +32,23 @@ public static class BatchHelpers<T> where T : PKM, new()
     public static async Task SendBatchErrorEmbedAsync(SocketCommandContext context, List<BatchTradeError> errors, int totalTrades)
     {
         var embed = new EmbedBuilder()
-            .WithTitle("❌ Batch Trade Validation Failed")
+            .WithTitle("❌ 批量交易验证失败")
             .WithColor(Color.Red)
-            .WithDescription($"{errors.Count} out of {totalTrades} Pokémon could not be processed.")
-            .WithFooter("Please fix the invalid sets and try again.");
+            .WithDescription($"{totalTrades} 只宝可梦中有 {errors.Count} 只无法处理。")
+            .WithFooter("请修复无效的配置后重试。");
 
         foreach (var error in errors)
         {
-            var fieldValue = $"**Error:** {error.ErrorMessage}";
+            var fieldValue = $"**错误:** {error.ErrorMessage}";
             if (!string.IsNullOrEmpty(error.LegalizationHint))
             {
-                fieldValue += $"\n💡 **Hint:** {error.LegalizationHint}";
+                fieldValue += $"\n💡 **提示:** {error.LegalizationHint}";
             }
 
             if (!string.IsNullOrEmpty(error.ShowdownSet))
             {
                 var lines = error.ShowdownSet.Split('\n').Take(2);
-                fieldValue += $"\n**Set:** {string.Join(" | ", lines)}...";
+                fieldValue += $"\n**配置:** {string.Join(" | ", lines)}...";
             }
 
             if (fieldValue.Length > 1024)
@@ -56,7 +56,7 @@ public static class BatchHelpers<T> where T : PKM, new()
                 fieldValue = fieldValue[..1021] + "...";
             }
 
-            embed.AddField($"Trade #{error.TradeNumber} - {error.SpeciesName}", fieldValue);
+            embed.AddField($"交易 #{error.TradeNumber} - {error.SpeciesName}", fieldValue);
         }
 
         var replyMessage = await context.Channel.SendMessageAsync(embed: embed.Build());
@@ -76,29 +76,29 @@ public static class BatchHelpers<T> where T : PKM, new()
     public static string BuildDetailedBatchErrorMessage(List<BatchTradeError> errors, int totalTrades)
     {
         var sb = new StringBuilder();
-        sb.AppendLine($"**Batch Trade Validation Failed**");
-        sb.AppendLine($"❌ {errors.Count} out of {totalTrades} Pokémon could not be processed.\n");
+        sb.AppendLine($"**批量交易验证失败**");
+        sb.AppendLine($"❌ {totalTrades} 只宝可梦中有 {errors.Count} 只无法处理。\n");
 
         foreach (var error in errors)
         {
-            sb.AppendLine($"**Trade #{error.TradeNumber} - {error.SpeciesName}**");
-            sb.AppendLine($"Error: {error.ErrorMessage}");
+            sb.AppendLine($"**交易 #{error.TradeNumber} - {error.SpeciesName}**");
+            sb.AppendLine($"错误: {error.ErrorMessage}");
 
             if (!string.IsNullOrEmpty(error.LegalizationHint))
             {
-                sb.AppendLine($"💡 Hint: {error.LegalizationHint}");
+                sb.AppendLine($"💡 提示: {error.LegalizationHint}");
             }
 
             if (!string.IsNullOrEmpty(error.ShowdownSet))
             {
                 var lines = error.ShowdownSet.Split('\n').Take(3);
-                sb.AppendLine($"Set Preview: {string.Join(" | ", lines)}...");
+                sb.AppendLine($"配置预览: {string.Join(" | ", lines)}...");
             }
 
             sb.AppendLine();
         }
 
-        sb.AppendLine("**Please fix the invalid sets and try again.**");
+        sb.AppendLine("**请修复无效的配置后重试。**");
         return sb.ToString();
     }
 }

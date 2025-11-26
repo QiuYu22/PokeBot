@@ -15,7 +15,7 @@ namespace SysBot.Pokemon.Discord
         private readonly CommandService _commandService = commandService;
 
         [Command("help")]
-        [Summary("Shows the available commands.")]
+        [Summary("显示可用的命令。")]
         public async Task HelpAsync(int page = 1)
         {
             var mgr = SysCordSettings.Manager;
@@ -41,7 +41,7 @@ namespace SysBot.Pokemon.Discord
                             continue;
 
                         var commandName = command.Name;
-                        var commandSummary = command.Summary ?? "No description available.";
+                        var commandSummary = command.Summary ?? "暂无描述。";
 
                         if (!commandDict.ContainsKey(commandName))
                             commandDict.Add(commandName, commandSummary);
@@ -101,16 +101,16 @@ namespace SysBot.Pokemon.Discord
             var pageCount = pages.Count;
             if (page < 1 || page > pageCount)
             {
-                await ReplyAsync($"Invalid page number. Please specify a number between 1 and {pageCount}.");
+                await ReplyAsync($"无效的页码。请指定 1 到 {pageCount} 之间的数字。");
                 return;
             }
 
-            var footerText = $"Page {page}/{pageCount}";
+            var footerText = $"第 {page}/{pageCount} 页";
             if (page < pageCount)
-                footerText += $" | Type `help {page + 1}` for the next page.";
+                footerText += $" | 输入 `help {page + 1}` 查看下一页。";
 
             var embedBuilder = new EmbedBuilder()
-                .WithTitle("Available Commands")
+                .WithTitle("可用命令")
                 .WithColor(Color.Blue)
                 .WithDescription(pages[page - 1])
                 .WithFooter(footerText);
@@ -119,15 +119,15 @@ namespace SysBot.Pokemon.Discord
             {
                 var dmChannel = await Context.User.CreateDMChannelAsync();
                 await dmChannel.SendMessageAsync(embed: embedBuilder.Build());
-                await ReplyAsync($"{Context.User.Mention}, I've sent you a DM with the help information!");
+                await ReplyAsync($"{Context.User.Mention}，我已通过私信向您发送了帮助信息！");
             }
             catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.Forbidden)
             {
-                await ReplyAsync($"{Context.User.Mention}, I couldn't send you a DM because you have DMs disabled. Please enable DMs and try again.");
+                await ReplyAsync($"{Context.User.Mention}，我无法向您发送私信，因为您已禁用私信。请启用私信后重试。");
             }
             catch (Exception ex)
             {
-                await ReplyAsync($"An error occurred while sending the DM: {ex.Message}");
+                await ReplyAsync($"发送私信时发生错误: {ex.Message}");
             }
 
             if (Context.Message is IUserMessage userMessage)
@@ -135,19 +135,19 @@ namespace SysBot.Pokemon.Discord
         }
 
         [Command("help")]
-        [Summary("Shows information about a specific command.")]
-        public async Task HelpAsync([Summary("The command to get information for.")] string command)
+        [Summary("显示特定命令的信息。")]
+        public async Task HelpAsync([Summary("要获取信息的命令。")] string command)
         {
             var searchResult = _commandService.Search(Context, command);
 
             if (!searchResult.IsSuccess)
             {
-                await ReplyAsync($"Sorry, I couldn't find a command like **{command}**.");
+                await ReplyAsync($"抱歉，我找不到命令 **{command}**。");
                 return;
             }
 
             var embedBuilder = new EmbedBuilder()
-                .WithTitle($"Help for {command}")
+                .WithTitle($"{command} 的帮助")
                 .WithColor(Color.Blue);
 
             foreach (var match in searchResult.Commands)
@@ -157,22 +157,22 @@ namespace SysBot.Pokemon.Discord
                 var parameters = cmd.Parameters.Select(p => $"`{p.Name}` - {p.Summary}");
                 var parameterSummary = string.Join("\n", parameters);
 
-                embedBuilder.AddField(cmd.Name, $"{cmd.Summary}\n\n**Parameters:**\n{parameterSummary}", false);
+                embedBuilder.AddField(cmd.Name, $"{cmd.Summary}\n\n**参数:**\n{parameterSummary}", false);
             }
 
             try
             {
                 var dmChannel = await Context.User.CreateDMChannelAsync();
                 await dmChannel.SendMessageAsync(embed: embedBuilder.Build());
-                await ReplyAsync($"{Context.User.Mention}, I've sent you a DM with the help information for the command **{command}**!");
+                await ReplyAsync($"{Context.User.Mention}，我已通过私信向您发送了命令 **{command}** 的帮助信息！");
             }
             catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.Forbidden)
             {
-                await ReplyAsync($"{Context.User.Mention}, I couldn't send you a DM because you have DMs disabled. Please enable DMs and try again.");
+                await ReplyAsync($"{Context.User.Mention}，我无法向您发送私信，因为您已禁用私信。请启用私信后重试。");
             }
             catch (Exception ex)
             {
-                await ReplyAsync($"An error occurred while sending the DM: {ex.Message}");
+                await ReplyAsync($"发送私信时发生错误: {ex.Message}");
             }
 
             if (Context.Message is IUserMessage userMessage)

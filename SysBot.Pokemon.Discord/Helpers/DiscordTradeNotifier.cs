@@ -105,16 +105,16 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
                     // Send notification that they're up next - only sent ONCE
                     _almostUpNotificationSent = true;
 
-                    var batchInfo = TotalBatchTrades > 1 ? $"\n\n**Important:** This is a batch trade with {TotalBatchTrades} Pokémon. Please stay in the trade until all are completed!" : "";
+                    var batchInfo = TotalBatchTrades > 1 ? $"\n\n**重要:** 这是一个包含 {TotalBatchTrades} 只宝可梦的批量交易。请留在交易中直到全部完成！" : "";
 
                     var upNextEmbed = new EmbedBuilder
                     {
                         Color = Color.Gold,
-                        Title = "🎯 You're Up Next!",
-                        Description = $"Your trade will begin very soon. Please be ready!{batchInfo}",
+                        Title = "🎯 轮到您了！",
+                        Description = $"您的交易即将开始。请做好准备！{batchInfo}",
                         Footer = new EmbedFooterBuilder
                         {
-                            Text = "Get ready to connect!"
+                            Text = "准备好连接！"
                         },
                         Timestamp = DateTimeOffset.Now
                     }.Build();
@@ -146,17 +146,17 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
         _lastReportedPosition = currentPosition;
 
         var batchDescription = TotalBatchTrades > 1
-            ? $"Your batch trade request ({TotalBatchTrades} Pokémon) has been queued.\n\n⚠️ **Important Instructions:**\n• Stay in the trade for all {TotalBatchTrades} trades\n• Have all {TotalBatchTrades} Pokémon ready to trade\n• Do not exit until you see the completion message\n\nPosition in queue: **{currentPosition}**"
-            : $"Your trade request has been queued. Position in queue: **{currentPosition}**";
+            ? $"您的批量交易请求（{TotalBatchTrades} 只宝可梦）已加入队列。\n\n⚠️ **重要说明:**\n• 请留在交易中完成所有 {TotalBatchTrades} 次交易\n• 准备好所有 {TotalBatchTrades} 只宝可梦进行交易\n• 在看到完成消息前请勿退出\n\n队列位置: **{currentPosition}**"
+            : $"您的交易请求已加入队列。队列位置: **{currentPosition}**";
 
         var initialEmbed = new EmbedBuilder
         {
             Color = Color.Green,
-            Title = TotalBatchTrades > 1 ? "🎁 Batch Trade Request Queued" : "Trade Request Queued",
+            Title = TotalBatchTrades > 1 ? "🎁 批量交易请求已排队" : "交易请求已排队",
             Description = batchDescription,
             Footer = new EmbedFooterBuilder
             {
-                Text = $"Estimated wait time: {(currentETA > 0 ? $"{currentETA} minutes" : "Less than a minute")}"
+                Text = $"预计等待时间: {(currentETA > 0 ? $"{currentETA} 分钟" : "不到一分钟")}"
             },
             Timestamp = DateTimeOffset.Now
         }.Build();
@@ -181,7 +181,7 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
         _almostUpNotificationSent = true;
 
         int language = 2;
-        var speciesName = IsMysteryEgg ? "Mystery Egg" : SpeciesName.GetSpeciesName(Data.Species, language);
+        var speciesName = IsMysteryEgg ? "神秘蛋" : SpeciesName.GetSpeciesName(Data.Species, language);
         var receive = Data.Species == 0 ? string.Empty : (IsMysteryEgg ? "" : $" ({Data.Nickname})");
 
         if (Data is PK9)
@@ -191,18 +191,18 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
             {
                 if (BatchTradeNumber == 1)
                 {
-                    message = $"Starting your batch trade! Trading {TotalBatchTrades} Pokémon.\n\n" +
-                             $"**Trade 1/{TotalBatchTrades}**: {speciesName}{receive}\n\n" +
-                             $"⚠️ **IMPORTANT:** Stay in the trade until all {TotalBatchTrades} trades are completed!";
+                    message = $"开始您的批量交易！交易 {TotalBatchTrades} 只宝可梦。\n\n" +
+                             $"**交易 1/{TotalBatchTrades}**: {speciesName}{receive}\n\n" +
+                             $"⚠️ **重要:** 请留在交易中直到所有 {TotalBatchTrades} 次交易完成！";
                 }
                 else
                 {
-                    message = $"Preparing trade {BatchTradeNumber}/{TotalBatchTrades}: {speciesName}{receive}";
+                    message = $"准备交易 {BatchTradeNumber}/{TotalBatchTrades}: {speciesName}{receive}";
                 }
             }
             else
             {
-                message = $"Initializing trade{receive}. Please be ready.";
+                message = $"正在初始化交易{receive}。请做好准备。";
             }
 
             EmbedHelper.SendTradeInitializingEmbedAsync(Trader, speciesName, Code, IsMysteryEgg, message).ConfigureAwait(false);
@@ -210,7 +210,7 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
         else if (Data is PB7)
         {
             var (thefile, lgcodeembed) = CreateLGLinkCodeSpriteEmbed(LGCode);
-            Trader.SendFileAsync(thefile, $"Initializing trade{receive}. Please be ready. Your code is", embed: lgcodeembed).ConfigureAwait(false);
+            Trader.SendFileAsync(thefile, $"正在初始化交易{receive}。请准备好。您的交易密码是", embed: lgcodeembed).ConfigureAwait(false);
         }
         else
         {
@@ -228,8 +228,8 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
 
         if (Data is PB7 && LGCode != null && LGCode.Count != 0)
         {
-            var batchInfo = TotalBatchTrades > 1 ? $" (Trade {BatchTradeNumber}/{TotalBatchTrades})" : "";
-            var message = $"I'm waiting for you{trainer}{batchInfo}! My IGN is **{routine.InGameName}**.";
+            var batchInfo = TotalBatchTrades > 1 ? $"（交易 {BatchTradeNumber}/{TotalBatchTrades}）" : "";
+            var message = $"我在等您{trainer}{batchInfo}！我的游戏内名称是 **{routine.InGameName}**。";
             Trader.SendMessageAsync(message).ConfigureAwait(false);
         }
         else
@@ -239,12 +239,12 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
             {
                 if (BatchTradeNumber == 1)
                 {
-                    additionalMessage = $"Starting batch trade ({TotalBatchTrades} Pokémon total). **Please select your first Pokémon!**";
+                    additionalMessage = $"开始批量交易（共 {TotalBatchTrades} 只宝可梦）。**请选择您的第一只宝可梦！**";
                 }
                 else
                 {
-                    var speciesName = IsMysteryEgg ? "Mystery Egg" : SpeciesName.GetSpeciesName(Data.Species, 2);
-                    additionalMessage = $"Trade {BatchTradeNumber}/{TotalBatchTrades}: Now trading {speciesName}. **Select your next Pokémon!**";
+                    var speciesName = IsMysteryEgg ? "神秘蛋" : SpeciesName.GetSpeciesName(Data.Species, 2);
+                    additionalMessage = $"交易 {BatchTradeNumber}/{TotalBatchTrades}: 正在交易 {speciesName}。**请选择您的下一只宝可梦！**";
                 }
             }
 
@@ -258,7 +258,7 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
         StopPeriodicUpdates();
 
         var cancelMessage = TotalBatchTrades > 1
-            ? $"Batch trade canceled: {msg}. All remaining trades have been canceled."
+            ? $"批量交易已取消: {msg}。所有剩余交易已取消。"
             : msg.ToString();
 
         EmbedHelper.SendTradeCanceledEmbedAsync(Trader, cancelMessage).ConfigureAwait(false);
@@ -282,20 +282,20 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
             if (BatchTradeNumber == TotalBatchTrades)
             {
                 // Final trade in the batch - this is now called only once at the very end
-                message = $"✅ **All {TotalBatchTrades} trades completed successfully!** Thank you for trading!";
+                message = $"✅ **所有 {TotalBatchTrades} 次交易已成功完成！** 感谢您的交易！";
             }
             else
             {
                 // Mid-batch trade
-                var speciesName = IsMysteryEgg ? "Mystery Egg" : SpeciesName.GetSpeciesName(Data.Species, 2);
-                message = $"✅ Trade {BatchTradeNumber}/{TotalBatchTrades} completed! ({speciesName})\n" +
-                         $"Preparing trade {BatchTradeNumber + 1}/{TotalBatchTrades}...";
+                var speciesName = IsMysteryEgg ? "神秘蛋" : SpeciesName.GetSpeciesName(Data.Species, 2);
+                message = $"✅ 交易 {BatchTradeNumber}/{TotalBatchTrades} 完成！（{speciesName}）\n" +
+                         $"正在准备交易 {BatchTradeNumber + 1}/{TotalBatchTrades}...";
             }
         }
         else
         {
             // Standard single trade message
-            message = tradedToUser != 0 ? $"Trade finished. Enjoy!" : "Trade finished!";
+            message = tradedToUser != 0 ? $"交易完成。祝您愉快！" : "交易完成！";
         }
 
         Trader.SendMessageAsync(message).ConfigureAwait(false);
@@ -304,16 +304,16 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
         // Batch trades will have their Pokemon returned separately via SendNotification
         if (result is not null && Hub.Config.Discord.ReturnPKMs && TotalBatchTrades <= 1)
         {
-            Trader.SendPKMAsync(result, "Here's what you traded me!").ConfigureAwait(false);
+            Trader.SendPKMAsync(result, "这是您与我交易的宝可梦！").ConfigureAwait(false);
         }
     }
 
     public void SendNotification(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, string message)
     {
         // Add batch context to notifications if applicable
-        if (TotalBatchTrades > 1 && !message.Contains("Trade") && !message.Contains("batch"))
+        if (TotalBatchTrades > 1 && !message.Contains("交易") && !message.Contains("批量"))
         {
-            message = $"Trade {BatchTradeNumber}/{TotalBatchTrades}: {message}";
+            message = $"交易 {BatchTradeNumber}/{TotalBatchTrades}: {message}";
         }
 
         EmbedHelper.SendNotificationEmbedAsync(Trader, message).ConfigureAwait(false);
@@ -349,11 +349,11 @@ public class DiscordTradeNotifier<T> : IPokeTradeNotifier<T>, IDisposable
         var embed = new EmbedBuilder { Color = Color.LighterGrey };
         embed.AddField(x =>
         {
-            x.Name = $"Seed: {r.Seed:X16}";
+            x.Name = $"种子: {r.Seed:X16}";
             x.Value = lines;
             x.IsInline = false;
         });
-        var msg = $"Here are the details for `{r.Seed:X16}`:";
+        var msg = $"以下是 `{r.Seed:X16}` 的详细信息:";
         Trader.SendMessageAsync(msg, embed: embed.Build()).ConfigureAwait(false);
     }
 

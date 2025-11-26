@@ -7,11 +7,11 @@ namespace SysBot.Pokemon;
 
 public class EncounterSettings : IBotStateSettings, ICountSettings
 {
-    private const string Counts = nameof(Counts);
+    private const string Counts = "统计";
 
-    private const string Encounter = nameof(Encounter);
+    private const string Encounter = "遭遇";
 
-    private const string Settings = nameof(Settings);
+    private const string Settings = "设置";
 
     private int _completedEggs;
 
@@ -21,48 +21,48 @@ public class EncounterSettings : IBotStateSettings, ICountSettings
 
     private int _completedWild;
 
-    [Category(Counts), Description("Eggs Retrieved")]
+    [Category(Counts), Description("获取的蛋数量"), DisplayName("已完成蛋")]
     public int CompletedEggs
     {
         get => _completedEggs;
         set => _completedEggs = value;
     }
 
-    [Category(Counts), Description("Encountered Wild Pokémon")]
+    [Category(Counts), Description("遭遇的野生宝可梦"), DisplayName("已完成遭遇")]
     public int CompletedEncounters
     {
         get => _completedWild;
         set => _completedWild = value;
     }
 
-    [Category(Counts), Description("Fossil Pokémon Revived")]
+    [Category(Counts), Description("复活的化石宝可梦"), DisplayName("已完成化石")]
     public int CompletedFossils
     {
         get => _completedFossils;
         set => _completedFossils = value;
     }
 
-    [Category(Counts), Description("Encountered Legendary Pokémon")]
+    [Category(Counts), Description("遭遇的传说宝可梦"), DisplayName("已完成传说")]
     public int CompletedLegends
     {
         get => _completedLegend;
         set => _completedLegend = value;
     }
 
-    [Category(Encounter), Description("When enabled, the bot will continue after finding a suitable match.")]
+    [Category(Encounter), Description("启用后，机器人在找到合适的匹配后将继续运行。"), DisplayName("匹配后继续")]
     public ContinueAfterMatch ContinueAfterMatch { get; set; } = ContinueAfterMatch.StopExit;
 
-    [Category(Counts), Description("When enabled, the counts will be emitted when a status check is requested.")]
+    [Category(Counts), Description("启用后，在请求状态检查时将输出统计数据。"), DisplayName("状态检查时输出统计")]
     public bool EmitCountsOnStatusCheck { get; set; }
 
-    [Category(Encounter), Description("The method used by the Line and Reset bots to encounter Pokémon.")]
+    [Category(Encounter), Description("Line 和 Reset 机器人用于遭遇宝可梦的方法。"), DisplayName("遭遇类型")]
     public EncounterMode EncounteringType { get; set; } = EncounterMode.VerticalLine;
 
-    [Category(Settings)]
+    [Category(Settings), DisplayName("化石")]
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public FossilSettings Fossil { get; set; } = new();
 
-    [Category(Encounter), Description("When enabled, the screen will be turned off during normal bot loop operation to save power.")]
+    [Category(Encounter), Description("启用后，在正常机器人循环操作期间关闭屏幕以节省电量。"), DisplayName("关闭屏幕")]
     public bool ScreenOff { get; set; }
 
     public int AddCompletedEggs() => Interlocked.Increment(ref _completedEggs);
@@ -78,14 +78,14 @@ public class EncounterSettings : IBotStateSettings, ICountSettings
         if (!EmitCountsOnStatusCheck)
             yield break;
         if (CompletedEncounters != 0)
-            yield return $"Wild Encounters: {CompletedEncounters}";
+            yield return $"野生遭遇: {CompletedEncounters}";
         if (CompletedLegends != 0)
-            yield return $"Legendary Encounters: {CompletedLegends}";
+            yield return $"传说遭遇: {CompletedLegends}";
         if (CompletedEggs != 0)
-            yield return $"Eggs Received: {CompletedEggs}";
+            yield return $"获得蛋: {CompletedEggs}";
         if (CompletedFossils != 0)
-            yield return $"Completed Fossils: {CompletedFossils}";
+            yield return $"已完成化石: {CompletedFossils}";
     }
 
-    public override string ToString() => "Encounter Bot SWSH Settings";
+    public override string ToString() => "遭遇机器人 SWSH 设置";
 }

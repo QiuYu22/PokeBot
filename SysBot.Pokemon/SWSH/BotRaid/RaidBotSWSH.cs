@@ -36,19 +36,19 @@ public class RaidBotSWSH(PokeBotState Config, PokeTradeHub<PK8> Hub) : PokeRouti
     {
         if (Settings.TimeToWait is < 0 or > 180)
         {
-            Log("Time to wait must be between 0 and 180 seconds.");
+            Log("等待时间必须在 0 到 180 秒之间。");
             return;
         }
 
         try
         {
-            Log("Identifying trainer data of the host console.");
+            Log("正在识别主机的训练家数据。");
             await IdentifyTrainer(token).ConfigureAwait(false);
             await InitializeSessionOffsets(token).ConfigureAwait(false);
 
             await InitializeHardware(Settings, token).ConfigureAwait(false);
 
-            Log("Starting main RaidBot loop.");
+            Log("开始主 RaidBot 循环。");
             await InnerLoop(token).ConfigureAwait(false);
         }
         catch (Exception e)
@@ -56,7 +56,7 @@ public class RaidBotSWSH(PokeBotState Config, PokeTradeHub<PK8> Hub) : PokeRouti
             Log(e.Message);
         }
 
-        Log($"Ending {nameof(RaidBotSWSH)} loop.");
+        Log($"结束 {nameof(RaidBotSWSH)} 循环。");
         await HardStop().ConfigureAwait(false);
     }
 
@@ -68,7 +68,7 @@ public class RaidBotSWSH(PokeBotState Config, PokeTradeHub<PK8> Hub) : PokeRouti
         await Task.Delay(2_000, t).ConfigureAwait(false);
         if (!t.IsCancellationRequested)
         {
-            Log("Restarting the main loop.");
+            Log("正在重启主循环。");
             await MainLoop(t).ConfigureAwait(false);
         }
     }
@@ -109,7 +109,7 @@ public class RaidBotSWSH(PokeBotState Config, PokeTradeHub<PK8> Hub) : PokeRouti
             data = await Connection.ReadBytesAsync(ofs + RaidGenderIncr, 1, token).ConfigureAwait(false);
             var gender = data[0] == 0 ? " (M)" : (data[0] == 1 ? " (F)" : "");
 
-            EchoUtil.Echo($"Player {player + 1} is ready with {shiny}{(Species)dexno}{altformstr}{gender}!");
+            EchoUtil.Echo($"玩家 {player + 1} 已准备就绪，选择了 {shiny}{(Species)dexno}{altformstr}{gender}！");
         }
 
         return true;
@@ -122,7 +122,7 @@ public class RaidBotSWSH(PokeBotState Config, PokeTradeHub<PK8> Hub) : PokeRouti
         // Delete before adding to avoid deleting new friends.
         if (deleteFriends)
         {
-            Log("Deleting friends.");
+            Log("正在删除好友。");
             await NavigateFriendsMenu(true, token).ConfigureAwait(false);
             for (int i = 0; i < Settings.NumberFriendsToDelete; i++)
                 await DeleteFriend(token).ConfigureAwait(false);
@@ -132,14 +132,14 @@ public class RaidBotSWSH(PokeBotState Config, PokeTradeHub<PK8> Hub) : PokeRouti
         // to Home and re-open the profile in case we ran out of friends to delete.
         if (deleteFriends && addFriends)
         {
-            Log("Navigating back to add friends.");
+            Log("正在返回添加好友界面。");
             await Click(HOME, 2_000, token).ConfigureAwait(false);
             await NavigateToProfile(token).ConfigureAwait(false);
         }
 
         if (addFriends)
         {
-            Log("Adding friends.");
+            Log("正在添加好友。");
             await NavigateFriendsMenu(false, token).ConfigureAwait(false);
             for (int i = 0; i < Settings.NumberFriendsToAdd; i++)
                 await AddFriend(token).ConfigureAwait(false);
@@ -189,7 +189,7 @@ public class RaidBotSWSH(PokeBotState Config, PokeTradeHub<PK8> Hub) : PokeRouti
             var data = await Connection.ReadBytesAsync(RaidBossOffset, 2, token).ConfigureAwait(false);
             raidBossSpecies = BitConverter.ToUInt16(data, 0);
         }
-        Log($"Initializing raid for {(Species)raidBossSpecies}.");
+        Log($"正在初始化 {(Species)raidBossSpecies} 的团体战。");
 
         if (code >= 0)
         {
@@ -197,28 +197,28 @@ public class RaidBotSWSH(PokeBotState Config, PokeTradeHub<PK8> Hub) : PokeRouti
             await Click(PLUS, 1_000, token).ConfigureAwait(false);
             await EnterLinkCode(code, Hub.Config, token).ConfigureAwait(false);
             await Click(PLUS, 4_000, token).ConfigureAwait(false);
-            Log("Confirming the Link Code.");
+            Log("正在确认连接密码。");
             await Click(A, 2_000, token).ConfigureAwait(false);
         }
 
         if (addFriends && !string.IsNullOrEmpty(Settings.FriendCode))
-            EchoUtil.Echo($"Send a friend request to Friend Code **{Settings.FriendCode}** to join in! Friends will be added after this raid.");
+            EchoUtil.Echo($"发送好友请求到好友码 **{Settings.FriendCode}** 加入！好友将在本次团体战后添加。");
 
         // Invite others, confirm Pokémon and wait
-        Log("Inviting others to the raid...");
+        Log("正在邀请其他人加入团体战...");
         await Click(A, 7_000 + Hub.Config.Timings.ExtraTimeOpenRaid, token).ConfigureAwait(false);
         await Click(DUP, 1_000, token).ConfigureAwait(false);
         await Click(A, 1_000, token).ConfigureAwait(false);
 
-        var linkcodemsg = code < 0 ? "no Link Code" : $"code **{code:0000 0000}**";
+        var linkcodemsg = code < 0 ? "无连接密码" : $"密码 **{code:0000 0000}**";
 
         string raiddescmsg = string.IsNullOrEmpty(Settings.RaidDescription) ? ((Species)raidBossSpecies).ToString() : Settings.RaidDescription;
-        EchoUtil.Echo($"Raid lobby for {raiddescmsg} is open with {linkcodemsg}.");
+        EchoUtil.Echo($"{raiddescmsg} 的团体战大厅已开放，{linkcodemsg}。");
 
         var timetowait = Settings.TimeToWait * 1_000;
         var timetojoinraid = 175_000 - timetowait;
 
-        Log("Waiting on raid party...");
+        Log("正在等待团体战队伍...");
 
         // Wait the minimum timer or until raid party fills up.
         while (timetowait > 0 && !await GetRaidPartyReady(token).ConfigureAwait(false))
@@ -228,7 +228,7 @@ public class RaidBotSWSH(PokeBotState Config, PokeTradeHub<PK8> Hub) : PokeRouti
         }
 
         await Task.Delay(1_000, token).ConfigureAwait(false);
-        EchoUtil.Echo($"Raid is starting now with {linkcodemsg}.");
+        EchoUtil.Echo($"团体战现在开始，{linkcodemsg}。");
 
         /* Press A and check if we entered a raid.  If other users don't lock in,
            it will automatically start once the timer runs out. If we don't make it into
@@ -242,14 +242,14 @@ public class RaidBotSWSH(PokeBotState Config, PokeTradeHub<PK8> Hub) : PokeRouti
         for (int i = 0; i < 4; i++)
             PlayerReady[i] = false;
 
-        Log("Finishing raid routine.");
+        Log("正在完成团体战流程。");
         await Task.Delay(1_000 + Hub.Config.Timings.ExtraTimeEndRaid, token).ConfigureAwait(false);
     }
 
     // For pointer offsets that don't change per session are accessed frequently, so set these each time we start.
     private async Task InitializeSessionOffsets(CancellationToken token)
     {
-        Log("Caching session offsets...");
+        Log("正在缓存会话偏移量...");
         OverworldOffset = await SwitchConnection.PointerAll(Offsets.OverworldPointer, token).ConfigureAwait(false);
     }
 
@@ -294,7 +294,7 @@ public class RaidBotSWSH(PokeBotState Config, PokeTradeHub<PK8> Hub) : PokeRouti
             int code = Settings.GetRandomRaidCode();
             await HostRaidAsync(code, token).ConfigureAwait(false);
 
-            Log($"Raid host {encounterCount} finished.");
+            Log($"第 {encounterCount} 次团体战托管完成。");
             Settings.AddCompletedRaids();
 
             await ResetGameAsync(token).ConfigureAwait(false);
@@ -359,7 +359,7 @@ public class RaidBotSWSH(PokeBotState Config, PokeTradeHub<PK8> Hub) : PokeRouti
 
     private async Task ResetGameAsync(CancellationToken token)
     {
-        Log("Resetting raid by restarting the game");
+        Log("正在通过重启游戏重置团体战");
         await CloseGame(Hub.Config, token).ConfigureAwait(false);
 
         if (addFriends || deleteFriends)
@@ -369,6 +369,6 @@ public class RaidBotSWSH(PokeBotState Config, PokeTradeHub<PK8> Hub) : PokeRouti
         await InitializeSessionOffsets(token).ConfigureAwait(false);
 
         await EnsureConnectedToYComm(OverworldOffset, Hub.Config, token).ConfigureAwait(false);
-        Log("Reconnected to Y-Comm!");
+        Log("已重新连接到 Y-Comm！");
     }
 }

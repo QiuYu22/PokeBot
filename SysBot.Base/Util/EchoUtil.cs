@@ -17,10 +17,10 @@ public static class EchoUtil
             }
             catch (Exception ex)
             {
-                LogUtil.LogInfo($"Exception: {ex} occurred while trying to echo: {message} to the forwarder: {fwd}", "Echo");
-                LogUtil.LogSafe(ex, "Echo");
+                LogUtil.LogInfo($"异常: {ex} 在尝试回显消息: {message} 到转发器: {fwd} 时发生", "回显");
+                LogUtil.LogSafe(ex, "回显");
             }
         }
-        LogUtil.LogInfo(message, "Echo");
+        LogUtil.LogInfo(message, "回显");
     }
 }

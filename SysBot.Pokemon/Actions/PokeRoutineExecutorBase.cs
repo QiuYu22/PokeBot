@@ -62,7 +62,7 @@ public abstract class PokeRoutineExecutorBase(IConsoleBotManaged<IConsoleConnect
         // Flush any buffered logs to the trainer folder
         LogUtil.FlushBufferedLogs(earlyIdentifier, TrainerLabel);
 
-        Log($"{Connection.Name} identified as {TrainerLabel}, using {GameLang}.");
+        Log($"{Connection.Name} 已识别为 {TrainerLabel}，使用语言: {GameLang}。");
     }
 
     protected bool IsValidTrainerData() => GameLang is > 0 and <= LanguageID.SpanishL && InGameName.Length > 0 && Version > 0;

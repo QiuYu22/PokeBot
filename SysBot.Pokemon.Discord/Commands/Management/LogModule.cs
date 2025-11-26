@@ -21,11 +21,11 @@ public class LogModule : ModuleBase<SocketCommandContext>
                 AddLogChannel(c, ch.ID);
         }
 
-        LogUtil.LogInfo("Discord", "Added logging to Discord channel(s) on Bot startup.");
+        LogUtil.LogInfo("Discord", "机器人启动时已将日志添加到 Discord 频道。");
     }
 
     [Command("logHere")]
-    [Summary("Makes the bot log to the channel.")]
+    [Summary("让机器人在此频道记录日志。")]
     [RequireSudo]
     public async Task AddLogAsync()
     {
@@ -33,7 +33,7 @@ public class LogModule : ModuleBase<SocketCommandContext>
         var cid = c.Id;
         if (Channels.TryGetValue(cid, out _))
         {
-            await ReplyAsync("Already logging here.").ConfigureAwait(false);
+            await ReplyAsync("已在此频道记录日志。").ConfigureAwait(false);
             return;
         }
 
@@ -41,46 +41,46 @@ public class LogModule : ModuleBase<SocketCommandContext>
 
         // Add to discord global loggers (saves on program close)
         SysCordSettings.Settings.LoggingChannels.AddIfNew([GetReference(Context.Channel)]);
-        await ReplyAsync("Added logging output to this channel!").ConfigureAwait(false);
+        await ReplyAsync("已将日志输出添加到此频道！").ConfigureAwait(false);
     }
 
     [Command("logClearAll")]
-    [Summary("Clears all the logging settings.")]
+    [Summary("清除所有日志设置。")]
     [RequireSudo]
     public async Task ClearLogsAllAsync()
     {
         foreach (var l in Channels)
         {
             var entry = l.Value;
-            await ReplyAsync($"Logging cleared from {entry.ChannelName} ({entry.ChannelID}!").ConfigureAwait(false);
+            await ReplyAsync($"已从 {entry.ChannelName} ({entry.ChannelID}) 清除日志！").ConfigureAwait(false);
             LogUtil.Forwarders.Remove(entry);
         }
 
         LogUtil.Forwarders.RemoveAll(y => Channels.Select(z => z.Value).Contains(y));
         Channels.Clear();
         SysCordSettings.Settings.LoggingChannels.Clear();
-        await ReplyAsync("Logging cleared from all channels!").ConfigureAwait(false);
+        await ReplyAsync("已从所有频道清除日志！").ConfigureAwait(false);
     }
 
     [Command("logClear")]
-    [Summary("Clears the logging settings in that specific channel.")]
+    [Summary("清除该特定频道的日志设置。")]
     [RequireSudo]
     public async Task ClearLogsAsync()
     {
         var id = Context.Channel.Id;
         if (!Channels.TryGetValue(id, out var log))
         {
-            await ReplyAsync("Not echoing in this channel.").ConfigureAwait(false);
+            await ReplyAsync("此频道未设置日志。").ConfigureAwait(false);
             return;
         }
         LogUtil.Forwarders.Remove(log);
         Channels.Remove(Context.Channel.Id);
         SysCordSettings.Settings.LoggingChannels.RemoveAll(z => z.ID == id);
-        await ReplyAsync($"Logging cleared from channel: {Context.Channel.Name}").ConfigureAwait(false);
+        await ReplyAsync($"已从频道 {Context.Channel.Name} 清除日志").ConfigureAwait(false);
     }
 
     [Command("logInfo")]
-    [Summary("Dumps the logging settings.")]
+    [Summary("显示日志设置。")]
     [RequireSudo]
     public async Task DumpLogInfoAsync()
     {

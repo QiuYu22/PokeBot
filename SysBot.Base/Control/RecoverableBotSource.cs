@@ -132,7 +132,7 @@ public class RecoverableBotSource<T> : BotSource<T>, IDisposable where T : class
             if (!_isIntentionallyStopped && !IsStopping && !cancellationToken.IsCancellationRequested)
             {
                 _lastCrashTime = DateTime.UtcNow;
-                LogUtil.LogError($"Bot {Bot.Connection.Name} has crashed unexpectedly!", "Recovery");
+                LogUtil.LogError($"机器人 {Bot.Connection.Name} 意外崩溃！", "恢复");
                 
                 // The recovery service will handle the restart if enabled
             }
@@ -143,7 +143,7 @@ public class RecoverableBotSource<T> : BotSource<T>, IDisposable where T : class
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Error in bot monitoring for {Bot.Connection.Name}: {ex.Message}", "Recovery");
+            LogUtil.LogError($"监控机器人 {Bot.Connection.Name} 时发生错误: {ex.Message}", "恢复");
         }
     }
 

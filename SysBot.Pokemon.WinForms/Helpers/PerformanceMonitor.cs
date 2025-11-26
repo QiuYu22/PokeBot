@@ -254,13 +254,13 @@ namespace SysBot.Pokemon.WinForms.Helpers
 
         public override string ToString()
         {
-            var report = $"Performance Report:\n";
-            report += $"Average FPS: {AverageFps:F1}\n\n";
-            report += "Operation Statistics:\n";
+            var report = $"性能报告:\n";
+            report += $"平均 FPS: {AverageFps:F1}\n\n";
+            report += "操作统计:\n";
             
             foreach (var stat in OperationStats.Values.OrderByDescending(s => s.AverageMs))
             {
-                report += $"  {stat.Name}: {stat.AverageMs:F2}ms avg ({stat.Count} calls)\n";
+                report += $"  {stat.Name}: {stat.AverageMs:F2}ms 平均（{stat.Count} 次调用）\n";
             }
 
             return report;

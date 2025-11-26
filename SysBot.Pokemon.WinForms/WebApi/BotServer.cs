@@ -112,7 +112,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
             {
                 _listener.Prefixes.Add($"http://+:{_port}/");
                 _listener.Start();
-                LogUtil.LogInfo($"Web server listening on all interfaces at port {_port}", "WebServer");
+                LogUtil.LogInfo($"Web 服务器正在监听所有接口，端口 {_port}", "Web服务器");
             }
             catch (HttpListenerException ex) when (ex.ErrorCode == 5)
             {
@@ -121,10 +121,10 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                 _listener.Prefixes.Add($"http://127.0.0.1:{_port}/");
                 _listener.Start();
 
-                LogUtil.LogError($"Web server requires administrator privileges for network access. Currently limited to localhost only.", "WebServer");
-                LogUtil.LogInfo("To enable network access, either:", "WebServer");
-                LogUtil.LogInfo("1. Run this application as Administrator", "WebServer");
-                LogUtil.LogInfo($"2. Or run this command as admin: netsh http add urlacl url=http://+:{_port}/ user=Everyone", "WebServer");
+                LogUtil.LogError($"Web 服务器需要管理员权限才能进行网络访问。目前仅限本地访问。", "Web服务器");
+                LogUtil.LogInfo("要启用网络访问，请执行以下操作之一：", "Web服务器");
+                LogUtil.LogInfo("1. 以管理员身份运行此应用程序", "Web服务器");
+                LogUtil.LogInfo($"2. 或以管理员身份运行此命令: netsh http add urlacl url=http://+:{_port}/ user=Everyone", "Web服务器");
             }
 
             _running = true;
@@ -139,7 +139,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Failed to start web server: {ex.Message}", "WebServer");
+            LogUtil.LogError($"启动 Web 服务器失败: {ex.Message}", "Web服务器");
             throw;
         }
     }
@@ -159,7 +159,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Error stopping web server: {ex.Message}", "WebServer");
+            LogUtil.LogError($"停止 Web 服务器时出错: {ex.Message}", "Web服务器");
         }
     }
 
@@ -188,7 +188,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                     }
                     catch (Exception ex)
                     {
-                        LogUtil.LogError($"Error handling request: {ex.Message}", "WebServer");
+                        LogUtil.LogError($"处理请求时出错: {ex.Message}", "Web服务器");
                     }
                 });
             }
@@ -204,7 +204,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
             {
                 if (_running)
                 {
-                    LogUtil.LogError($"Error in listener: {ex.Message}", "WebServer");
+                    LogUtil.LogError($"监听器错误: {ex.Message}", "Web服务器");
                 }
             }
         }
@@ -233,18 +233,18 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
             }
             else
             {
-                var responseContent = content?.ToString() ?? "Not Found";
+                var responseContent = content?.ToString() ?? "未找到";
                 if (request.Url?.LocalPath?.Contains("/bots") == true)
                 {
-                    LogUtil.LogInfo($"Bots API response: {responseContent[..Math.Min(200, responseContent.Length)]}", "WebAPI");
+                    LogUtil.LogInfo($"机器人 API 响应: {responseContent[..Math.Min(200, responseContent.Length)]}", "WebAPI");
                 }
                 await SendResponseAsync(response, statusCode, responseContent, contentType);
             }
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Error processing request: {ex.Message}", "WebServer");
-            await TrySendErrorResponseAsync(response, 500, "Internal Server Error");
+            LogUtil.LogError($"处理请求时出错: {ex.Message}", "Web服务器");
+            await TrySendErrorResponseAsync(response, 500, "内部服务器错误");
         }
     }
     
@@ -391,18 +391,18 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
             // Check if update is already in progress
             if (UpdateManager.IsUpdateInProgress())
             {
-                return CreateErrorResponse("An update is already in progress");
+                return CreateErrorResponse("更新已在进行中");
             }
             
             if (RestartManager.IsRestartInProgress)
             {
-                return CreateErrorResponse("Cannot update while restart is in progress");
+                return CreateErrorResponse("重启进行中，无法更新");
             }
 
             // Start or resume update
             var session = await UpdateManager.StartOrResumeUpdateAsync(_mainForm, _tcpPort, forceUpdate);
 
-            LogUtil.LogInfo($"Started update session with ID: {session.SessionId}, Force: {forceUpdate}", "WebServer");
+            LogUtil.LogInfo($"已启动更新会话，ID: {session.SessionId}，强制更新: {forceUpdate}", "Web服务器");
 
             return JsonSerializer.Serialize(new
             {
@@ -414,12 +414,12 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                 failedInstances = session.FailedInstances,
                 startTime = session.StartTime.ToString("o"),
                 success = true,
-                info = "Update process started in background. Use /api/bot/update/active to check status."
+                info = "更新进程已在后台启动。使用 /api/bot/update/active 检查状态。"
             }, JsonOptions);
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Failed to start update: {ex.Message}", "WebServer");
+            LogUtil.LogError($"启动更新失败: {ex.Message}", "Web服务器");
             return CreateErrorResponse(ex.Message);
         }
     }
@@ -431,22 +431,22 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
             // Validate port range - ensure it's within valid TCP port range
             if (port <= 0 || port > 65535)
             {
-                LogUtil.LogError($"Invalid port number: {port} (must be 1-65535)", "WebServer");
-                return CreateErrorResponse($"Invalid port number: {port}. Port must be between 1 and 65535.");
+                LogUtil.LogError($"无效的端口号: {port}（必须为 1-65535）", "Web服务器");
+                return CreateErrorResponse($"无效的端口号: {port}。端口必须在 1 到 65535 之间。");
             }
 
             // Additional validation - ensure port is not in reserved ranges
             if (port < 1024 && port != _tcpPort) // Allow only well-known ports that are explicitly configured
             {
-                LogUtil.LogError($"Attempted to update instance on reserved port: {port}", "WebServer");
-                return CreateErrorResponse($"Cannot update instances on reserved system ports (1-1023).");
+                LogUtil.LogError($"尝试更新保留端口上的实例: {port}", "Web服务器");
+                return CreateErrorResponse($"无法更新系统保留端口（1-1023）上的实例。");
             }
 
             // Check if this is the master instance trying to update itself
             if (port == _tcpPort)
             {
-                LogUtil.LogError($"Master instance (port {port}) attempted to update itself. This is not supported.", "WebServer");
-                return CreateErrorResponse("Master instance cannot update itself. Use /api/bot/update/all to update all instances including master.");
+                LogUtil.LogError($"主实例（端口 {port}）尝试更新自身。不支持此操作。", "Web服务器");
+                return CreateErrorResponse("主实例无法更新自身。请使用 /api/bot/update/all 更新包括主实例在内的所有实例。");
             }
 
             // Check if instance exists and is online
@@ -455,14 +455,14 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
             
             if (targetInstance == null)
             {
-                LogUtil.LogError($"Instance with port {port} not found", "WebServer");
-                return CreateErrorResponse($"Instance with port {port} not found");
+                LogUtil.LogError($"未找到端口 {port} 的实例", "Web服务器");
+                return CreateErrorResponse($"未找到端口 {port} 的实例");
             }
 
             if (!targetInstance.IsOnline)
             {
-                LogUtil.LogError($"Instance with port {port} is not online", "WebServer");
-                return CreateErrorResponse($"Instance with port {port} is not online");
+                LogUtil.LogError($"端口 {port} 的实例不在线", "Web服务器");
+                return CreateErrorResponse($"端口 {port} 的实例不在线");
             }
 
             // Check if any update is already in progress
@@ -475,26 +475,26 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                 {
                     var instanceState = currentState.Instances.First(i => i.TcpPort == port);
                     
-                    LogUtil.LogInfo($"Instance {port} is already updating. Status: {instanceState.Status}", "WebServer");
+                    LogUtil.LogInfo($"实例 {port} 已在更新中。状态: {instanceState.Status}", "Web服务器");
                     return JsonSerializer.Serialize(new
                     {
                         success = false,
-                        message = $"Instance {port} is already being updated",
+                        message = $"实例 {port} 已在更新中",
                         status = instanceState.Status.ToString(),
                         error = instanceState.Error
                     }, JsonOptions);
                 }
                 
                 // Another update is in progress but not for this instance
-                LogUtil.LogError($"Cannot update instance {port} - another update is in progress", "WebServer");
-                return CreateErrorResponse("Another update is already in progress. Please wait for it to complete or clear the session.");
+                LogUtil.LogError($"无法更新实例 {port} - 另一个更新正在进行中", "Web服务器");
+                return CreateErrorResponse("另一个更新已在进行中。请等待其完成或清除会话。");
             }
 
             // Check if restart is in progress
             if (RestartManager.IsRestartInProgress)
             {
-                LogUtil.LogError($"Cannot update instance {port} - restart is in progress", "WebServer");
-                return CreateErrorResponse("Cannot update while restart is in progress");
+                LogUtil.LogError($"无法更新实例 {port} - 正在重启中", "Web服务器");
+                return CreateErrorResponse("重启进行中，无法更新");
             }
 
             // Parse request body for optional parameters
@@ -517,57 +517,57 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                     }
                     catch (JsonException ex)
                     {
-                        LogUtil.LogError($"Failed to parse request body: {ex.Message}", "WebServer");
+                        LogUtil.LogError($"解析请求体失败: {ex.Message}", "Web服务器");
                         // Continue without force flag
                     }
                 }
             }
             else if (request.ContentLength64 >= 1024)
             {
-                LogUtil.LogError($"Request body too large: {request.ContentLength64} bytes", "WebServer");
-                return CreateErrorResponse("Request body too large");
+                LogUtil.LogError($"请求体过大: {request.ContentLength64} 字节", "Web服务器");
+                return CreateErrorResponse("请求体过大");
             }
 
-            LogUtil.LogInfo($"Starting single instance update for port {port} (Force: {forceUpdate})", "WebServer");
+            LogUtil.LogInfo($"开始单实例更新，端口 {port}（强制: {forceUpdate}）", "Web服务器");
 
             // Start the update for the single instance
             var success = await UpdateManager.UpdateSingleInstanceAsync(_mainForm, port, _cts.Token);
 
             if (success)
             {
-                LogUtil.LogInfo($"Successfully updated instance on port {port}", "WebServer");
+                LogUtil.LogInfo($"成功更新端口 {port} 上的实例", "Web服务器");
                 
                 return JsonSerializer.Serialize(new
                 {
                     success = true,
-                    message = $"Instance on port {port} updated successfully",
+                    message = $"端口 {port} 上的实例更新成功",
                     port,
                     processId = targetInstance.ProcessId
                 }, JsonOptions);
             }
             else
             {
-                LogUtil.LogError($"Failed to update instance on port {port}", "WebServer");
+                LogUtil.LogError($"更新端口 {port} 上的实例失败", "Web服务器");
                 
                 return JsonSerializer.Serialize(new
                 {
                     success = false,
-                    message = $"Failed to update instance on port {port}",
+                    message = $"更新端口 {port} 上的实例失败",
                     port,
-                    error = "Update failed - check logs for details"
+                    error = "更新失败 - 请检查日志获取详细信息"
                 }, JsonOptions);
             }
         }
         catch (OperationCanceledException)
         {
-            LogUtil.LogError($"Update for instance {port} was cancelled", "WebServer");
-            return CreateErrorResponse($"Update for instance {port} was cancelled");
+            LogUtil.LogError($"实例 {port} 的更新已取消", "Web服务器");
+            return CreateErrorResponse($"实例 {port} 的更新已取消");
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Error updating single instance {port}: {ex.Message}", "WebServer");
-            LogUtil.LogError($"Stack trace: {ex.StackTrace}", "WebServer");
-            return CreateErrorResponse($"Failed to update instance: {ex.Message}");
+            LogUtil.LogError($"更新单实例 {port} 时出错: {ex.Message}", "Web服务器");
+            LogUtil.LogError($"堆栈跟踪: {ex.StackTrace}", "Web服务器");
+            return CreateErrorResponse($"更新实例失败: {ex.Message}");
         }
     }
 
@@ -591,7 +591,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                     r.Success,
                     r.Error
                 }),
-                Message = result.Success ? "Restart completed successfully" : "Restart failed"
+                Message = result.Success ? "重启成功完成" : "重启失败"
             });
         }
         catch (Exception ex)
@@ -617,7 +617,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
         }
         catch (Exception ex)
         {
-            return CreateErrorResponse($"Failed to get restart status: {ex.Message}");
+            return CreateErrorResponse($"获取重启状态失败: {ex.Message}");
         }
     }
 
@@ -625,14 +625,14 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
     {
         return state switch
         {
-            RestartState.Idle => "No restart in progress",
-            RestartState.Preparing => "Preparing restart sequence",
-            RestartState.DiscoveringInstances => "Discovering all instances",
-            RestartState.IdlingBots => "Sending idle commands to all bots",
-            RestartState.WaitingForIdle => "Waiting for bots to become idle",
-            RestartState.RestartingSlaves => "Restarting slave instances",
-            RestartState.RestartingMaster => "Restarting master instance",
-            _ => "Processing..."
+            RestartState.Idle => "无重启进行中",
+            RestartState.Preparing => "正在准备重启序列",
+            RestartState.DiscoveringInstances => "正在发现所有实例",
+            RestartState.IdlingBots => "正在向所有机器人发送空闲命令",
+            RestartState.WaitingForIdle => "等待机器人进入空闲状态",
+            RestartState.RestartingSlaves => "正在重启从实例",
+            RestartState.RestartingMaster => "正在重启主实例",
+            _ => "处理中..."
         };
     }
 
@@ -661,7 +661,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                 using var reader = new StreamReader(request.InputStream);
                 var body = await reader.ReadToEndAsync();
 
-                LogUtil.LogInfo($"Received restart schedule POST: {body}", "WebServer");
+                LogUtil.LogInfo($"收到重启调度 POST: {body}", "Web服务器");
 
                 // Use case-insensitive deserialization for RestartScheduleConfig
                 var restartConfigOptions = new JsonSerializerOptions
@@ -673,30 +673,30 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                 var config = JsonSerializer.Deserialize<RestartScheduleConfig>(body, restartConfigOptions);
                 if (config == null)
                 {
-                    LogUtil.LogError($"Failed to deserialize RestartScheduleConfig from: {body}", "WebServer");
-                    return CreateErrorResponse("Invalid schedule configuration");
+                    LogUtil.LogError($"反序列化重启计划配置失败: {body}", "Web服务器");
+                    return CreateErrorResponse("无效的调度配置");
                 }
 
-                LogUtil.LogInfo($"Updating restart schedule - Enabled: {config.Enabled}, Time: {config.Time}", "WebServer");
+                LogUtil.LogInfo($"更新重启调度 - 已启用: {config.Enabled}，时间: {config.Time}", "Web服务器");
                 RestartManager.UpdateScheduleConfig(config);
                 
                 var result = new 
                 { 
                     Success = true, 
-                    Message = "Restart schedule updated successfully",
+                    Message = "重启调度更新成功",
                     NextRestart = RestartManager.NextScheduledRestart?.ToString("yyyy-MM-dd HH:mm:ss")
                 };
                 
                 return JsonSerializer.Serialize(result);
             }
 
-            LogUtil.LogError($"Invalid HTTP method: {request.HttpMethod}", "WebServer");
-            return CreateErrorResponse("Invalid method");
+            LogUtil.LogError($"无效的 HTTP 方法: {request.HttpMethod}", "Web服务器");
+            return CreateErrorResponse("无效的方法");
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Error in UpdateRestartSchedule: {ex.Message}", "WebServer");
-            LogUtil.LogError($"Stack trace: {ex.StackTrace}", "WebServer");
+            LogUtil.LogError($"UpdateRestartSchedule 出错: {ex.Message}", "Web服务器");
+            LogUtil.LogError($"堆栈跟踪: {ex.StackTrace}", "Web服务器");
             return CreateErrorResponse(ex.Message);
         }
     }
@@ -845,7 +845,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
             var response = new UpdateCheckResponse
             {
                 Version = "Unknown",
-                Changelog = "Unable to fetch update information",
+                Changelog = "无法获取更新信息",
                 Available = false,
                 Error = ex.Message
             };
@@ -1074,7 +1074,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Error scanning local processes: {ex.Message}", "WebServer");
+            LogUtil.LogError($"扫描本地进程时出错: {ex.Message}", "Web服务器");
         }
 
         return instances;
@@ -1222,17 +1222,17 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                 };
 
                 var json = JsonSerializer.Serialize(response, JsonOptions);
-                LogUtil.LogInfo($"GetBots returning {json.Length} bytes for port {port}", "WebAPI");
+                LogUtil.LogInfo($"GetBots 返回 {json.Length} 字节，端口 {port}", "WebAPI");
                 return json;
             }
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Error in GetBots for port {port}: {ex.Message}", "WebAPI");
+            LogUtil.LogError($"获取端口 {port} 的机器人时出错: {ex.Message}", "WebAPI");
             return JsonSerializer.Serialize(new BotsResponse 
             { 
                 Bots = [],
-                Error = $"Error getting bots: {ex.Message}"
+                Error = $"获取机器人时出错: {ex.Message}"
             }, JsonOptions);
         }
 
@@ -1263,7 +1263,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
             return JsonSerializer.Serialize(new BotsResponse 
             { 
                 Bots = [],
-                Error = "Invalid response from remote instance"
+                Error = "远程实例返回无效响应"
             }, JsonOptions);
         }
     }
@@ -1274,7 +1274,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
         {
             var commandRequest = await DeserializeRequestAsync<BotCommandRequest>(request);
             if (commandRequest == null)
-                return CreateErrorResponse("Invalid command request");
+                return CreateErrorResponse("无效的命令请求");
 
             if (port == _tcpPort)
             {
@@ -1306,7 +1306,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
         {
             var commandRequest = await DeserializeRequestAsync<BotCommandRequest>(request);
             if (commandRequest == null)
-                return CreateErrorResponse("Invalid command request");
+                return CreateErrorResponse("无效的命令请求");
 
             var results = await ExecuteCommandOnAllInstancesAsync(commandRequest.Command);
             
@@ -1386,7 +1386,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
             
             var response = new CommandResponse
             {
-                Message = $"Command {command} sent successfully",
+                Message = $"命令 {command} 发送成功",
                 Port = _tcpPort,
                 Command = command
             };
@@ -1395,11 +1395,11 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Error executing local command {command}: {ex.Message}", "WebServer");
+            LogUtil.LogError($"执行本地命令 {command} 时出错: {ex.Message}", "Web服务器");
             // Still return success as the command was queued
             var response = new CommandResponse
             {
-                Message = $"Command {command} queued",
+                Message = $"命令 {command} 已排队",
                 Port = _tcpPort,
                 Command = command
             };
@@ -1445,19 +1445,19 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
             // Validate inputs
             if (port <= 0 || port > 65535)
             {
-                return "ERROR: Invalid port number";
+                return "ERROR: 无效的端口号";
             }
 
             if (string.IsNullOrWhiteSpace(command) || command.Length > 1000)
             {
-                return "ERROR: Invalid command";
+                return "ERROR: 无效的命令";
             }
 
             // Sanitize command to prevent injection
             var sanitizedCommand = SanitizeCommand(command);
             if (sanitizedCommand == null)
             {
-                return "ERROR: Command contains invalid characters";
+                return "ERROR: 命令包含无效字符";
             }
 
             using var client = new TcpClient();
@@ -1467,7 +1467,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
             var connectTask = client.ConnectAsync("127.0.0.1", port);
             if (!connectTask.Wait(5000))
             {
-                return "ERROR: Connection timeout";
+                return "ERROR: 连接超时";
             }
 
             using var stream = client.GetStream();
@@ -1483,7 +1483,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                 response = string.Concat(response.AsSpan(0, 10000), "... [truncated]");
             }
             
-            return response ?? "ERROR: No response";
+            return response ?? "ERROR: 无响应";
         }
         catch (Exception ex)
         {
@@ -1531,7 +1531,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                     maxQueueCount = 30,
                     isFull = false,
                     canQueue = true,
-                    message = "Queue information unavailable"
+                    message = "队列信息不可用"
                 }, JsonOptions);
             }
 
@@ -1545,7 +1545,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                     maxQueueCount = config.Hub.Queues.MaxQueueCount,
                     isFull = false,
                     canQueue = config.Hub.Queues.CanQueue,
-                    message = "Queue system not initialized"
+                    message = "队列系统未初始化"
                 }, JsonOptions);
             }
 
@@ -1558,7 +1558,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                     maxQueueCount = config.Hub.Queues.MaxQueueCount,
                     isFull = false,
                     canQueue = config.Hub.Queues.CanQueue,
-                    message = "Queue info not available"
+                    message = "队列信息不可用"
                 }, JsonOptions);
             }
 
@@ -1574,19 +1574,19 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                 maxQueueCount,
                 isFull,
                 canQueue,
-                message = isFull ? "Queue is currently full" : canQueue ? "Queue is open" : "Queue is closed"
+                message = isFull ? "队列当前已满" : canQueue ? "队列已开放" : "队列已关闭"
             }, JsonOptions);
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Error getting queue status: {ex.Message}", "WebServer");
+            LogUtil.LogError($"获取队列状态时出错: {ex.Message}", "Web服务器");
             return JsonSerializer.Serialize(new
             {
                 queueCount = 0,
                 maxQueueCount = 30,
                 isFull = false,
                 canQueue = false,
-                message = "Error retrieving queue status"
+                message = "获取队列状态时出错"
             }, JsonOptions);
         }
     }
@@ -1638,18 +1638,18 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
             {
                 // Check if master instance actually updated
                 var currentVersion = SysBot.Pokemon.Helpers.PokeBot.Version;
-                LogUtil.LogInfo($"Checking session state: current={currentVersion}, target={currentState.TargetVersion}, isComplete={currentState.IsComplete}", "WebServer");
+                LogUtil.LogInfo($"检查会话状态: 当前={currentVersion}，目标={currentState.TargetVersion}，已完成={currentState.IsComplete}", "Web服务器");
                 
                 // If version matches target, force complete regardless of what the state says
                 if (currentVersion == currentState.TargetVersion)
                 {
                     if (!currentState.IsComplete || !currentState.Success)
                     {
-                        LogUtil.LogInfo("Force completing update session - version matches target", "WebServer");
+                        LogUtil.LogInfo("强制完成更新会话 - 版本匹配目标", "Web服务器");
                         UpdateManager.ForceCompleteSession();
                         return JsonSerializer.Serialize(new { 
                             success = true, 
-                            message = "Update completed successfully - all instances updated to target version",
+                            message = "更新成功完成 - 所有实例已更新到目标版本",
                             action = "force_completed",
                             currentVersion,
                             targetVersion = currentState.TargetVersion
@@ -1661,7 +1661,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                         UpdateManager.ClearState();
                         return JsonSerializer.Serialize(new { 
                             success = true, 
-                            message = "Update was already successful - session cleared",
+                            message = "更新已成功 - 会话已清除",
                             action = "cleared",
                             currentVersion
                         }, JsonOptions);
@@ -1669,7 +1669,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
                 }
                 else
                 {
-                    LogUtil.LogInfo($"Version mismatch - clearing session (current={currentVersion}, target={currentState.TargetVersion})", "WebServer");
+                    LogUtil.LogInfo($"版本不匹配 - 清除会话（当前={currentVersion}，目标={currentState.TargetVersion}）", "Web服务器");
                 }
             }
             
@@ -1677,13 +1677,13 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
             UpdateManager.ClearState();
             return JsonSerializer.Serialize(new { 
                 success = true, 
-                message = "Update session cleared",
+                message = "更新会话已清除",
                 action = "cleared"
             }, JsonOptions);
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Error clearing update session: {ex.Message}", "WebServer");
+            LogUtil.LogError($"清除更新会话时出错: {ex.Message}", "Web服务器");
             return CreateErrorResponse(ex.Message);
         }
     }
@@ -1752,7 +1752,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Error getting active updates: {ex.Message}", "WebServer");
+            LogUtil.LogError($"获取活动更新时出错: {ex.Message}", "Web服务器");
             return CreateErrorResponse(ex.Message);
         }
     }
@@ -1798,7 +1798,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Failed to load icon: {ex.Message}", "WebServer");
+            LogUtil.LogError($"加载图标失败: {ex.Message}", "Web服务器");
             return null;
         }
     }
@@ -1853,7 +1853,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
         {
             var requestData = await DeserializeRequestAsync<RemoteButtonRequest>(request);
             if (requestData == null)
-                return CreateErrorResponse("Invalid remote button request");
+                return CreateErrorResponse("无效的远程按钮请求");
 
             // Send button command via TCP to the target instance
             var tcpCommand = $"REMOTE_BUTTON:{requestData.Button}:{requestData.BotIndex}";
@@ -1877,7 +1877,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
         }
         catch (Exception ex)
         {
-            return CreateErrorResponse($"Failed to send button command: {ex.Message}");
+            return CreateErrorResponse($"发送按钮命令失败: {ex.Message}");
         }
     }
     
@@ -1887,7 +1887,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
         {
             var requestData = await DeserializeRequestAsync<RemoteMacroRequest>(request);
             if (requestData == null)
-                return CreateErrorResponse("Invalid remote macro request");
+                return CreateErrorResponse("无效的远程宏请求");
 
             // Send macro command via TCP to the target instance  
             var tcpCommand = $"REMOTE_MACRO:{requestData.Macro}:{requestData.BotIndex}";
@@ -1911,7 +1911,7 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
         }
         catch (Exception ex)
         {
-            return CreateErrorResponse($"Failed to execute macro: {ex.Message}");
+            return CreateErrorResponse($"执行宏失败: {ex.Message}");
         }
     }
     
@@ -1936,26 +1936,26 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
             });
             
             if (controllers.Count == 0)
-                return CreateErrorResponse("No bots available");
+                return CreateErrorResponse("没有可用的机器人");
                 
             // Validate bot index
             if (botIndex < 0 || botIndex >= controllers.Count)
-                return CreateErrorResponse($"Invalid bot index: {botIndex}");
+                return CreateErrorResponse($"无效的机器人索引: {botIndex}");
                 
             var botSource = controllers[botIndex].GetBot();
             if (botSource?.Bot == null)
-                return CreateErrorResponse($"Bot at index {botIndex} not available");
+                return CreateErrorResponse($"索引 {botIndex} 处的机器人不可用");
                 
             if (!botSource.IsRunning)
-                return CreateErrorResponse($"Bot at index {botIndex} is not running");
+                return CreateErrorResponse($"索引 {botIndex} 处的机器人未运行");
                 
             var bot = botSource.Bot;
             if (bot.Connection is not ISwitchConnectionAsync connection)
-                return CreateErrorResponse("Bot connection not available");
+                return CreateErrorResponse("机器人连接不可用");
             
             var switchButton = MapButtonToSwitch(button);
             if (switchButton == null)
-                return CreateErrorResponse($"Invalid button: {button}");
+                return CreateErrorResponse($"无效的按钮: {button}");
             
             var cmd = SwitchCommand.Click(switchButton.Value);
             await connection.SendAsync(cmd, CancellationToken.None);
@@ -1963,14 +1963,14 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
             return JsonSerializer.Serialize(new
             {
                 success = true,
-                message = $"Button {button} pressed on bot {botIndex}",
+                message = $"按钮 {button} 已在机器人 {botIndex} 上按下",
                 button,
                 botIndex
             }, JsonOptions);
         }
         catch (Exception ex)
         {
-            return CreateErrorResponse($"Failed to execute button press: {ex.Message}");
+            return CreateErrorResponse($"执行按钮按下失败: {ex.Message}");
         }
     }
     
@@ -1995,22 +1995,22 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
             });
             
             if (controllers.Count == 0)
-                return CreateErrorResponse("No bots available");
+                return CreateErrorResponse("没有可用的机器人");
                 
             // Validate bot index
             if (botIndex < 0 || botIndex >= controllers.Count)
-                return CreateErrorResponse($"Invalid bot index: {botIndex}");
+                return CreateErrorResponse($"无效的机器人索引: {botIndex}");
                 
             var botSource = controllers[botIndex].GetBot();
             if (botSource?.Bot == null)
-                return CreateErrorResponse($"Bot at index {botIndex} not available");
+                return CreateErrorResponse($"索引 {botIndex} 处的机器人不可用");
                 
             if (!botSource.IsRunning)
-                return CreateErrorResponse($"Bot at index {botIndex} is not running");
+                return CreateErrorResponse($"索引 {botIndex} 处的机器人未运行");
                 
             var bot = botSource.Bot;
             if (bot.Connection is not ISwitchConnectionAsync connection)
-                return CreateErrorResponse("Bot connection not available");
+                return CreateErrorResponse("机器人连接不可用");
             
             var commands = ParseMacroCommands(macro);
             foreach (var cmd in commands)
@@ -2042,14 +2042,14 @@ public partial class BotServer(Main mainForm, int port = 8080, int tcpPort = 808
             return JsonSerializer.Serialize(new
             {
                 success = true,
-                message = $"Macro executed successfully on bot {botIndex}",
+                message = $"宏已在机器人 {botIndex} 上成功执行",
                 commandCount = commands.Count,
                 botIndex
             }, JsonOptions);
         }
         catch (Exception ex)
         {
-            return CreateErrorResponse($"Failed to execute macro: {ex.Message}");
+            return CreateErrorResponse($"执行宏失败: {ex.Message}");
         }
     }
     

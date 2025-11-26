@@ -22,7 +22,7 @@ namespace SysBot.Base.Util
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to write to log: {ex.Message}");
+                Console.WriteLine($"写入日志失败: {ex.Message}");
             }
         }
     }

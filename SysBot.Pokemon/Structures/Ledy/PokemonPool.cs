@@ -85,13 +85,13 @@ public class PokemonPool<T>(BaseConfig Settings) : List<T>
 
             if (dest.Species == 0)
             {
-                LogUtil.LogInfo("SKIPPED: Provided file is not valid: " + dest.FileName, nameof(PokemonPool<T>));
+                LogUtil.LogInfo("已跳过: 提供的文件无效: " + dest.FileName, nameof(PokemonPool<T>));
                 continue;
             }
 
             if (!dest.CanBeTraded())
             {
-                LogUtil.LogInfo("SKIPPED: Provided file cannot be traded: " + dest.FileName, nameof(PokemonPool<T>));
+                LogUtil.LogInfo("已跳过: 提供的文件无法交易: " + dest.FileName, nameof(PokemonPool<T>));
                 continue;
             }
 
@@ -99,7 +99,7 @@ public class PokemonPool<T>(BaseConfig Settings) : List<T>
             if (!la.Valid)
             {
                 var reason = la.Report();
-                LogUtil.LogInfo($"SKIPPED: Provided file is not legal: {dest.FileName} -- {reason}", nameof(PokemonPool<T>));
+                LogUtil.LogInfo($"已跳过: 提供的文件不合法: {dest.FileName} -- {reason}", nameof(PokemonPool<T>));
                 continue;
             }
 
@@ -117,12 +117,12 @@ public class PokemonPool<T>(BaseConfig Settings) : List<T>
             }
             else
             {
-                LogUtil.LogInfo("Provided file was not added due to duplicate name: " + dest.FileName, nameof(PokemonPool<T>));
+                LogUtil.LogInfo("由于文件名重复，未添加此文件: " + dest.FileName, nameof(PokemonPool<T>));
             }
             loadedAny = true;
         }
         if (surpriseBlocked == Count)
-            LogUtil.LogInfo(nameof(PokemonPool<T>), "Surprise trading will fail; failed to load any compatible files.");
+            LogUtil.LogInfo(nameof(PokemonPool<T>), "随机交易将失败；未能加载任何兼容文件。");
 
         return loadedAny;
     }

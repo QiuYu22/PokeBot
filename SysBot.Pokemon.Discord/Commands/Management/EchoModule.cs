@@ -88,10 +88,10 @@ namespace SysBot.Pokemon.Discord
             var formattedTimestamp = $"<t:{unixTimestamp}:F>";
 
             var embedColor = isFull ? Color.Red : Color.Green;
-            var title = isFull ? "🚫 Queue is Now Full!" : "✅ Queue is Now Open!";
+            var title = isFull ? "🚫 队列已满！" : "✅ 队列已开放！";
             var description = isFull
-                ? $"The queue has reached maximum capacity and is now **closed**.\n\n**Current Queue Count:** {currentCount}/{maxCount}\n\nThe queue will automatically open when trades are completed and space becomes available.\n\n**Status Updated:** {formattedTimestamp}"
-                : $"The queue is now **open** and accepting new trades!\n\n**Current Queue Count:** {currentCount}/{maxCount}\n\n**Status Updated:** {formattedTimestamp}";
+                ? $"队列已达到最大容量，现已**关闭**。\n\n**当前队列数量:** {currentCount}/{maxCount}\n\n当交易完成并有空位时，队列将自动开放。\n\n**状态更新时间:** {formattedTimestamp}"
+                : $"队列现已**开放**，可以接受新的交易！\n\n**当前队列数量:** {currentCount}/{maxCount}\n\n**状态更新时间:** {formattedTimestamp}";
 
             var thumbnailUrl = Settings.AnnouncementSettings.RandomAnnouncementThumbnail ? GetRandomThumbnail() : GetSelectedThumbnail();
 
@@ -102,7 +102,7 @@ namespace SysBot.Pokemon.Discord
             }
             .WithTitle(title)
             .WithThumbnailUrl(thumbnailUrl)
-            .WithFooter("Queue status updates are automatic")
+            .WithFooter("队列状态自动更新")
             .Build();
 
             foreach (var channelEntry in Channels)
@@ -124,7 +124,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("Announce", RunMode = RunMode.Async)]
         [Alias("announce")]
-        [Summary("Sends an announcement to all EchoChannels added by the aec command.")]
+        [Summary("向所有通过 aec 命令添加的回显频道发送公告。")]
         [RequireOwner]
         public async Task AnnounceAsync([Remainder] string announcement)
         {
@@ -135,14 +135,14 @@ namespace SysBot.Pokemon.Discord
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
             var thumbnailUrl = Settings.AnnouncementSettings.RandomAnnouncementThumbnail ? GetRandomThumbnail() : GetSelectedThumbnail();
 
-            var embedDescription = $"## {announcement}\n\n**Sent: {formattedTimestamp}**";
+            var embedDescription = $"## {announcement}\n\n**发送时间: {formattedTimestamp}**";
 
             var embed = new EmbedBuilder
             {
                 Color = embedColor,
                 Description = embedDescription
             }
-            .WithTitle("Important Announcement!")
+            .WithTitle("重要公告！")
             .WithThumbnailUrl(thumbnailUrl)
             .Build();
 
@@ -165,7 +165,7 @@ namespace SysBot.Pokemon.Discord
                     LogUtil.LogError($"Failed to send announcement to channel {channel.Name}: {ex.Message}", nameof(AnnounceAsync));
                 }
             }
-            var confirmationMessage = await ReplyAsync("Announcement sent to all EchoChannels.").ConfigureAwait(false);
+            var confirmationMessage = await ReplyAsync("公告已发送至所有回显频道。").ConfigureAwait(false);
             await Task.Delay(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
             await confirmationMessage.DeleteAsync().ConfigureAwait(false);
             await Context.Message.DeleteAsync().ConfigureAwait(false);
@@ -225,7 +225,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("addEmbedChannel")]
         [Alias("aec")]
-        [Summary("Makes the bot post raid embeds to the channel.")]
+        [Summary("让机器人在此频道发布交易嵌入消息。")]
         [RequireSudo]
         public async Task AddEchoAsync()
         {
@@ -233,14 +233,14 @@ namespace SysBot.Pokemon.Discord
             var cid = c.Id;
             if (Channels.TryGetValue(cid, out _))
             {
-                await ReplyAsync("Already notifying here.").ConfigureAwait(false);
+                await ReplyAsync("已在此频道设置通知。").ConfigureAwait(false);
                 return;
             }
 
             AddEchoChannel(c, cid);
 
             SysCordSettings.Settings.AnnouncementChannels.AddIfNew([GetReference(Context.Channel)]);
-            await ReplyAsync("Added Trade Embed output to this channel!").ConfigureAwait(false);
+            await ReplyAsync("已将交易嵌入输出添加到此频道！").ConfigureAwait(false);
         }
 
         private static async Task<bool> SendMessageWithRetry(ISocketMessageChannel c, string message, int maxRetries = 3)
@@ -314,7 +314,7 @@ namespace SysBot.Pokemon.Discord
         }
 
         [Command("echoInfo")]
-        [Summary("Dumps the special message (Echo) settings.")]
+        [Summary("显示特殊消息（回显）设置。")]
         [RequireSudo]
         public async Task DumpEchoInfoAsync()
         {
@@ -324,38 +324,38 @@ namespace SysBot.Pokemon.Discord
 
         [Command("echoClear")]
         [Alias("rec")]
-        [Summary("Clears the special message echo settings in that specific channel.")]
+        [Summary("清除该特定频道的特殊消息回显设置。")]
         [RequireSudo]
         public async Task ClearEchosAsync()
         {
             var id = Context.Channel.Id;
             if (!Channels.TryGetValue(id, out var echo))
             {
-                await ReplyAsync("Not echoing in this channel.").ConfigureAwait(false);
+                await ReplyAsync("此频道未设置回显。").ConfigureAwait(false);
                 return;
             }
             EchoUtil.Forwarders.Remove(echo.Action);
             Channels.Remove(Context.Channel.Id);
             SysCordSettings.Settings.AnnouncementChannels.RemoveAll(z => z.ID == id);
-            await ReplyAsync($"Echoes cleared from channel: {Context.Channel.Name}").ConfigureAwait(false);
+            await ReplyAsync($"已从频道 {Context.Channel.Name} 清除回显").ConfigureAwait(false);
         }
 
         [Command("echoClearAll")]
         [Alias("raec")]
-        [Summary("Clears all the special message Echo channel settings.")]
+        [Summary("清除所有特殊消息回显频道设置。")]
         [RequireSudo]
         public async Task ClearEchosAllAsync()
         {
             foreach (var l in Channels)
             {
                 var entry = l.Value;
-                await ReplyAsync($"Echoing cleared from {entry.ChannelName} ({entry.ChannelID}!").ConfigureAwait(false);
+                await ReplyAsync($"已从 {entry.ChannelName} ({entry.ChannelID}) 清除回显！").ConfigureAwait(false);
                 EchoUtil.Forwarders.Remove(entry.Action);
             }
             EchoUtil.Forwarders.RemoveAll(y => Channels.Select(x => x.Value.Action).Contains(y));
             Channels.Clear();
             SysCordSettings.Settings.AnnouncementChannels.Clear();
-            await ReplyAsync("Echoes cleared from all channels!").ConfigureAwait(false);
+            await ReplyAsync("已从所有频道清除回显！").ConfigureAwait(false);
         }
 
         private RemoteControlAccess GetReference(IChannel channel) => new()

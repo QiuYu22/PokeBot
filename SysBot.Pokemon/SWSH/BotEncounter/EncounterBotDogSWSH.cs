@@ -19,7 +19,7 @@ public sealed class EncounterBotDogSWSH(PokeBotState Config, PokeTradeHub<PK8> H
     {
         while (!token.IsCancellationRequested)
         {
-            Log("Looking for a new dog...");
+            Log("正在寻找新的传说宝可梦...");
 
             // At the start of each loop, an A press is needed to exit out of a prompt.
             await Click(A, 0_100, token).ConfigureAwait(false);
@@ -29,11 +29,11 @@ public sealed class EncounterBotDogSWSH(PokeBotState Config, PokeTradeHub<PK8> H
             while (!await IsInBattle(token).ConfigureAwait(false))
                 await Click(A, 0_300, token).ConfigureAwait(false);
 
-            Log("Encounter started! Checking details...");
+            Log("遭遇开始！正在检查详情...");
             var pk = await ReadUntilPresent(LegendaryPokemonOffset, 2_000, 0_200, BoxFormatSlotSize, token).ConfigureAwait(false);
             if (pk == null)
             {
-                Log("Invalid data detected. Restarting loop.");
+                Log("检测到无效数据。正在重启循环。");
                 continue;
             }
 
@@ -50,7 +50,7 @@ public sealed class EncounterBotDogSWSH(PokeBotState Config, PokeTradeHub<PK8> H
             if (await HandleEncounter(pk, token).ConfigureAwait(false))
                 return;
 
-            Log("Running away...");
+            Log("正在逃跑...");
             await FleeToOverworld(token).ConfigureAwait(false);
 
             // Extra delay to be sure we're fully out of the battle.

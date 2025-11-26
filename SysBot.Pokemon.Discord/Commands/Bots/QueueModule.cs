@@ -9,34 +9,34 @@ using System.Threading.Tasks;
 
 namespace SysBot.Pokemon.Discord;
 
-[Summary("Clears and toggles Queue features.")]
+[Summary("清空和切换队列功能。")]
 public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
 {
     private static TradeQueueInfo<T> Info => SysCord<T>.Runner.Hub.Queues.Info;
 
     [Command("queueMode")]
     [Alias("qm")]
-    [Summary("Changes how queueing is controlled (manual/threshold/interval).")]
+    [Summary("更改队列控制方式（手动/阈值/间隔）。")]
     [RequireSudo]
-    public async Task ChangeQueueModeAsync([Summary("Queue mode")] QueueOpening mode)
+    public async Task ChangeQueueModeAsync([Summary("队列模式")] QueueOpening mode)
     {
         SysCord<T>.Runner.Hub.Config.Queues.QueueToggleMode = mode;
-        await ReplyAsync($"Changed queue mode to {mode}.").ConfigureAwait(false);
+        await ReplyAsync($"已将队列模式更改为 {mode}。").ConfigureAwait(false);
     }
 
     [Command("queueClearAll")]
     [Alias("qca", "tca")]
-    [Summary("Clears all users from the trade queues.")]
+    [Summary("从交易队列中清除所有用户。")]
     [RequireSudo]
     public async Task ClearAllTradesAsync()
     {
         Info.ClearAllQueues();
-        await ReplyAsync("Cleared all in the queue.").ConfigureAwait(false);
+        await ReplyAsync("已清空队列中的所有交易。").ConfigureAwait(false);
     }
 
     [Command("queueClear")]
     [Alias("qc", "tc")]
-    [Summary("Clears the user from the trade queues. Will not remove a user if they are being processed.")]
+    [Summary("从交易队列中清除用户。如果用户正在被处理则不会移除。")]
     public async Task ClearTradeAsync()
     {
         string msg = ClearTrade(Context.User.Id);
@@ -45,9 +45,9 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("queueClearUser")]
     [Alias("qcu", "tcu")]
-    [Summary("Clears the user from the trade queues. Will not remove a user if they are being processed.")]
+    [Summary("从交易队列中清除用户。如果用户正在被处理则不会移除。")]
     [RequireSudo]
-    public async Task ClearTradeUserAsync([Summary("Discord user ID")] ulong id)
+    public async Task ClearTradeUserAsync([Summary("Discord 用户 ID")] ulong id)
     {
         string msg = ClearTrade(id);
         await ReplyAsync(msg).ConfigureAwait(false);
@@ -55,9 +55,9 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("queueClearUser")]
     [Alias("qcu", "tcu")]
-    [Summary("Clears the user from the trade queues. Will not remove a user if they are being processed.")]
+    [Summary("从交易队列中清除用户。如果用户正在被处理则不会移除。")]
     [RequireSudo]
-    public async Task ClearTradeUserAsync([Summary("Username of the person to clear")] string _)
+    public async Task ClearTradeUserAsync([Summary("要清除的用户名")] string _)
     {
         foreach (var user in Context.Message.MentionedUsers)
         {
@@ -68,14 +68,14 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("queueClearUser")]
     [Alias("qcu", "tcu")]
-    [Summary("Clears the user from the trade queues. Will not remove a user if they are being processed.")]
+    [Summary("从交易队列中清除用户。如果用户正在被处理则不会移除。")]
     [RequireSudo]
     public async Task ClearTradeUserAsync()
     {
         var users = Context.Message.MentionedUsers;
         if (users.Count == 0)
         {
-            await ReplyAsync("No users mentioned").ConfigureAwait(false);
+            await ReplyAsync("未提及任何用户").ConfigureAwait(false);
             return;
         }
         foreach (var u in users)
@@ -84,7 +84,7 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("deleteTradeCode")]
     [Alias("dtc")]
-    [Summary("Deletes the stored trade code for the user.")]
+    [Summary("删除用户已保存的交易密码。")]
     public async Task DeleteTradeCodeAsync()
     {
         var userID = Context.User.Id;
@@ -94,7 +94,7 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("queueStatus")]
     [Alias("qs", "ts")]
-    [Summary("Checks the user's position in the queue.")]
+    [Summary("检查用户在队列中的位置。")]
     public async Task GetTradePositionAsync()
     {
         var userID = Context.User.Id;
@@ -108,7 +108,7 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         }
         else
         {
-            msg = Context.User.Mention + " - You are not currently in the queue.";
+            msg = Context.User.Mention + " - 您当前不在队列中。";
         }
 
         await ReplyAndDeleteAsync(msg, 5, Context.Message).ConfigureAwait(false);
@@ -116,7 +116,7 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("queueList")]
     [Alias("ql")]
-    [Summary("Shows a nice embed of the current queue with species, trade type, and username.")]
+    [Summary("显示当前队列的嵌入消息，包含种类、交易类型和用户名。")]
     [RequireSudo]
     public async Task ListUserQueue()
     {
@@ -124,12 +124,12 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
         if (!queue.Any())
         {
-            await ReplyAsync("Queue list is empty.").ConfigureAwait(false);
+            await ReplyAsync("队列列表为空。").ConfigureAwait(false);
             return;
         }
 
         var embedBuilder = new EmbedBuilder()
-            .WithTitle($"📋 Current Trade Queue ({queue.Count()} users)")
+            .WithTitle($"📋 当前交易队列 ({queue.Count()} 位用户)")
             .WithColor(Color.Blue)
             .WithCurrentTimestamp();
 
@@ -148,7 +148,7 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         // Discord embeds have a 4096 character limit for description
         if (description.Length > 4000)
         {
-            description = description.Substring(0, 4000) + "\n... (list truncated)";
+            description = description.Substring(0, 4000) + "\n... (列表已截断)";
         }
 
         embedBuilder.WithDescription(description);
@@ -158,14 +158,14 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("queueToggle")]
     [Alias("qt", "tt")]
-    [Summary("Toggles on/off the ability to join the trade queue.")]
+    [Summary("开启/关闭加入交易队列的功能。")]
     [RequireSudo]
     public Task ToggleQueueTradeAsync()
     {
         var state = Info.ToggleQueue();
         var msg = state
-            ? "Users are now able to join the trade queue."
-            : "Changed queue settings: **Users CANNOT join the queue until it is turned back on.**";
+            ? "用户现在可以加入交易队列。"
+            : "已更改队列设置: **在重新开启之前，用户无法加入队列。**";
 
         return Context.Channel.EchoAndReply(msg);
     }
@@ -182,19 +182,19 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
         bool success = tradeCodeStorage.DeleteTradeCode(userID);
 
         if (success)
-            return "Your stored trade code has been deleted successfully.";
+            return "您的已保存交易密码已成功删除。";
         else
-            return "No stored trade code found for your user ID.";
+            return "未找到您用户 ID 对应的已保存交易密码。";
     }
 
     private static string GetClearTradeMessage(QueueResultRemove result)
     {
         return result switch
         {
-            QueueResultRemove.Removed => "Removed your pending trades from the queue.",
-            QueueResultRemove.CurrentlyProcessing => "Looks like you have trades currently being processed! Did not remove those from the queue.",
-            QueueResultRemove.CurrentlyProcessingRemoved => "Looks like you have trades currently being processed! Removed other pending trades from the queue.",
-            QueueResultRemove.NotInQueue => "Sorry, you are not currently in the queue.",
+            QueueResultRemove.Removed => "已从队列中移除您的待处理交易。",
+            QueueResultRemove.CurrentlyProcessing => "看起来您有正在处理中的交易！未将这些交易从队列中移除。",
+            QueueResultRemove.CurrentlyProcessingRemoved => "看起来您有正在处理中的交易！已移除其他待处理的交易。",
+            QueueResultRemove.NotInQueue => "抱歉，您当前不在队列中。",
             _ => throw new ArgumentOutOfRangeException(nameof(result), result, null),
         };
     }
@@ -233,8 +233,8 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
     [Command("changeTradeCode")]
     [Alias("ctc")]
-    [Summary("Changes the user's trade code if trade code storage is turned on.")]
-    public async Task ChangeTradeCodeAsync([Summary("New 8-digit trade code")] string newCode)
+    [Summary("如果启用了交易密码存储，更改用户的交易密码。")]
+    public async Task ChangeTradeCodeAsync([Summary("新的 8 位交易密码")] string newCode)
     {
         // Delete user's message immediately to protect the trade code
         await Context.Message.DeleteAsync().ConfigureAwait(false);
@@ -253,17 +253,17 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
             int code = int.Parse(newCode);
             if (tradeCodeStorage.UpdateTradeCode(userID, code))
             {
-                await SendTemporaryMessageAsync("Your trade code has been successfully updated.").ConfigureAwait(false);
+                await SendTemporaryMessageAsync("您的交易密码已成功更新。").ConfigureAwait(false);
             }
             else
             {
-                await SendTemporaryMessageAsync("You don't have a trade code set. Use the trade command to generate one first.").ConfigureAwait(false);
+                await SendTemporaryMessageAsync("您还没有设置交易密码。请先使用交易命令生成一个。").ConfigureAwait(false);
             }
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Error changing trade code for user {userID}: {ex.Message}", nameof(QueueModule<T>));
-            await SendTemporaryMessageAsync("An error occurred while changing your trade code. Please try again later.").ConfigureAwait(false);
+            LogUtil.LogError($"更改用户 {userID} 的交易密码时出错: {ex.Message}", nameof(QueueModule<T>));
+            await SendTemporaryMessageAsync("更改您的交易密码时发生错误。请稍后重试。").ConfigureAwait(false);
         }
     }
 
@@ -283,19 +283,19 @@ public class QueueModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
         if (code.Length != 8)
         {
-            errorMessage = "Trade code must be exactly 8 digits long.";
+            errorMessage = "交易密码必须正好是 8 位数字。";
             return false;
         }
 
         if (!Regex.IsMatch(code, @"^\d{8}$"))
         {
-            errorMessage = "Trade code must contain only digits.";
+            errorMessage = "交易密码只能包含数字。";
             return false;
         }
 
         if (QueueModule<T>.IsEasilyGuessableCode(code))
         {
-            errorMessage = "Trade code is too easy to guess. Please choose a more complex code.";
+            errorMessage = "交易密码太容易被猜到。请选择一个更复杂的密码。";
             return false;
         }
 

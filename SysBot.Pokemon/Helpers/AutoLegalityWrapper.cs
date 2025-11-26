@@ -177,7 +177,7 @@ public static class AutoLegalityWrapper
         if (typeof(T) == typeof(PB7))
             return TrainerSettings.GetSavedTrainerData(GameVersion.GE, 7);
 
-        throw new ArgumentException("Type does not have a recognized trainer fetch.", typeof(T).Name);
+        throw new ArgumentException("类型没有可识别的训练家获取方法。", typeof(T).Name);
     }
 
     public static ITrainerInfo GetTrainerInfo(byte gen) => TrainerSettings.GetSavedTrainerData(gen);
@@ -190,17 +190,17 @@ public static class AutoLegalityWrapper
             var result = task.Result;
             res = result.Status switch
             {
-                LegalizationResult.Regenerated => "Regenerated",
-                LegalizationResult.Failed => "Failed",
-                LegalizationResult.Timeout => "Timeout",
-                LegalizationResult.VersionMismatch => "VersionMismatch",
+                LegalizationResult.Regenerated => "已重新生成",
+                LegalizationResult.Failed => "失败",
+                LegalizationResult.Timeout => "超时",
+                LegalizationResult.VersionMismatch => "版本不匹配",
                 _ => "",
             };
             return result.Created;
         }
         else
         {
-            res = "Timeout";
+            res = "超时";
             return null!; // Explicitly return null with suppression since the res parameter indicates the failure
         }
     }

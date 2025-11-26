@@ -67,7 +67,7 @@ public static class LanguageHelper
             Type t when t == typeof(PK9) => TrainerSettings.GetSavedTrainerData(GameVersion.SV, 9, lang: language),
             Type t when t == typeof(PA9) => TrainerSettings.GetSavedTrainerData(GameVersion.ZA, 9, lang: language),
             Type t when t == typeof(PB7) => TrainerSettings.GetSavedTrainerData(GameVersion.GE, 7, lang: language),
-            _ => throw new ArgumentException("Type does not have a recognized trainer fetch.", typeof(T).Name)
+            _ => throw new ArgumentException("类型没有可识别的训练家获取方法。", typeof(T).Name)
         };
     }
 }

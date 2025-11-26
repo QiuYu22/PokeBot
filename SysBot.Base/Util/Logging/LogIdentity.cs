@@ -9,8 +9,9 @@ public static class LogIdentity
     /// <summary>
     /// System-level operations: startup, shutdown, recovery, configuration, etc.
     /// All system logs go to logs/System/
+    /// 系统级操作：启动、关闭、恢复、配置等
     /// </summary>
-    public const string System = "System";
+    public const string System = "系统";
 
     /// <summary>
     /// For bot-specific operations, use the bot's Connection.Label (IP or USB identifier)

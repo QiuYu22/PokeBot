@@ -21,7 +21,7 @@ public abstract class PokeRoutineExecutor9PLZA(PokeBotState Config) : PokeRoutin
     public async Task CleanExit(CancellationToken token)
     {
         await SetScreen(ScreenState.On, token).ConfigureAwait(false);
-        Log("Detaching controllers on routine exit.");
+        Log("程序退出时分离控制器。");
         await DetachController(token).ConfigureAwait(false);
     }
 
@@ -39,7 +39,7 @@ public abstract class PokeRoutineExecutor9PLZA(PokeBotState Config) : PokeRoutin
         await Click(HOME, 2_000 + timing.ExtraTimeReturnHome, token).ConfigureAwait(false);
         await Click(X, 1_000, token).ConfigureAwait(false);
         await Click(A, 5_000 + timing.ExtraTimeCloseGame, token).ConfigureAwait(false);
-        Log("Closed out of the game!");
+        Log("已关闭游戏！");
     }
 
     public async Task<SAV9ZA> GetFakeTrainerSAV(CancellationToken token)
@@ -111,11 +111,11 @@ public abstract class PokeRoutineExecutor9PLZA(PokeBotState Config) : PokeRoutin
 
         string title = await SwitchConnection.GetTitleID(token).ConfigureAwait(false);
         if (title is not PLZAID)
-            throw new Exception($"Incorrect Title ID: {title}. Expected PLZA title ID: {PLZAID}");
+            throw new Exception($"错误的 Title ID: {title}。期望的 PLZA Title ID: {PLZAID}");
 
         var game_version = await SwitchConnection.GetGameInfo("version", token).ConfigureAwait(false);
         if (!game_version.SequenceEqual(PLZAGameVersion))
-            throw new Exception($"Game version is not supported. Expected version {PLZAGameVersion}, current version is {game_version}.");
+            throw new Exception($"游戏版本不受支持。需要版本 {PLZAGameVersion}，当前版本为 {game_version}。");
 
         var sav = await GetFakeTrainerSAV(token).ConfigureAwait(false);
         InitSaveData(sav);
@@ -123,7 +123,7 @@ public abstract class PokeRoutineExecutor9PLZA(PokeBotState Config) : PokeRoutin
         if (!IsValidTrainerData())
         {
             await CheckForRAMShiftingApps(token).ConfigureAwait(false);
-            throw new Exception("Refer to the SysBot.NET wiki for more information.");
+            throw new Exception("请参阅 SysBot.NET Wiki 获取更多信息。");
         }
 
         return sav;
@@ -131,15 +131,15 @@ public abstract class PokeRoutineExecutor9PLZA(PokeBotState Config) : PokeRoutin
 
     public async Task InitializeHardware(IBotStateSettings settings, CancellationToken token)
     {
-        Log("Detaching on startup.");
+        Log("启动时分离控制器。");
         await DetachController(token).ConfigureAwait(false);
         if (settings.ScreenOff)
         {
-            Log("Turning off screen.");
+            Log("正在关闭屏幕。");
             await SetScreen(ScreenState.Off, token).ConfigureAwait(false);
         }
         await SetController(ControllerType.ProController, token);
-        Log("Setting PLZA-specific hid waits");
+        Log("正在设置 PLZA 特定的 HID 等待时间");
         await Connection.SendAsync(SwitchCommand.Configure(SwitchConfigureParameter.keySleepTime, KeyboardPressTime), token).ConfigureAwait(false);
         await Connection.SendAsync(SwitchCommand.Configure(SwitchConfigureParameter.pollRate, HidWaitTime), token).ConfigureAwait(false);
     }
@@ -180,7 +180,7 @@ public abstract class PokeRoutineExecutor9PLZA(PokeBotState Config) : PokeRoutin
 
     public async Task ReOpenGame(PokeTradeHubConfig config, CancellationToken token)
     {
-        Log("Error detected, restarting the game!");
+        Log("检测到错误，正在重启游戏！");
         await CloseGame(config, token).ConfigureAwait(false);
         await StartGame(config, token).ConfigureAwait(false);
     }
@@ -266,7 +266,7 @@ public abstract class PokeRoutineExecutor9PLZA(PokeBotState Config) : PokeRoutin
             await Task.Delay(2_000 + timing.ExtraTimeCheckGame, token).ConfigureAwait(false);
         }
 
-        Log("Restarting the game!");
+        Log("正在重启游戏！");
 
         await Task.Delay(15_000 + timing.ExtraTimeLoadGame, token).ConfigureAwait(false);
 
@@ -282,7 +282,7 @@ public abstract class PokeRoutineExecutor9PLZA(PokeBotState Config) : PokeRoutin
             timer -= 1_000;
             if (timer <= 0 && !timing.AvoidSystemUpdate)
             {
-                Log("Still not in the game, initiating rescue protocol!");
+                Log("仍未进入游戏，正在启动救援协议！");
                 while (!await IsOnOverworldTitle(token).ConfigureAwait(false))
                 {
                     await Click(A, 6_000, token).ConfigureAwait(false);
@@ -293,7 +293,7 @@ public abstract class PokeRoutineExecutor9PLZA(PokeBotState Config) : PokeRoutin
         }
 
         await Task.Delay(5_000 + timing.ExtraTimeLoadOverworld, token).ConfigureAwait(false);
-        Log("Back in the overworld!");
+        Log("已返回大地图！");
     }
 
     protected virtual async Task EnterLinkCode(int code, PokeTradeHubConfig config, CancellationToken token)

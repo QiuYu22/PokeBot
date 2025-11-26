@@ -9,98 +9,98 @@ namespace SysBot.Pokemon;
 
 public class TradeSettings : IBotStateSettings, ICountSettings
 {
-    private const string CountStats = nameof(CountStats);
+    private const string CountStats = "统计";
 
-    private const string HOMELegality = nameof(HOMELegality);
+    private const string HOMELegality = "HOME合法性";
 
-    private const string TradeConfig = nameof(TradeConfig);
+    private const string TradeConfig = "交易配置";
 
-    private const string VGCPastesConfig = nameof(VGCPastesConfig);
+    private const string VGCPastesConfig = "VGC配置";
 
-    private const string Miscellaneous = nameof(Miscellaneous);
+    private const string Miscellaneous = "杂项";
 
-    private const string RequestFolders = nameof(RequestFolders);
+    private const string RequestFolders = "请求文件夹";
 
-    private const string EmbedSettings = nameof(EmbedSettings);
+    private const string EmbedSettings = "嵌入设置";
 
-    public override string ToString() => "Trade Configuration Settings";
+    public override string ToString() => "交易配置设置";
 
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public class EmojiInfo
     {
-        [Description("The full string for the emoji.")]
+        [Description("表情符号的完整字符串。"), DisplayName("表情符号字符串")]
         public string EmojiString { get; set; } = string.Empty;
 
         public override string ToString()
         {
-            return string.IsNullOrEmpty(EmojiString) ? "Not Set" : EmojiString;
+            return string.IsNullOrEmpty(EmojiString) ? "未设置" : EmojiString;
         }
     }
 
-    [Category(TradeConfig), Description("Settings related to Trade Configuration."), DisplayName("Trade Configuration"), Browsable(true)]
+    [Category(TradeConfig), Description("与交易配置相关的设置。"), DisplayName("交易配置"), Browsable(true)]
     public TradeSettingsCategory TradeConfiguration { get; set; } = new();
 
-    [Category(EmbedSettings), Description("Settings related to the Trade Embed in Discord."), DisplayName("Trade Embed Settings"), Browsable(true)]
+    [Category(EmbedSettings), Description("与 Discord 交易嵌入相关的设置。"), DisplayName("交易嵌入设置"), Browsable(true)]
     public TradeEmbedSettingsCategory TradeEmbedSettings { get; set; } = new();
 
-    [Category(RequestFolders), Description("Settings related to Request Folders."), DisplayName("Request Folder Settings"), Browsable(true)]
+    [Category(RequestFolders), Description("与请求文件夹相关的设置。"), DisplayName("请求文件夹设置"), Browsable(true)]
     public RequestFolderSettingsCategory RequestFolderSettings { get; set; } = new();
 
-    [Category(CountStats), Description("Settings related to Trade Count Statistics."), DisplayName("Trade Count Statistics Settings"), Browsable(true)]
+    [Category(CountStats), Description("与交易统计相关的设置。"), DisplayName("交易统计设置"), Browsable(true)]
     public CountStatsSettingsCategory CountStatsSettings { get; set; } = new();
 
     [Category(TradeConfig), TypeConverter(typeof(CategoryConverter<TradeSettingsCategory>))]
     public class TradeSettingsCategory
     {
-        public override string ToString() => "Trade Configuration Settings";
+        public override string ToString() => "交易配置设置";
 
-        [Category(TradeConfig), Description("Minimum Link Code."), DisplayName("Minimum Trade Link Code")]
+        [Category(TradeConfig), Description("最小连接密码。"), DisplayName("最小交易连接密码")]
         public int MinTradeCode { get; set; } = 0;
 
-        [Category(TradeConfig), Description("Maximum Link Code."), DisplayName("Maximum Trade Link Code")]
+        [Category(TradeConfig), Description("最大连接密码。"), DisplayName("最大交易连接密码")]
         public int MaxTradeCode { get; set; } = 9999_9999;
 
-        [Category(TradeConfig), Description("If set to True, Discord Users trade code will be stored and used repeatedly without changing."), DisplayName("Store and Reuse Trade Codes")]
+        [Category(TradeConfig), Description("设置为 True 时，Discord 用户的交易密码将被存储并重复使用而不更改。"), DisplayName("存储并重用交易密码")]
         public bool StoreTradeCodes { get; set; } = true;
 
-        [Category(TradeConfig), Description("Time to wait for a trade partner in seconds."), DisplayName("Trade Partner Wait Time (seconds)")]
+        [Category(TradeConfig), Description("等待交易伙伴的时间（秒）。"), DisplayName("交易伙伴等待时间（秒）")]
         public int TradeWaitTime { get; set; } = 30;
 
-        [Category(TradeConfig), Description("Max amount of time in seconds pressing A to wait for a trade to process."), DisplayName("Maximum Trade Confirmation Time (seconds)")]
+        [Category(TradeConfig), Description("按 A 等待交易处理的最长时间（秒）。"), DisplayName("最大交易确认时间（秒）")]
         public int MaxTradeConfirmTime { get; set; } = 25;
 
-        [Category(TradeConfig), Description("Select default species for \"ItemTrade\", if configured."), DisplayName("Default Species for Item Trades")]
+        [Category(TradeConfig), Description("为\"道具交易\"选择默认物种（如已配置）。"), DisplayName("道具交易默认物种")]
         public Species ItemTradeSpecies { get; set; } = Species.None;
 
-        [Category(TradeConfig), Description("Default held item to send if none is specified."), DisplayName("Default Held Item for Trades")]
+        [Category(TradeConfig), Description("如果未指定，则发送的默认持有物品。"), DisplayName("交易默认持有物品")]
         public HeldItem DefaultHeldItem { get; set; } = HeldItem.None;
 
-        [Category(TradeConfig), Description("If set to True, each valid Pokemon will come with all suggested Relearnable Moves without the need for a batch command."), DisplayName("Suggest Relearnable Moves by Default")]
+        [Category(TradeConfig), Description("设置为 True 时，每只有效的宝可梦都将附带所有建议的可回忆招式，无需批处理命令。"), DisplayName("默认建议可回忆招式")]
         public bool SuggestRelearnMoves { get; set; } = true;
 
-        [Category(TradeConfig), Description("Toggle to allow or disallow batch trades."), DisplayName("Allow Batch Trades")]
+        [Category(TradeConfig), Description("切换以允许或禁止批量交易。"), DisplayName("允许批量交易")]
         public bool AllowBatchTrades { get; set; } = true;
 
-        [Category(TradeConfig), Description("Checks Nickname and OT for spam."), DisplayName("Enable Spam Check")]
+        [Category(TradeConfig), Description("检查昵称和原训练家是否为垃圾信息。"), DisplayName("启用垃圾信息检查")]
         public bool EnableSpamCheck { get; set; } = true;
 
-        [Category(TradeConfig), Description("Maximum pokemons of single trade. Batch mode will be closed if this configuration is less than 1"), DisplayName("Maximum Pokémon per Trade")]
+        [Category(TradeConfig), Description("单次交易的最大宝可梦数量。如果此配置小于 1，批量模式将关闭。"), DisplayName("每次交易最大宝可梦数")]
         public int MaxPkmsPerTrade { get; set; } = 1;
 
-        [Category(TradeConfig), Description("Dump Trade: Dumping routine will stop after a maximum number of dumps from a single user."), DisplayName("Maximum Dumps per Trade")]
+        [Category(TradeConfig), Description("转储交易：单个用户的转储程序在达到最大转储次数后将停止。"), DisplayName("每次交易最大转储数")]
         public int MaxDumpsPerTrade { get; set; } = 20;
 
-        [Category(TradeConfig), Description("Dump Trade: Dumping routine will stop after spending x seconds in trade."), DisplayName("Maximum Dump Trade Time (seconds)")]
+        [Category(TradeConfig), Description("转储交易：转储程序在交易中花费 x 秒后将停止。"), DisplayName("最大转储交易时间（秒）")]
         public int MaxDumpTradeTime { get; set; } = 45;
 
-        [Category(TradeConfig), Description("Dump Trade: If enabled, Dumping routine will output legality check information to the user."), DisplayName("Dump Trade Legality Check")]
+        [Category(TradeConfig), Description("转储交易：如果启用，转储程序将向用户输出合法性检查信息。"), DisplayName("转储交易合法性检查")]
         public bool DumpTradeLegalityCheck { get; set; } = true;
 
-        [Category(TradeConfig), Description("When enabled, the bot will automatically cancel a trade if offered a Pokémon that will evolve."), DisplayName("Disallow Trade Evolutions")]
+        [Category(TradeConfig), Description("启用后，如果提供的宝可梦会进化，机器人将自动取消交易。"), DisplayName("禁止交易进化")]
         public bool DisallowTradeEvolve { get; set; } = true;
 
-        [Category(TradeConfig), Description("LGPE Setting.")]
-        public int TradeAnimationMaxDelaySeconds = 25;
+        [Category(TradeConfig), Description("LGPE 设置。"), DisplayName("交易动画最大延迟秒数")]
+        public int TradeAnimationMaxDelaySeconds { get; set; } = 25;
 
         public enum HeldItem
         {
@@ -137,11 +137,11 @@ public class TradeSettings : IBotStateSettings, ICountSettings
     [Category(EmbedSettings), TypeConverter(typeof(CategoryConverter<TradeEmbedSettingsCategory>))]
     public class TradeEmbedSettingsCategory
     {
-        public override string ToString() => "Trade Embed Configuration Settings";
+        public override string ToString() => "交易嵌入配置设置";
 
         private bool _useEmbeds = true;
 
-        [Category(EmbedSettings), Description("If true, will show beautiful embeds in your discord trade channels of what the user is trading. False will show default text."), DisplayName("Use Embeds")]
+        [Category(EmbedSettings), Description("如果为 true，将在你的 Discord 交易频道中显示漂亮的嵌入来展示用户正在交易的内容。False 将显示默认文本。"), DisplayName("使用嵌入")]
         public bool UseEmbeds
         {
             get => _useEmbeds;
@@ -168,13 +168,13 @@ public class TradeSettings : IBotStateSettings, ICountSettings
             }
         }
 
-        [Category(EmbedSettings), Description("Preferred Species Image Size for Embeds."), DisplayName("Species Image Size")]
+        [Category(EmbedSettings), Description("嵌入中首选的物种图片大小。"), DisplayName("物种图片大小")]
         public ImageSize PreferredImageSize { get; set; } = ImageSize.Size256x256;
 
-        [Category(EmbedSettings), Description("Will show Move Type Icons next to moves in trade embed (Discord only). Requires user to upload the emojis to their server."), DisplayName("Show Move Type Emojis")]
+        [Category(EmbedSettings), Description("在交易嵌入中的招式旁边显示招式类型图标（仅限 Discord）。需要用户将表情符号上传到他们的服务器。"), DisplayName("显示招式类型表情")]
         public bool MoveTypeEmojis { get; set; } = true;
 
-        [Category(EmbedSettings), Description("Custom Emoji information for the move types."), DisplayName("Custom Type Emojis")]
+        [Category(EmbedSettings), Description("招式类型的自定义表情符号信息。"), DisplayName("自定义类型表情")]
         public List<MoveTypeEmojiInfo> CustomTypeEmojis { get; set; } =
         [
             new(MoveType.Bug),
@@ -198,28 +198,28 @@ public class TradeSettings : IBotStateSettings, ICountSettings
             new(MoveType.Stellar)
         ];
 
-        [Category(EmbedSettings), Description("The full string for the male gender emoji."), DisplayName("Male Emoji")]
+        [Category(EmbedSettings), Description("雄性性别表情符号的完整字符串。"), DisplayName("雄性表情")]
         public EmojiInfo MaleEmoji { get; set; } = new EmojiInfo();
 
-        [Category(EmbedSettings), Description("The full string for the female gender emoji."), DisplayName("Female Emoji")]
+        [Category(EmbedSettings), Description("雌性性别表情符号的完整字符串。"), DisplayName("雌性表情")]
         public EmojiInfo FemaleEmoji { get; set; } = new EmojiInfo();
 
-        [Category(EmbedSettings), Description("The emoji information for displaying mystery gift status."), DisplayName("Mystery Gift Emoji")]
+        [Category(EmbedSettings), Description("显示神秘礼物状态的表情符号信息。"), DisplayName("神秘礼物表情")]
         public EmojiInfo MysteryGiftEmoji { get; set; } = new EmojiInfo();
 
-        [Category(EmbedSettings), Description("The emoji information for displaying the alpha mark."), DisplayName("Alpha Mark Emoji")]
+        [Category(EmbedSettings), Description("显示阿尔法标记的表情符号信息。"), DisplayName("阿尔法标记表情")]
         public EmojiInfo AlphaMarkEmoji { get; set; } = new EmojiInfo();
 
-        [Category(EmbedSettings), Description("The emoji information for displaying the mightiest mark."), DisplayName("Mightiest Mark Emoji")]
+        [Category(EmbedSettings), Description("显示最强标记的表情符号信息。"), DisplayName("最强标记表情")]
         public EmojiInfo MightiestMarkEmoji { get; set; } = new EmojiInfo();
 
-        [Category(EmbedSettings), Description("The emoji information for displaying the alpha emoji in Legends: Arceus."), DisplayName("Alpha PLA Emoji")]
+        [Category(EmbedSettings), Description("在传说阿尔宙斯中显示阿尔法表情符号的信息。"), DisplayName("阿尔法 PLA 表情")]
         public EmojiInfo AlphaPLAEmoji { get; set; } = new EmojiInfo();
 
-        [Category(EmbedSettings), Description("Will show Move Type Icons next to moves in trade embed (Discord only). Requires user to upload the emojis to their server."), DisplayName("Show Tera Type Emojis?")]
+        [Category(EmbedSettings), Description("在交易嵌入中的招式旁边显示招式类型图标（仅限 Discord）。需要用户将表情符号上传到他们的服务器。"), DisplayName("显示太晶属性表情？")]
         public bool UseTeraEmojis { get; set; } = true;
 
-        [Category(EmbedSettings), Description("Tera Type Emoji information for the tera types."), DisplayName("Custom Tera Type Emojis")]
+        [Category(EmbedSettings), Description("太晶属性的表情符号信息。"), DisplayName("自定义太晶属性表情")]
         public List<TeraTypeEmojiInfo> TeraTypeEmojis { get; set; } =
         [
             new(MoveType.Bug),
@@ -243,49 +243,47 @@ public class TradeSettings : IBotStateSettings, ICountSettings
             new(MoveType.Stellar)
         ];
 
-        [Category(EmbedSettings), Description("Will show Scale in trade embed (SV & Discord only). Requires user to upload the emojis to their server."), DisplayName("Show Scale")]
+        [Category(EmbedSettings), Description("在交易嵌入中显示体型（仅限 SV 和 Discord）。需要用户将表情符号上传到他们的服务器。"), DisplayName("显示体型")]
         public bool ShowScale { get; set; } = true;
 
-        [Category(EmbedSettings), Description("Will show Tera Type in trade embed (SV & Discord only)."), DisplayName("Show Tera Type")]
+        [Category(EmbedSettings), Description("在交易嵌入中显示太晶属性（仅限 SV 和 Discord）。"), DisplayName("显示太晶属性")]
         public bool ShowTeraType { get; set; } = true;
 
-        [Category(EmbedSettings), Description("Will show Level in trade embed (Discord only)."), DisplayName("Show Level")]
+        [Category(EmbedSettings), Description("在交易嵌入中显示等级（仅限 Discord）。"), DisplayName("显示等级")]
         public bool ShowLevel { get; set; } = true;
 
-        [Category(EmbedSettings), Description("Will show MetDate in trade embed (Discord only)."), DisplayName("Show Met Date")]
+        [Category(EmbedSettings), Description("在交易嵌入中显示相遇日期（仅限 Discord）。"), DisplayName("显示相遇日期")]
         public bool ShowMetDate { get; set; } = true;
 
-        [Category(EmbedSettings), Description("Will show Ability in trade embed (Discord only)."), DisplayName("Show Ability")]
+        [Category(EmbedSettings), Description("在交易嵌入中显示特性（仅限 Discord）。"), DisplayName("显示特性")]
         public bool ShowAbility { get; set; } = true;
 
-        [Category(EmbedSettings), Description("Will show Nature in trade embed (Discord only)."), DisplayName("Show Nature")]
+        [Category(EmbedSettings), Description("在交易嵌入中显示性格（仅限 Discord）。"), DisplayName("显示性格")]
         public bool ShowNature { get; set; } = true;
 
-        [Category(EmbedSettings), Description("Will show PKM Language in trade embed (Discord only)."), DisplayName("Show Language")]
+        [Category(EmbedSettings), Description("在交易嵌入中显示宝可梦语言（仅限 Discord）。"), DisplayName("显示语言")]
         public bool ShowLanguage { get; set; } = true;
 
-        [Category(EmbedSettings), Description("Will show IVs in trade embed (Discord only)."), DisplayName("Show IVs")]
+        [Category(EmbedSettings), Description("在交易嵌入中显示个体值（仅限 Discord）。"), DisplayName("显示个体值")]
         public bool ShowIVs { get; set; } = true;
 
-        [Category(EmbedSettings), Description("Will show EVs in trade embed (Discord only)."), DisplayName("Show EVs")]
+        [Category(EmbedSettings), Description("在交易嵌入中显示努力值（仅限 Discord）。"), DisplayName("显示努力值")]
         public bool ShowEVs { get; set; } = true;
     }
 
     [Category(RequestFolders), TypeConverter(typeof(CategoryConverter<RequestFolderSettingsCategory>))]
     public class RequestFolderSettingsCategory
     {
-        public override string ToString() => "Request Folders Settings";
+        public override string ToString() => "请求文件夹设置";
 
-        [Category("RequestFolders"), Description("Path to your Events Folder. Create a new folder called 'events' and copy the path here."), DisplayName("Events Folder Path")]
+        [Category("请求文件夹"), Description("你的活动文件夹路径。创建一个名为 'events' 的新文件夹并在此处粘贴路径。"), DisplayName("活动文件夹路径")]
         public string EventsFolder { get; set; } = string.Empty;
 
-        [Category("RequestFolders"), Description("Path to your BattleReady Folder. Create a new folder called 'battleready' and copy the path here."), DisplayName("Battle-Ready Folder Path")]
+        [Category("请求文件夹"), Description("你的对战就绪文件夹路径。创建一个名为 'battleready' 的新文件夹并在此处粘贴路径。"), DisplayName("对战就绪文件夹路径")]
         public string BattleReadyPKMFolder { get; set; } = string.Empty;
     }
 
-    [Category(Miscellaneous)]
-    [Description("Turns off the Switch's screen during trades")]
-    [DisplayName("Screen Off")]
+    [Category(Miscellaneous), Description("在交易期间关闭 Switch 的屏幕"), DisplayName("关闭屏幕")]
     public bool ScreenOff { get; set; } = false;
 
     /// <summary>
@@ -319,7 +317,7 @@ public class TradeSettings : IBotStateSettings, ICountSettings
     [Category(CountStats), TypeConverter(typeof(CategoryConverter<CountStatsSettingsCategory>))]
     public class CountStatsSettingsCategory
     {
-        public override string ToString() => "Trade Count Statistics";
+        public override string ToString() => "交易统计";
 
         private int _completedSurprise;
 
@@ -335,28 +333,28 @@ public class TradeSettings : IBotStateSettings, ICountSettings
 
         private int _completedFixOTs;
 
-        [Category(CountStats), Description("Completed Surprise Trades")]
+        [Category(CountStats), Description("已完成的魔法交换次数"), DisplayName("已完成魔法交换")]
         public int CompletedSurprise
         {
             get => _completedSurprise;
             set => _completedSurprise = value;
         }
 
-        [Category(), Description("Completed Link Trades (Distribution)")]
+        [Category(), Description("已完成的连接交易次数（分发）"), DisplayName("已完成分发")]
         public int CompletedDistribution
         {
             get => _completedDistribution;
             set => _completedDistribution = value;
         }
 
-        [Category(CountStats), Description("Completed Link Trades (Specific User)")]
+        [Category(CountStats), Description("已完成的连接交易次数（指定用户）"), DisplayName("已完成交易")]
         public int CompletedTrades
         {
             get => _completedTrades;
             set => _completedTrades = value;
         }
 
-        [Category(CountStats), Description("Completed FixOT Trades (Specific User)")]
+        [Category(CountStats), Description("已完成的 FixOT 交易次数（指定用户）"), DisplayName("已完成 FixOT")]
         public int CompletedFixOTs
         {
             get => _completedFixOTs;
@@ -364,28 +362,28 @@ public class TradeSettings : IBotStateSettings, ICountSettings
         }
 
         [Browsable(false)]
-        [Category(CountStats), Description("Completed Seed Check Trades")]
+        [Category(CountStats), Description("已完成的种子检查交易次数"), DisplayName("已完成种子检查")]
         public int CompletedSeedChecks
         {
             get => _completedSeedChecks;
             set => _completedSeedChecks = value;
         }
 
-        [Category(CountStats), Description("Completed Clone Trades (Specific User)")]
+        [Category(CountStats), Description("已完成的克隆交易次数（指定用户）"), DisplayName("已完成克隆")]
         public int CompletedClones
         {
             get => _completedClones;
             set => _completedClones = value;
         }
 
-        [Category(CountStats), Description("Completed Dump Trades (Specific User)")]
+        [Category(CountStats), Description("已完成的转储交易次数（指定用户）"), DisplayName("已完成转储")]
         public int CompletedDumps
         {
             get => _completedDumps;
             set => _completedDumps = value;
         }
 
-        [Category(CountStats), Description("When enabled, the counts will be emitted when a status check is requested.")]
+        [Category(CountStats), Description("启用后，在请求状态检查时将输出统计数据。"), DisplayName("状态检查时输出统计")]
         public bool EmitCountsOnStatusCheck { get; set; }
 
         public void AddCompletedTrade() => Interlocked.Increment(ref _completedTrades);
@@ -407,19 +405,19 @@ public class TradeSettings : IBotStateSettings, ICountSettings
             if (!EmitCountsOnStatusCheck)
                 yield break;
             if (CompletedSeedChecks != 0)
-                yield return $"Seed Check Trades: {CompletedSeedChecks}";
+                yield return $"种子检测交易: {CompletedSeedChecks}";
             if (CompletedClones != 0)
-                yield return $"Clone Trades: {CompletedClones}";
+                yield return $"克隆交易: {CompletedClones}";
             if (CompletedDumps != 0)
-                yield return $"Dump Trades: {CompletedDumps}";
+                yield return $"导出交易: {CompletedDumps}";
             if (CompletedTrades != 0)
-                yield return $"Link Trades: {CompletedTrades}";
+                yield return $"连接交易: {CompletedTrades}";
             if (CompletedDistribution != 0)
-                yield return $"Distribution Trades: {CompletedDistribution}";
+                yield return $"分发交易: {CompletedDistribution}";
             if (CompletedFixOTs != 0)
-                yield return $"FixOT Trades: {CompletedFixOTs}";
+                yield return $"修复OT交易: {CompletedFixOTs}";
             if (CompletedSurprise != 0)
-                yield return $"Surprise Trades: {CompletedSurprise}";
+                yield return $"魔法交换: {CompletedSurprise}";
         }
     }
 
@@ -476,9 +474,9 @@ public class TradeSettings : IBotStateSettings, ICountSettings
 
     public class MoveTypeEmojiInfo
     {
-        [Description("The type of move.")]
+        [Description("招式的属性。"), DisplayName("招式属性")]
         public MoveType MoveType { get; set; }
-        [Description("The Discord emoji string for this move type.")]
+        [Description("此招式属性的 Discord 表情符号字符串。"), DisplayName("表情符号代码")]
         public string EmojiCode { get; set; } = string.Empty;
         public MoveTypeEmojiInfo()
         { }
@@ -497,9 +495,9 @@ public class TradeSettings : IBotStateSettings, ICountSettings
 
     public class TeraTypeEmojiInfo
     {
-        [Description("The Tera Type.")]
+        [Description("太晶属性。"), DisplayName("太晶属性")]
         public MoveType MoveType { get; set; }
-        [Description("The Discord emoji string for this tera type.")]
+        [Description("此太晶属性的 Discord 表情符号字符串。"), DisplayName("表情符号代码")]
         public string EmojiCode { get; set; }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public TeraTypeEmojiInfo()

@@ -22,7 +22,7 @@ public static class NetUtil
         var isMyg = MysteryGift.IsMysteryGift(att.Size) && extension != ".pb7";
         if (!EntityDetection.IsSizePlausible(att.Size) && !isMyg)
         {
-            result.ErrorMessage = $"{result.SanitizedFileName}: Invalid size.";
+            result.ErrorMessage = $"{result.SanitizedFileName}: 文件大小无效。";
             return result;
         }
         string url = att.Url;
@@ -46,7 +46,7 @@ public static class NetUtil
         }
         if (pkm is null)
         {
-            result.ErrorMessage = $"{result.SanitizedFileName}: Invalid pkm attachment.";
+            result.ErrorMessage = $"{result.SanitizedFileName}: 无效的 PKM 附件。";
             return result;
         }
         result.Data = pkm;
@@ -72,7 +72,7 @@ public static class NetUtil
 
             if (!EntityDetection.IsSizePlausible(buffer.Length) && !isMyg)
             {
-                result.ErrorMessage = $"{result.SanitizedFileName}: Invalid size.";
+                result.ErrorMessage = $"{result.SanitizedFileName}: 文件大小无效。";
                 return result;
             }
 
@@ -95,7 +95,7 @@ public static class NetUtil
 
             if (pkm is null)
             {
-                result.ErrorMessage = $"{result.SanitizedFileName}: Invalid pkm file.";
+                result.ErrorMessage = $"{result.SanitizedFileName}: 无效的 PKM 文件。";
                 return result;
             }
 
@@ -104,7 +104,7 @@ public static class NetUtil
         }
         catch (Exception ex)
         {
-            result.ErrorMessage = $"Failed to download {result.SanitizedFileName}: {ex.Message}";
+            result.ErrorMessage = $"下载 {result.SanitizedFileName} 失败: {ex.Message}";
         }
 
         return result;

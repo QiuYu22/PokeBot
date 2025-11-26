@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace SysBot.Pokemon.Discord;
 
-[Summary("Remotely controls a bot.")]
+[Summary("远程控制机器人。")]
 public class RemoteControlModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
 {
     [Command("click")]
-    [Summary("Clicks the specified button.")]
+    [Summary("点击指定的按钮。")]
     [RequireRoleAccess(nameof(DiscordManager.RolesRemoteControl))]
     public async Task ClickAsync(SwitchButton b)
     {
         var bot = SysCord<T>.Runner.Bots.Find(z => IsRemoteControlBot(z.Bot));
         if (bot == null)
         {
-            await ReplyAsync($"No bot is available to execute your command: {b}").ConfigureAwait(false);
+            await ReplyAsync($"没有可用的机器人来执行您的命令: {b}").ConfigureAwait(false);
             return;
         }
 
@@ -26,14 +26,14 @@ public class RemoteControlModule<T> : ModuleBase<SocketCommandContext> where T :
     }
 
     [Command("click")]
-    [Summary("Clicks the specified button.")]
+    [Summary("点击指定的按钮。")]
     [RequireSudo]
     public async Task ClickAsync(string ip, SwitchButton b)
     {
         var bot = SysCord<T>.Runner.GetBot(ip);
         if (bot == null)
         {
-            await ReplyAsync($"No bot is available to execute your command: {b}").ConfigureAwait(false);
+            await ReplyAsync($"没有可用的机器人来执行您的命令: {b}").ConfigureAwait(false);
             return;
         }
 
@@ -42,7 +42,7 @@ public class RemoteControlModule<T> : ModuleBase<SocketCommandContext> where T :
 
     [Command("setScreenOff")]
     [Alias("screenOff", "scrOff")]
-    [Summary("Turns the screen off")]
+    [Summary("关闭屏幕")]
     [RequireSudo]
     public async Task SetScreenOffAsync()
     {
@@ -51,7 +51,7 @@ public class RemoteControlModule<T> : ModuleBase<SocketCommandContext> where T :
 
     [Command("setScreenOn")]
     [Alias("screenOn", "scrOn")]
-    [Summary("Turns the screen on")]
+    [Summary("开启屏幕")]
     [RequireSudo]
     public async Task SetScreenOnAsync()
     {
@@ -60,7 +60,7 @@ public class RemoteControlModule<T> : ModuleBase<SocketCommandContext> where T :
 
     [Command("screenOnAll")]
     [Alias("setScreenOnAll", "scrOnAll")]
-    [Summary("Turns the screen on for all connected bots")]
+    [Summary("开启所有已连接机器人的屏幕")]
     [RequireSudo]
     public async Task SetScreenOnAllAsync()
     {
@@ -69,7 +69,7 @@ public class RemoteControlModule<T> : ModuleBase<SocketCommandContext> where T :
 
     [Command("screenOffAll")]
     [Alias("setScreenOffAll", "scrOffAll")]
-    [Summary("Turns the screen off for all connected bots")]
+    [Summary("关闭所有已连接机器人的屏幕")]
     [RequireSudo]
     public async Task SetScreenOffAllAsync()
     {
@@ -81,7 +81,7 @@ public class RemoteControlModule<T> : ModuleBase<SocketCommandContext> where T :
         var bots = SysCord<T>.Runner.Bots;
         if (bots.Count == 0)
         {
-            await ReplyAsync("No bots are currently connected.").ConfigureAwait(false);
+            await ReplyAsync("当前没有已连接的机器人。").ConfigureAwait(false);
             return;
         }
 
@@ -101,18 +101,18 @@ public class RemoteControlModule<T> : ModuleBase<SocketCommandContext> where T :
             }
         }
 
-        await ReplyAsync($"Screen state set to {(on ? "On" : "Off")} for {successCount} out of {bots.Count} bots.").ConfigureAwait(false);
+        await ReplyAsync($"已将 {successCount}/{bots.Count} 个机器人的屏幕状态设置为{(on ? "开启" : "关闭")}。").ConfigureAwait(false);
     }
 
     [Command("setStick")]
-    [Summary("Sets the stick to the specified position.")]
+    [Summary("将摇杆设置到指定位置。")]
     [RequireRoleAccess(nameof(DiscordManager.RolesRemoteControl))]
     public async Task SetStickAsync(SwitchStick s, short x, short y, ushort ms = 1_000)
     {
         var bot = SysCord<T>.Runner.Bots.Find(z => IsRemoteControlBot(z.Bot));
         if (bot == null)
         {
-            await ReplyAsync($"No bot is available to execute your command: {s}").ConfigureAwait(false);
+            await ReplyAsync($"没有可用的机器人来执行您的命令: {s}").ConfigureAwait(false);
             return;
         }
 
@@ -120,14 +120,14 @@ public class RemoteControlModule<T> : ModuleBase<SocketCommandContext> where T :
     }
 
     [Command("setStick")]
-    [Summary("Sets the stick to the specified position.")]
+    [Summary("将摇杆设置到指定位置。")]
     [RequireSudo]
     public async Task SetStickAsync(string ip, SwitchStick s, short x, short y, ushort ms = 1_000)
     {
         var bot = SysCord<T>.Runner.GetBot(ip);
         if (bot == null)
         {
-            await ReplyAsync($"No bot has that IP address ({ip}).").ConfigureAwait(false);
+            await ReplyAsync($"没有该 IP 地址 ({ip}) 的机器人。").ConfigureAwait(false);
             return;
         }
 
@@ -147,14 +147,14 @@ public class RemoteControlModule<T> : ModuleBase<SocketCommandContext> where T :
     {
         if (!Enum.IsDefined(typeof(SwitchButton), button))
         {
-            await ReplyAsync($"Unknown button value: {button}").ConfigureAwait(false);
+            await ReplyAsync($"未知的按钮值: {button}").ConfigureAwait(false);
             return;
         }
 
         var b = bot.Bot;
         var crlf = b is SwitchRoutineExecutor<PokeBotState> { UseCRLF: true };
         await b.Connection.SendAsync(SwitchCommand.Click(button, crlf), CancellationToken.None).ConfigureAwait(false);
-        await ReplyAsync($"{b.Connection.Name} has performed: {button}").ConfigureAwait(false);
+        await ReplyAsync($"{b.Connection.Name} 已执行: {button}").ConfigureAwait(false);
     }
 
     private static string GetRunningBotIP()
@@ -180,30 +180,30 @@ public class RemoteControlModule<T> : ModuleBase<SocketCommandContext> where T :
         var bot = GetBot(ip);
         if (bot == null)
         {
-            await ReplyAsync($"No bot has that IP address ({ip}).").ConfigureAwait(false);
+            await ReplyAsync($"没有该 IP 地址 ({ip}) 的机器人。").ConfigureAwait(false);
             return;
         }
 
         var b = bot.Bot;
         var crlf = b is SwitchRoutineExecutor<PokeBotState> { UseCRLF: true };
         await b.Connection.SendAsync(SwitchCommand.SetScreen(on ? ScreenState.On : ScreenState.Off, crlf), CancellationToken.None).ConfigureAwait(false);
-        await ReplyAsync("Screen state set to: " + (on ? "On" : "Off")).ConfigureAwait(false);
+        await ReplyAsync("屏幕状态已设置为: " + (on ? "开启" : "关闭")).ConfigureAwait(false);
     }
 
     private async Task SetStickAsyncImpl(SwitchStick s, short x, short y, ushort ms, BotSource<PokeBotState> bot)
     {
         if (!Enum.IsDefined(typeof(SwitchStick), s))
         {
-            await ReplyAsync($"Unknown stick: {s}").ConfigureAwait(false);
+            await ReplyAsync($"未知的摇杆: {s}").ConfigureAwait(false);
             return;
         }
 
         var b = bot.Bot;
         var crlf = b is SwitchRoutineExecutor<PokeBotState> { UseCRLF: true };
         await b.Connection.SendAsync(SwitchCommand.SetStick(s, x, y, crlf), CancellationToken.None).ConfigureAwait(false);
-        await ReplyAsync($"{b.Connection.Name} has performed: {s}").ConfigureAwait(false);
+        await ReplyAsync($"{b.Connection.Name} 已执行: {s}").ConfigureAwait(false);
         await Task.Delay(ms).ConfigureAwait(false);
         await b.Connection.SendAsync(SwitchCommand.ResetStick(s, crlf), CancellationToken.None).ConfigureAwait(false);
-        await ReplyAsync($"{b.Connection.Name} has reset the stick position.").ConfigureAwait(false);
+        await ReplyAsync($"{b.Connection.Name} 已重置摇杆位置。").ConfigureAwait(false);
     }
 }

@@ -13,26 +13,26 @@ namespace SysBot.Pokemon.Twitch
         {
             if (!TwitchBot<T>.Info.GetCanQueue())
             {
-                msg = "Sorry, I am not currently accepting queue requests!";
+                msg = "抱歉，当前不接受队列请求！";
                 return false;
             }
 
             var set = ShowdownUtil.ConvertToShowdown(setstring);
             if (set == null)
             {
-                msg = $"Skipping trade, @{username}: Empty nickname provided for the species.";
+                msg = $"跳过交易，@{username}: 未提供该宝可梦的昵称。";
                 return false;
             }
             var template = AutoLegalityWrapper.GetTemplate(set);
             if (template.Species < 1)
             {
-                msg = $"Skipping trade, @{username}: Please read what you are supposed to type as the command argument.";
+                msg = $"跳过交易，@{username}: 请阅读您应该输入的命令参数。";
                 return false;
             }
 
             if (set.InvalidLines.Count != 0)
             {
-                msg = $"Skipping trade, @{username}: Unable to parse Showdown Set:\n{string.Join("\n", set.InvalidLines)}";
+                msg = $"跳过交易，@{username}: 无法解析 Showdown 配置:\n{string.Join("\n", set.InvalidLines)}";
                 return false;
             }
 
@@ -52,7 +52,7 @@ namespace SysBot.Pokemon.Twitch
                     result = eggResult.ToString();
                     if (eggResult != LegalizationResult.Regenerated)
                     {
-                        msg = $"Skipping trade, @{username}: Failed to generate egg.";
+                        msg = $"跳过交易，@{username}: 生成蛋失败。";
                         return false;
                     }
                 }
@@ -69,7 +69,7 @@ namespace SysBot.Pokemon.Twitch
 
                 if (!pkm.CanBeTraded())
                 {
-                    msg = $"Skipping trade, @{username}: Provided Pokémon content is blocked from trading!";
+                    msg = $"跳过交易，@{username}: 提供的宝可梦内容被禁止交易！";
                     return false;
                 }
 
@@ -81,18 +81,18 @@ namespace SysBot.Pokemon.Twitch
                         var tq = new TwitchQueue<T>(pk, new PokeTradeTrainerInfo(display, mUserId), username, sub);
                         TwitchBot<T>.QueuePool.RemoveAll(z => z.UserName == username); // remove old requests if any
                         TwitchBot<T>.QueuePool.Add(tq);
-                        msg = $"@{username} - added to the waiting list. Please whisper your trade code to me! Your request from the waiting list will be removed if you are too slow!";
+                        msg = $"@{username} - 已添加到等待列表。请私信告诉我您的交易密码！如果您太慢，您的等待列表请求将被移除！";
                         return true;
                     }
                 }
 
-                var reason = result == "Timeout" ? "Set took too long to generate." : "Unable to legalize the Pokémon.";
-                msg = $"Skipping trade, @{username}: {reason}";
+                var reason = result == "Timeout" ? "配置生成时间过长。" : "无法合法化该宝可梦。";
+                msg = $"跳过交易，@{username}: {reason}";
             }
             catch (Exception ex)
             {
                 LogUtil.LogSafe(ex, nameof(TwitchCommandsHelper<T>));
-                msg = $"Skipping trade, @{username}: An unexpected problem occurred.";
+                msg = $"跳过交易，@{username}: 发生意外错误。";
             }
             return false;
         }
@@ -113,18 +113,18 @@ namespace SysBot.Pokemon.Twitch
         {
             var detail = TwitchBot<T>.Info.GetDetail(parse);
             return detail == null
-                ? "Sorry, you are not currently in the queue."
-                : $"Your trade code is {detail.Trade.Code:0000 0000}";
+                ? "抱歉，您当前不在队列中。"
+                : $"您的交易密码是 {detail.Trade.Code:0000 0000}";
         }
 
         private static string GetClearTradeMessage(QueueResultRemove result)
         {
             return result switch
             {
-                QueueResultRemove.CurrentlyProcessing => "Looks like you're currently being processed! Did not remove from queue.",
-                QueueResultRemove.CurrentlyProcessingRemoved => "Looks like you're currently being processed! Removed from queue.",
-                QueueResultRemove.Removed => "Removed you from the queue.",
-                _ => "Sorry, you are not currently in the queue.",
+                QueueResultRemove.CurrentlyProcessing => "看起来您正在处理中！未从队列中移除。",
+                QueueResultRemove.CurrentlyProcessingRemoved => "看起来您正在处理中！已从队列中移除。",
+                QueueResultRemove.Removed => "已将您从队列中移除。",
+                _ => "抱歉，您当前不在队列中。",
             };
         }
     }

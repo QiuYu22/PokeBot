@@ -19,17 +19,17 @@ public static class Program
         var cfg = new ProgramConfig { Bots = [bot] };
         var created = JsonSerializer.Serialize(cfg, ProgramConfigContext.Default.ProgramConfig);
         File.WriteAllText(ConfigPath, created);
-        LogUtil.LogInfo("SysBot", "Created new config file since none was found in the program's path. Please configure it and restart the program.");
-        LogUtil.LogInfo("SysBot", "It is suggested to configure this config file using the GUI project if possible, as it will help you assign values correctly.");
-        LogUtil.LogInfo("SysBot", "Press any key to exit.");
+        LogUtil.LogInfo("系统机器人", "由于在程序路径中未找到配置文件，已创建新的配置文件。请配置后重新启动程序。");
+        LogUtil.LogInfo("系统机器人", "建议尽可能使用 GUI 项目来配置此配置文件，这将帮助您正确设置各项参数。");
+        LogUtil.LogInfo("系统机器人", "按任意键退出。");
         Console.ReadKey();
     }
 
     private static void Main(string[] args)
     {
-        LogUtil.LogInfo("SysBot", "Starting up...");
+        LogUtil.LogInfo("系统机器人", "正在启动...");
         if (args.Length > 1)
-            LogUtil.LogInfo("SysBot", "This program does not support command line arguments.");
+            LogUtil.LogInfo("系统机器人", "此程序不支持命令行参数。");
 
         if (!File.Exists(ConfigPath))
         {
@@ -46,7 +46,7 @@ public static class Program
         }
         catch (Exception)
         {
-            LogUtil.LogInfo("SysBot", "Unable to start bots with saved config file. Please copy your config from the WinForms project or delete it and reconfigure.");
+            LogUtil.LogInfo("系统机器人", "无法使用已保存的配置文件启动机器人。请从 WinForms 项目复制配置文件，或删除后重新配置。");
             Console.ReadKey();
         }
     }
@@ -65,13 +65,13 @@ public static class BotContainer
         {
             bot.Initialize();
             if (!AddBot(env, bot, prog.Mode))
-                LogUtil.LogInfo("SysBot", $"Failed to add bot: {bot}");
+                LogUtil.LogInfo("系统机器人", $"添加机器人失败: {bot}");
         }
 
         LogUtil.Forwarders.Add(ConsoleForwarder.Instance);
         env.StartAll();
-        LogUtil.LogInfo("SysBot", $"Started all bots (Count: {prog.Bots.Length}).");
-        LogUtil.LogInfo("SysBot", "Press any key to stop execution and quit. Feel free to minimize this window!");
+        LogUtil.LogInfo("系统机器人", $"所有机器人已启动（数量: {prog.Bots.Length}）。");
+        LogUtil.LogInfo("系统机器人", "按任意键停止运行并退出。您可以随意最小化此窗口！");
         Console.ReadKey();
         env.StopAll();
     }
@@ -80,7 +80,7 @@ public static class BotContainer
     {
         if (!cfg.IsValid())
         {
-            LogUtil.LogInfo("SysBot", $"{cfg}'s config is not valid.");
+            LogUtil.LogInfo("系统机器人", $"{cfg} 的配置无效。");
             return false;
         }
 
@@ -91,7 +91,7 @@ public static class BotContainer
         }
         catch
         {
-            LogUtil.LogInfo("SysBot", $"Current Mode ({mode}) does not support this type of bot ({cfg.CurrentRoutineType}).");
+            LogUtil.LogInfo("系统机器人", $"当前模式 ({mode}) 不支持此类型的机器人 ({cfg.CurrentRoutineType})。");
             return false;
         }
         try
@@ -100,11 +100,11 @@ public static class BotContainer
         }
         catch (ArgumentException ex)
         {
-            LogUtil.LogInfo("SysBot", ex.Message);
+            LogUtil.LogInfo("系统机器人", ex.Message);
             return false;
         }
 
-        LogUtil.LogInfo("SysBot", $"Added: {cfg}: {cfg.InitialRoutine}");
+        LogUtil.LogInfo("系统机器人", $"已添加: {cfg}: {cfg.InitialRoutine}");
         return true;
     }
 
@@ -116,6 +116,6 @@ public static class BotContainer
         ProgramMode.SV => new PokeBotRunnerImpl<PK9>(new PokeTradeHub<PK9>(prog.Hub), new BotFactory9SV(), prog),
         ProgramMode.LGPE => new PokeBotRunnerImpl<PB7>(new PokeTradeHub<PB7>(prog.Hub), new BotFactory7LGPE(), prog),
         ProgramMode.PLZA => new PokeBotRunnerImpl<PA9>(new PokeTradeHub<PA9>(prog.Hub), new BotFactory9PLZA(), prog),
-        _ => throw new IndexOutOfRangeException("Unsupported mode."),
+        _ => throw new IndexOutOfRangeException("不支持的模式。"),
     };
 }

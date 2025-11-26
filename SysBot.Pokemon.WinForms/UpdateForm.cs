@@ -44,17 +44,17 @@ namespace SysBot.Pokemon.WinForms
 
             if (isUpdateRequired)
             {
-                labelUpdateInfo.Text = "A required update is available. You must update to continue using this application.";
+                labelUpdateInfo.Text = "有一个必须安装的更新可用。您必须更新才能继续使用此应用程序。";
                 ControlBox = false;
             }
             else if (isUpdateAvailable)
             {
-                labelUpdateInfo.Text = "A new version is available. Please download the latest version.";
+                labelUpdateInfo.Text = "有新版本可用。请下载最新版本。";
             }
             else
             {
-                labelUpdateInfo.Text = "You are on the latest version. You can re-download if needed.";
-                buttonDownload.Text = "Re-Download Latest Version";
+                labelUpdateInfo.Text = "您已是最新版本。如有需要可重新下载。";
+                buttonDownload.Text = "重新下载最新版本";
             }
 
             buttonDownload.Size = new Size(130, 23);
@@ -63,7 +63,7 @@ namespace SysBot.Pokemon.WinForms
             buttonDownload.Location = new Point(buttonX, buttonY);
             if (string.IsNullOrEmpty(buttonDownload.Text))
             {
-                buttonDownload.Text = "Download Update";
+                buttonDownload.Text = "下载更新";
             }
             buttonDownload.Click += ButtonDownload_Click;
 
@@ -71,7 +71,7 @@ namespace SysBot.Pokemon.WinForms
             labelChangelogTitle.Location = new Point(10, 60);
             labelChangelogTitle.Size = new Size(70, 15);
             labelChangelogTitle.Font = new Font(labelChangelogTitle.Font.FontFamily, 11, FontStyle.Bold);
-            labelChangelogTitle.Text = $"Changelog ({newVersion}):";
+            labelChangelogTitle.Text = $"更新日志 ({newVersion}):";
 
             textBoxChangelog = new TextBox
             {
@@ -99,18 +99,18 @@ namespace SysBot.Pokemon.WinForms
         {
             if (isUpdateAvailable)
             {
-                Text = $"Update Available ({newVersion})";
+                Text = $"有可用更新 ({newVersion})";
             }
             else
             {
-                Text = "Re-Download Latest Version";
+                Text = "重新下载最新版本";
             }
         }
 
         public async void PerformUpdate()
         {
             buttonDownload.Enabled = false;
-            buttonDownload.Text = "Downloading...";
+            buttonDownload.Text = "正在下载...";
 
             try
             {
@@ -136,7 +136,7 @@ namespace SysBot.Pokemon.WinForms
         private async void ButtonDownload_Click(object? sender, EventArgs? e)
         {
             buttonDownload.Enabled = false;
-            buttonDownload.Text = "Downloading...";
+            buttonDownload.Text = "正在下载...";
 
             try
             {
@@ -151,18 +151,18 @@ namespace SysBot.Pokemon.WinForms
                 }
                 else
                 {
-                    MessageBox.Show("Failed to fetch the download URL. Please check your internet connection and try again.",
-                        "Download Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("获取下载链接失败。请检查您的网络连接后重试。",
+                        "下载错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Update failed: {ex.Message}", "Update Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"更新失败: {ex.Message}", "更新错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
                 buttonDownload.Enabled = true;
-                buttonDownload.Text = isUpdateAvailable ? "Download Update" : "Re-Download Latest Version";
+                buttonDownload.Text = isUpdateAvailable ? "下载更新" : "重新下载最新版本";
             }
         }
 
@@ -250,7 +250,7 @@ namespace SysBot.Pokemon.WinForms
 
             // All retries failed
             Console.WriteLine($"Failed to download update after {maxRetries} attempts");
-            throw lastException ?? new Exception("Download failed after all retry attempts");
+            throw lastException ?? new Exception("所有重试尝试后下载失败");
         }
 
         private static void InstallUpdate(string downloadedFilePath)
@@ -267,9 +267,9 @@ namespace SysBot.Pokemon.WinForms
                 string batchContent = @$"
                                             @echo off
                                             timeout /t 2 /nobreak >nul
-                                            echo Updating SysBot...
+                                            echo 正在更新 SysBot...
 
-                                            rem Backup current version
+                                            rem 备份当前版本
                                             if exist ""{currentExePath}"" (
                                                 if exist ""{backupPath}"" (
                                                     del ""{backupPath}""
@@ -277,13 +277,13 @@ namespace SysBot.Pokemon.WinForms
                                                 move ""{currentExePath}"" ""{backupPath}""
                                             )
 
-                                            rem Install new version
+                                            rem 安装新版本
                                             move ""{downloadedFilePath}"" ""{currentExePath}""
 
-                                            rem Start new version
+                                            rem 启动新版本
                                             start """" ""{currentExePath}""
 
-                                            rem Clean up
+                                            rem 清理
                                             del ""%~f0""
                                             ";
 
@@ -305,7 +305,7 @@ namespace SysBot.Pokemon.WinForms
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to install update: {ex.Message}", "Update Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"安装更新失败: {ex.Message}", "更新错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

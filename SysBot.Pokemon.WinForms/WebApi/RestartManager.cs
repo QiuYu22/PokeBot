@@ -60,7 +60,7 @@ public static class RestartManager
         CheckPostRestartStartup();
         InitializeScheduledRestarts();
         
-        LogUtil.LogInfo("RestartManager", "RestartManager initialized successfully");
+        LogUtil.LogInfo("重启管理器初始化成功", "重启管理器");
     }
 
     public static void Shutdown()
@@ -74,7 +74,7 @@ public static class RestartManager
             _currentState = RestartState.Idle;
         }
         
-        LogUtil.LogInfo("RestartManager", "RestartManager shutdown completed");
+        LogUtil.LogInfo("重启管理器关闭完成", "重启管理器");
     }
     #endregion
 
@@ -99,14 +99,14 @@ public static class RestartManager
                 var config = JsonSerializer.Deserialize<RestartScheduleConfig>(json);
                 if (config != null)
                 {
-                    LogUtil.LogInfo("RestartManager", $"Loaded restart schedule from file: Enabled={config.Enabled}, Time={config.Time}");
+                    LogUtil.LogInfo("重启管理器", $"从文件加载重启调度: 已启用={config.Enabled}, 时间={config.Time}");
                     return config;
                 }
             }
         }
         catch (Exception ex)
         {
-            LogUtil.LogError("RestartManager", $"Failed to load restart schedule: {ex.Message}");
+            LogUtil.LogError("重启管理器", $"加载重启调度失败: {ex.Message}");
         }
 
         // No config file exists - create and save default config
@@ -115,11 +115,11 @@ public static class RestartManager
         {
             var json = JsonSerializer.Serialize(defaultConfig, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(ScheduleConfigPath, json);
-            LogUtil.LogInfo("RestartManager", "Created default restart schedule config file");
+            LogUtil.LogInfo("重启管理器", "已创建默认重启调度配置文件");
         }
         catch (Exception ex)
         {
-            LogUtil.LogError("RestartManager", $"Failed to save default restart schedule: {ex.Message}");
+            LogUtil.LogError("重启管理器", $"保存默认重启调度失败: {ex.Message}");
         }
 
         return defaultConfig;
@@ -132,7 +132,7 @@ public static class RestartManager
             // Save configuration first
             var json = JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(ScheduleConfigPath, json);
-            LogUtil.LogInfo("RestartManager", $"Saved restart schedule to file: Enabled={config.Enabled}, Time={config.Time}");
+            LogUtil.LogInfo("重启管理器", $"已保存重启调度到文件: 已启用={config.Enabled}, 时间={config.Time}");
 
             // Clear any existing timer before updating
             lock (_stateLock)
@@ -150,16 +150,16 @@ public static class RestartManager
             if (config.Enabled)
             {
                 UpdateScheduleTimerWithConfig(config);
-                LogUtil.LogInfo("RestartManager", $"Restart schedule timer activated for {config.Time}");
+                LogUtil.LogInfo("重启管理器", $"重启调度定时器已激活，时间 {config.Time}");
             }
             else
             {
-                LogUtil.LogInfo("RestartManager", "Restart schedule disabled - timer cleared");
+                LogUtil.LogInfo("重启管理器", "重启调度已禁用 - 定时器已清除");
             }
         }
         catch (Exception ex)
         {
-            LogUtil.LogError("RestartManager", $"Failed to update restart schedule: {ex.Message}");
+            LogUtil.LogError("重启管理器", $"更新重启调度失败: {ex.Message}");
             throw;
         }
     }
@@ -185,13 +185,13 @@ public static class RestartManager
 
             if (!config.Enabled)
             {
-                LogUtil.LogInfo("RestartManager", "Scheduled restarts are disabled - timer cleared");
+                LogUtil.LogInfo("重启管理器", "计划重启已禁用 - 定时器已清除");
                 return;
             }
 
             if (!TimeSpan.TryParse(config.Time, out var scheduledTime))
             {
-                LogUtil.LogError("RestartManager", $"Invalid schedule time format: {config.Time}");
+                LogUtil.LogError("重启管理器", $"无效的调度时间格式: {config.Time}");
                 return;
             }
 
@@ -202,7 +202,7 @@ public static class RestartManager
             if (delay.TotalMilliseconds > 0)
             {
                 _scheduleTimer = new System.Threading.Timer(OnScheduledRestart, null, delay, Timeout.InfiniteTimeSpan);
-                LogUtil.LogInfo("RestartManager", $"Next scheduled restart: {nextRestart:yyyy-MM-dd HH:mm:ss} (in {delay.TotalHours:F1} hours)");
+                LogUtil.LogInfo("重启管理器", $"下次计划重启: {nextRestart:yyyy-MM-dd HH:mm:ss}（{delay.TotalHours:F1} 小时后）");
             }
         }
     }
@@ -228,12 +228,12 @@ public static class RestartManager
             // Check if we already restarted today
             if (WasRestartedToday())
             {
-                LogUtil.LogInfo("RestartManager", "Restart already performed today, skipping scheduled restart");
+                LogUtil.LogInfo("重启管理器", "今天已执行过重启，跳过计划重启");
                 UpdateScheduleTimer(); // Schedule next restart
                 return;
             }
 
-            LogUtil.LogInfo("RestartManager", "Executing scheduled restart");
+            LogUtil.LogInfo("重启管理器", "正在执行计划重启");
             
             // Start the restart process asynchronously
             _ = Task.Run(async () =>
@@ -244,7 +244,7 @@ public static class RestartManager
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.LogError("RestartManager", $"Scheduled restart failed: {ex.Message}");
+                    LogUtil.LogError("重启管理器", $"计划重启失败: {ex.Message}");
                 }
                 finally
                 {
@@ -254,7 +254,7 @@ public static class RestartManager
         }
         catch (Exception ex)
         {
-            LogUtil.LogError("RestartManager", $"Error in scheduled restart: {ex.Message}");
+            LogUtil.LogError("重启管理器", $"计划重启出错: {ex.Message}");
             UpdateScheduleTimer(); // Ensure timer is rescheduled
         }
     }
@@ -271,7 +271,7 @@ public static class RestartManager
         }
         catch (Exception ex)
         {
-            LogUtil.LogError("RestartManager", $"Failed to check last restart date: {ex.Message}");
+            LogUtil.LogError("重启管理器", $"检查上次重启日期失败: {ex.Message}");
         }
         return false;
     }
@@ -284,7 +284,7 @@ public static class RestartManager
         }
         catch (Exception ex)
         {
-            LogUtil.LogError("RestartManager", $"Failed to record restart date: {ex.Message}");
+            LogUtil.LogError("重启管理器", $"记录重启日期失败: {ex.Message}");
         }
     }
     #endregion
@@ -301,14 +301,14 @@ public static class RestartManager
     {
         if (_mainForm == null)
         {
-            return new RestartResult { Success = false, Error = "Main form not initialized" };
+            return new RestartResult { Success = false, Error = "主窗体未初始化" };
         }
 
         lock (_stateLock)
         {
             if (_currentState != RestartState.Idle)
             {
-                return new RestartResult { Success = false, Error = "Restart already in progress" };
+                return new RestartResult { Success = false, Error = "重启已在进行中" };
             }
             _currentState = RestartState.Preparing;
             _restartCts = new CancellationTokenSource();
@@ -318,14 +318,14 @@ public static class RestartManager
         
         try
         {
-            LogUtil.LogInfo("RestartManager", $"Starting {reason.ToString().ToLower()} restart process");
+            LogUtil.LogInfo("重启管理器", $"开始 {reason.ToString().ToLower()} 重启流程");
 
             // Phase 1: Discover all instances
             SetState(RestartState.DiscoveringInstances);
             var instances = DiscoverAllInstances();
             result.TotalInstances = instances.Count;
             
-            LogUtil.LogInfo("RestartManager", $"Found {instances.Count} instances to restart");
+            LogUtil.LogInfo("重启管理器", $"发现 {instances.Count} 个实例需要重启");
 
             // Phase 2: Idle all bots
             SetState(RestartState.IdlingBots);
@@ -336,7 +336,7 @@ public static class RestartManager
             var allIdle = await WaitForBotsIdleAsync(instances);
             if (!allIdle)
             {
-                LogUtil.LogInfo("RestartManager", "Timeout waiting for bots to idle, forcing stop");
+                LogUtil.LogInfo("重启管理器", "等待机器人进入空闲状态超时，强制停止");
                 await ForceStopAllBotsAsync(instances);
             }
 
@@ -357,13 +357,13 @@ public static class RestartManager
             RecordRestartDate();
             result.Success = true;
             
-            LogUtil.LogInfo("RestartManager", $"{reason} restart completed successfully");
+            LogUtil.LogInfo("重启管理器", $"{reason} 重启已成功完成");
         }
         catch (Exception ex)
         {
             result.Success = false;
             result.Error = ex.Message;
-            LogUtil.LogError("RestartManager", $"{reason} restart failed: {ex.Message}");
+            LogUtil.LogError("重启管理器", $"{reason} 重启失败: {ex.Message}");
         }
         finally
         {
@@ -381,7 +381,7 @@ public static class RestartManager
         {
             _currentState = newState;
         }
-        LogUtil.LogInfo("RestartManager", $"Restart state: {newState}");
+        LogUtil.LogInfo("重启管理器", $"重启状态: {newState}");
     }
 
     private static List<InstanceInfo> DiscoverAllInstances()
@@ -413,13 +413,13 @@ public static class RestartManager
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.LogError("RestartManager", $"Failed to create instance from process {process.Id}: {ex.Message}");
+                    LogUtil.LogError("重启管理器", $"从进程 {process.Id} 创建实例失败: {ex.Message}");
                 }
             }
         }
         catch (Exception ex)
         {
-            LogUtil.LogError("RestartManager", $"Error discovering instances: {ex.Message}");
+            LogUtil.LogError("重启管理器", $"发现实例时出错: {ex.Message}");
         }
 
         return instances;
@@ -474,24 +474,24 @@ public static class RestartManager
             if (instance.IsMaster)
             {
                 ExecuteLocalCommand(command);
-                LogUtil.LogInfo("RestartManager", $"Sent {commandName} command to local bots");
+                LogUtil.LogInfo("重启管理器", $"已向本地机器人发送 {commandName} 命令");
             }
             else
             {
                 var response = await Task.Run(() => BotServer.QueryRemote(instance.Port, $"{commandName.ToUpper()}ALL"));
                 if (response.StartsWith("ERROR"))
                 {
-                    LogUtil.LogError("RestartManager", $"Failed to {commandName} bots on port {instance.Port}: {response}");
+                    LogUtil.LogError("重启管理器", $"向端口 {instance.Port} 的机器人发送 {commandName} 命令失败: {response}");
                 }
                 else
                 {
-                    LogUtil.LogInfo("RestartManager", $"Sent {commandName} command to port {instance.Port}");
+                    LogUtil.LogInfo("重启管理器", $"已向端口 {instance.Port} 发送 {commandName} 命令");
                 }
             }
         }
         catch (Exception ex)
         {
-            LogUtil.LogError("RestartManager", $"Error {commandName}ing instance {instance.ProcessId} on port {instance.Port}: {ex.Message}");
+            LogUtil.LogError("重启管理器", $"对端口 {instance.Port} 的实例 {instance.ProcessId} 执行 {commandName} 命令时出错: {ex.Message}");
         }
     }
     
@@ -515,7 +515,7 @@ public static class RestartManager
             var allIdle = await CheckAllBotsIdleAsync(instances);
             if (allIdle)
             {
-                LogUtil.LogInfo("RestartManager", "All bots are now idle");
+                LogUtil.LogInfo("重启管理器", "所有机器人现已进入空闲状态");
                 return true;
             }
 
@@ -523,7 +523,7 @@ public static class RestartManager
             if ((DateTime.Now - lastLogTime).TotalSeconds >= 10)
             {
                 var remaining = (int)(timeout - DateTime.Now).TotalSeconds;
-                LogUtil.LogInfo("RestartManager", $"Still waiting for bots to idle... {remaining}s remaining");
+                LogUtil.LogInfo("重启管理器", $"仍在等待机器人进入空闲状态... 剩余 {remaining} 秒");
                 lastLogTime = DateTime.Now;
             }
 
@@ -618,7 +618,7 @@ public static class RestartManager
 
     private static async Task ForceStopAllBotsAsync(List<InstanceInfo> instances)
     {
-        LogUtil.LogInfo("RestartManager", "Force stopping all bots due to idle timeout");
+        LogUtil.LogInfo("重启管理器", "由于空闲超时，强制停止所有机器人");
         await ExecuteCommandOnAllInstancesAsync(instances, BotControlCommand.Stop, "stop");
     }
 
@@ -634,51 +634,51 @@ public static class RestartManager
 
             try
             {
-                LogUtil.LogInfo("RestartManager", $"Restarting slave instance on port {slave.Port}...");
+                LogUtil.LogInfo("重启管理器", $"正在重启端口 {slave.Port} 的从实例...");
                 
                 // First ensure all bots are stopped on this instance
                 var stopResponse = BotServer.QueryRemote(slave.Port, "STOPALL");
-                LogUtil.LogInfo("RestartManager", $"Stop command sent to port {slave.Port}: {stopResponse}");
+                LogUtil.LogInfo("重启管理器", $"已向端口 {slave.Port} 发送停止命令: {stopResponse}");
                 await Task.Delay(1000);
 
                 var response = BotServer.QueryRemote(slave.Port, "SELFRESTARTALL");
                 if (!response.StartsWith("ERROR"))
                 {
                     instanceResult.Success = true;
-                    LogUtil.LogInfo("RestartManager", $"Restart command sent to port {slave.Port}");
+                    LogUtil.LogInfo("重启管理器", $"已向端口 {slave.Port} 发送重启命令");
 
                     // Wait for process termination
                     var terminated = await WaitForProcessTerminationAsync(slave.ProcessId, 30);
                     if (terminated)
                     {
-                        LogUtil.LogInfo("RestartManager", $"Process {slave.ProcessId} terminated successfully");
+                        LogUtil.LogInfo("重启管理器", $"进程 {slave.ProcessId} 已成功终止");
                         
                         // Wait for instance to come back online
                         var backOnline = await WaitForInstanceOnlineAsync(slave.Port, 60);
                         if (backOnline)
                         {
-                            LogUtil.LogInfo("RestartManager", $"Instance on port {slave.Port} is back online");
+                            LogUtil.LogInfo("重启管理器", $"端口 {slave.Port} 的实例已恢复在线");
                         }
                         else
                         {
-                            LogUtil.LogError("RestartManager", $"Instance on port {slave.Port} did not come back online");
+                            LogUtil.LogError("重启管理器", $"端口 {slave.Port} 的实例未能恢复在线");
                         }
                     }
                     else
                     {
-                        LogUtil.LogError("RestartManager", $"Process {slave.ProcessId} did not terminate in time");
+                        LogUtil.LogError("重启管理器", $"进程 {slave.ProcessId} 未能及时终止");
                     }
                 }
                 else
                 {
                     instanceResult.Error = response;
-                    LogUtil.LogError("RestartManager", $"Failed to restart port {slave.Port}: {response}");
+                    LogUtil.LogError("重启管理器", $"重启端口 {slave.Port} 失败: {response}");
                 }
             }
             catch (Exception ex)
             {
                 instanceResult.Error = ex.Message;
-                LogUtil.LogError("RestartManager", $"Error restarting port {slave.Port}: {ex.Message}");
+                LogUtil.LogError("重启管理器", $"重启端口 {slave.Port} 时出错: {ex.Message}");
             }
 
             result.InstanceResults.Add(instanceResult);
@@ -687,7 +687,7 @@ public static class RestartManager
 
     private static async Task RestartMasterInstanceAsync(RestartResult result)
     {
-        LogUtil.LogInfo("RestartManager", "Preparing to restart master instance");
+        LogUtil.LogInfo("重启管理器", "准备重启主实例");
         
         // Save current process IDs before restart
         SavePreRestartProcessIds();
@@ -729,11 +729,11 @@ public static class RestartManager
             
             var json = JsonSerializer.Serialize(pids);
             File.WriteAllText(PreRestartPidsPath, json);
-            LogUtil.LogInfo("RestartManager", $"Saved {pids.Count} process IDs before restart");
+            LogUtil.LogInfo("重启管理器", $"重启前已保存 {pids.Count} 个进程 ID");
         }
         catch (Exception ex)
         {
-            LogUtil.LogError("RestartManager", $"Failed to save pre-restart process IDs: {ex.Message}");
+            LogUtil.LogError("重启管理器", $"保存重启前进程 ID 失败: {ex.Message}");
         }
     }
 
@@ -808,7 +808,7 @@ public static class RestartManager
             if (!File.Exists(RestartFlagPath))
                 return;
 
-            LogUtil.LogInfo("RestartManager", "Post-restart startup detected. Initiating startup sequence...");
+            LogUtil.LogInfo("重启管理器", "检测到重启后启动。正在启动启动序列...");
             File.Delete(RestartFlagPath);
             
             // Kill any lingering old processes
@@ -819,7 +819,7 @@ public static class RestartManager
         }
         catch (Exception ex)
         {
-            LogUtil.LogError("RestartManager", $"Error in post-restart startup: {ex.Message}");
+            LogUtil.LogError("重启管理器", $"重启后启动时出错: {ex.Message}");
         }
     }
     
@@ -837,7 +837,7 @@ public static class RestartManager
             if (oldPids == null || oldPids.Count == 0)
                 return;
                 
-            LogUtil.LogInfo("RestartManager", $"Checking for {oldPids.Count} old process IDs to clean up");
+            LogUtil.LogInfo("重启管理器", $"正在检查 {oldPids.Count} 个旧进程 ID 以进行清理");
             
             var currentPid = Environment.ProcessId;
             var killedCount = 0;
@@ -853,7 +853,7 @@ public static class RestartManager
                     var process = Process.GetProcessById(pid);
                     if (process != null && !process.HasExited)
                     {
-                        LogUtil.LogInfo("RestartManager", $"Killing lingering old process {pid} ({process.ProcessName})");
+                        LogUtil.LogInfo("重启管理器", $"正在终止残留的旧进程 {pid} ({process.ProcessName})");
                         process.Kill();
                         process.WaitForExit(5000); // Wait up to 5 seconds for it to exit
                         killedCount++;
@@ -865,20 +865,20 @@ public static class RestartManager
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.LogError("RestartManager", $"Failed to kill old process {pid}: {ex.Message}");
+                    LogUtil.LogError("重启管理器", $"终止旧进程 {pid} 失败: {ex.Message}");
                 }
             }
             
             if (killedCount > 0)
             {
-                LogUtil.LogInfo("RestartManager", $"Killed {killedCount} lingering old processes");
+                LogUtil.LogInfo("重启管理器", $"已终止 {killedCount} 个残留的旧进程");
                 // Give a moment for processes to fully terminate
                 Thread.Sleep(1000);
             }
         }
         catch (Exception ex)
         {
-            LogUtil.LogError("RestartManager", $"Error killing old processes: {ex.Message}");
+            LogUtil.LogError("重启管理器", $"终止旧进程时出错: {ex.Message}");
         }
     }
     
@@ -891,17 +891,17 @@ public static class RestartManager
         {
             try
             {
-                LogUtil.LogInfo("RestartManager", $"Post-restart startup attempt {attempt + 1}/{maxAttempts}");
+                LogUtil.LogInfo("重启管理器", $"重启后启动尝试 {attempt + 1}/{maxAttempts}");
                 
                 // Start all bots
                 await StartAllBotsAsync();
                 
-                LogUtil.LogInfo("RestartManager", "Post-restart startup sequence completed successfully");
+                LogUtil.LogInfo("重启管理器", "重启后启动序列已成功完成");
                 break;
             }
             catch (Exception ex)
             {
-                LogUtil.LogError("RestartManager", $"Error during post-restart startup attempt {attempt + 1}: {ex.Message}");
+                LogUtil.LogError("重启管理器", $"重启后启动尝试 {attempt + 1} 时出错: {ex.Message}");
                 if (attempt < maxAttempts - 1)
                     await Task.Delay(5000);
             }
@@ -912,24 +912,24 @@ public static class RestartManager
     {
         // Start local bots
         ExecuteLocalCommand(BotControlCommand.Start);
-        LogUtil.LogInfo("RestartManager", "Start command sent to local bots");
+        LogUtil.LogInfo("重启管理器", "已向本地机器人发送启动命令");
         
         // Start remote instances
         var instances = GetAllRunningInstances();
         if (instances.Count > 0)
         {
-            LogUtil.LogInfo("RestartManager", $"Found {instances.Count} remote instances. Sending start commands...");
+            LogUtil.LogInfo("重启管理器", $"发现 {instances.Count} 个远程实例。正在发送启动命令...");
             
             var tasks = instances.Select(async instance =>
             {
                 try
                 {
                     var response = await Task.Run(() => BotServer.QueryRemote(instance.Port, "STARTALL"));
-                    LogUtil.LogInfo("RestartManager", $"Start command sent to port {instance.Port}: {response}");
+                    LogUtil.LogInfo("重启管理器", $"已向端口 {instance.Port} 发送启动命令: {response}");
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.LogError("RestartManager", $"Failed to send start command to port {instance.Port}: {ex.Message}");
+                    LogUtil.LogError("重启管理器", $"向端口 {instance.Port} 发送启动命令失败: {ex.Message}");
                 }
             });
             

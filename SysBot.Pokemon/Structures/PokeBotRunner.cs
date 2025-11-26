@@ -130,7 +130,7 @@ public abstract class PokeBotRunner<T> : RecoverableBotRunner<PokeBotState>, IPo
         
         if (Hub.Config.Recovery.EnableRecovery)
         {
-            LogUtil.LogInfo("Bot recovery system is enabled", "Recovery");
+            LogUtil.LogInfo("机器人恢复系统已启用", "恢复");
         }
     }
 
@@ -175,11 +175,11 @@ public abstract class PokeBotRunner<T> : RecoverableBotRunner<PokeBotState>, IPo
 
         var path = Hub.Config.Folder.DistributeFolder;
         if (!Directory.Exists(path))
-            LogUtil.LogError("Hub", "The distribution folder was not found. Please verify that it exists!");
+            LogUtil.LogError("交易中心", "未找到分发文件夹。请确认该文件夹是否存在！");
 
         var pool = Hub.Ledy.Pool;
         if (!pool.Reload(Hub.Config.Folder.DistributeFolder))
-            LogUtil.LogError("Hub", "Nothing to distribute for Empty Trade Queues!");
+            LogUtil.LogError("交易中心", "空交易队列没有可分发的内容！");
     }
 
     public PokeRoutineExecutorBase CreateBotFromConfig(PokeBotState cfg) => Factory.CreateBot(Hub, cfg);

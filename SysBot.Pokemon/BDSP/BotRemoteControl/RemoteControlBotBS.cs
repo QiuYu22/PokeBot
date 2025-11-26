@@ -17,10 +17,10 @@ public class RemoteControlBotBS(PokeBotState Config) : PokeRoutineExecutor8BS(Co
     {
         try
         {
-            Log("Identifying trainer data of the host console.");
+            Log("正在识别主机的训练家数据。");
             await IdentifyTrainer(token).ConfigureAwait(false);
 
-            Log("Starting main loop, then waiting for commands.");
+            Log("开始主循环，等待命令。");
             Config.IterateNextRoutine();
             while (!token.IsCancellationRequested)
             {
@@ -33,7 +33,7 @@ public class RemoteControlBotBS(PokeBotState Config) : PokeRoutineExecutor8BS(Co
             Log(e.Message);
         }
 
-        Log($"Ending {nameof(RemoteControlBotBS)} loop.");
+        Log($"结束 {nameof(RemoteControlBotBS)} 循环。");
         await HardStop().ConfigureAwait(false);
     }
 
@@ -45,7 +45,7 @@ public class RemoteControlBotBS(PokeBotState Config) : PokeRoutineExecutor8BS(Co
         await Task.Delay(2_000, t).ConfigureAwait(false);
         if (!t.IsCancellationRequested)
         {
-            Log("Restarting the main loop.");
+            Log("正在重启主循环。");
             await MainLoop(t).ConfigureAwait(false);
         }
     }

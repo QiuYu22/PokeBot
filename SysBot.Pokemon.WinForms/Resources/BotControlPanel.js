@@ -102,8 +102,8 @@ class ThemeManager {
             const button = document.createElement('button');
             button.className = 'theme-toggle-btn floating-theme-toggle';
             button.innerHTML = this.currentTheme === 'dark' ? '☀️' : '🌙';
-            button.title = 'Toggle theme';
-            button.setAttribute('aria-label', 'Toggle theme');
+            button.title = '切换主题';
+            button.setAttribute('aria-label', '切换主题');
             button.addEventListener('click', () => this.toggleTheme());
             document.body.appendChild(button);
         }
@@ -126,7 +126,7 @@ class ThemeManager {
         const headerButton = document.getElementById('theme-toggle');
         if (headerButton) {
             headerButton.setAttribute('aria-label', 
-                `Switch to ${this.currentTheme === 'dark' ? 'light' : 'dark'} mode`);
+                `切换到${this.currentTheme === 'dark' ? '浅色' : '深色'}模式`);
         }
         
         // Update any floating/legacy buttons
@@ -310,7 +310,7 @@ class StatusManager {
      */
     getInstanceStatus(instance) {
         if (!instance.botStatuses || instance.botStatuses.length === 0) {
-            return { status: 'stopped', text: 'Stopped' };
+            return { status: 'stopped', text: '已停止' };
         }
 
         const statuses = instance.botStatuses.map(b => this.getStatusClass(b.status));
@@ -323,18 +323,18 @@ class StatusManager {
         const total = instance.botStatuses.length;
 
         if (counts.running === total) {
-            return { status: 'running', text: 'All Running' };
+            return { status: 'running', text: '全部运行中' };
         } else if (counts.idle === total) {
-            return { status: 'idle', text: 'All Idle' };
+            return { status: 'idle', text: '全部空闲' };
         } else if (counts.stopped === total) {
-            return { status: 'stopped', text: 'All Stopped' };
+            return { status: 'stopped', text: '全部停止' };
         } else if (counts.running > 0) {
-            return { status: 'mixed', text: `${counts.running}/${total} Running` };
+            return { status: 'mixed', text: `${counts.running}/${total} 运行中` };
         } else if (counts.idle > 0) {
-            return { status: 'mixed', text: `${counts.idle}/${total} Idle` };
+            return { status: 'mixed', text: `${counts.idle}/${total} 空闲` };
         }
 
-        return { status: 'stopped', text: 'Stopped' };
+        return { status: 'stopped', text: '已停止' };
     }
 }
 
@@ -424,7 +424,7 @@ class ToastManager {
      * @param {string} message - Error message
      */
     error(message) {
-        this.show('error', 'Error', message);
+        this.show('error', '错误', message);
     }
 
     /**
@@ -432,7 +432,7 @@ class ToastManager {
      * @param {string} message - Success message
      */
     success(message) {
-        this.show('success', 'Success', message);
+        this.show('success', '成功', message);
     }
 
     /**
@@ -440,7 +440,7 @@ class ToastManager {
      * @param {string} message - Info message
      */
     info(message) {
-        this.show('info', 'Info', message);
+        this.show('info', '信息', message);
     }
 
     /**
@@ -448,7 +448,7 @@ class ToastManager {
      * @param {string} message - Warning message
      */
     warning(message) {
-        this.show('warning', 'Warning', message);
+        this.show('warning', '警告', message);
     }
 }
 
@@ -580,8 +580,8 @@ class InstanceRenderer {
         const isOnline = instance.isOnline || false;
         const statusClass = isOnline ? 'online' : 'offline';
         const statusIndicator = isOnline ?
-            '<span class="online-indicator"></span>Connected' :
-            '<span class="offline-indicator"></span>Disconnected';
+            '<span class="online-indicator"></span>已连接' :
+            '<span class="offline-indicator"></span>已断开';
 
         const instanceStatus = this.statusManager.getInstanceStatus(instance);
         const animationClass = isMobile ? '' : 'animate-in';
@@ -597,7 +597,7 @@ class InstanceRenderer {
                             ${instanceStatus.text}
                         </span>
                     </h3>
-                    <span class="instance-badge">Port ${instance.port}</span>
+                    <span class="instance-badge">端口 ${instance.port}</span>
                 </div>
                 <div class="instance-body">
                     ${this.renderInstanceInfo(instance, statusIndicator)}
@@ -606,15 +606,15 @@ class InstanceRenderer {
                         <button class="action-menu-button" 
                                 data-port="${instance.port}" 
                                 ${!isOnline ? 'disabled' : ''}
-                                aria-label="Open actions menu">
-                            ⚡ Actions
+                                aria-label="打开操作菜单">
+                            ⚡ 操作
                         </button>
                         <button class="update-button" 
                                 data-port="${instance.port}" 
                                 ${!isOnline ? 'disabled' : ''}
-                                aria-label="Update instance"
+                                aria-label="更新实例"
                                 onclick="window.botControlPanel.updateManager.updateInstance(${instance.port})">
-                            🔄 Update
+                            🔄 更新
                         </button>
                     </div>
                 </div>
@@ -632,19 +632,19 @@ class InstanceRenderer {
         return `
             <div class="instance-info">
                 <div class="info-item">
-                    <span class="info-label">Version</span>
+                    <span class="info-label">版本</span>
                     <span class="info-value">${this.escapeHtml(instance.version)}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Mode</span>
+                    <span class="info-label">模式</span>
                     <span class="info-value">${this.escapeHtml(instance.mode)}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Process ID</span>
+                    <span class="info-label">进程ID</span>
                     <span class="info-value">${instance.processId}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Connection</span>
+                    <span class="info-label">连接</span>
                     <span class="info-value">${statusIndicator}</span>
                 </div>
             </div>
@@ -661,13 +661,13 @@ class InstanceRenderer {
             return `
                 <div class="bot-status">
                     <div class="info-label" style="margin-bottom: 0.5rem;">
-                        BOTS (${instance.botStatuses.length})
+                        机器人 (${instance.botStatuses.length})
                     </div>
                     ${instance.botStatuses.map((bot, index) => `
                         <div class="bot-status-item">
                             <span class="bot-name">
                                 <span style="color: ${this.statusManager.getColor(bot.status)};">●</span>
-                                <span>${this.escapeHtml(bot.name || `Bot ${index + 1}`)}</span>
+                                <span>${this.escapeHtml(bot.name || `机器人 ${index + 1}`)}</span>
                             </span>
                             <span class="bot-state ${this.statusManager.getStatusClass(bot.status)}">
                                 ${this.escapeHtml(bot.status)}
@@ -679,10 +679,10 @@ class InstanceRenderer {
         } else if (instance.botCount > 0) {
             return `
                 <div class="bot-status">
-                    <div class="info-label">BOTS</div>
+                    <div class="info-label">机器人</div>
                     <div class="bot-status-item">
-                        <span class="bot-name">Bot Count: ${instance.botCount}</span>
-                        <span class="bot-state">Status Unknown</span>
+                        <span class="bot-name">机器人数量: ${instance.botCount}</span>
+                        <span class="bot-state">状态未知</span>
                     </div>
                 </div>
             `;
@@ -704,8 +704,8 @@ class InstanceRenderer {
         const connectionValue = card.querySelector('.info-item:nth-child(4) .info-value');
         if (connectionValue) {
             connectionValue.innerHTML = isOnline ?
-                '<span class="online-indicator"></span>Connected' :
-                '<span class="offline-indicator"></span>Disconnected';
+                '<span class="online-indicator"></span>已连接' :
+                '<span class="offline-indicator"></span>已断开';
         }
 
         // Update instance status badge
@@ -753,7 +753,7 @@ class InstanceRenderer {
     renderEmptyState() {
         return `
             <div class="error-message">
-                ⚠️ No bot instances found. Make sure at least one PokeBot is running.
+                ⚠️ 未找到机器人实例。请确保至少有一个宝可梦机器人正在运行。
             </div>
         `;
     }
@@ -1254,7 +1254,7 @@ class BotControlPanel {
             this.instanceRenderer.render(this.state.get('instances'));
             this.dashboardManager.update(this.state.get('instances'));
         } catch (error) {
-            this.toastManager.error('Failed to load bot instances');
+            this.toastManager.error('加载机器人实例失败');
         }
     }
 
@@ -1292,14 +1292,14 @@ class BotControlPanel {
      * Handle connection lost
      */
     handleConnectionLost() {
-        this.toastManager.warning('Connection lost to server');
+        this.toastManager.warning('与服务器的连接已断开');
     }
 
     /**
      * Handle reconnection
      */
     handleReconnection() {
-        this.toastManager.success('Connection restored');
+        this.toastManager.success('连接已恢复');
         this.refresh();
     }
 
@@ -1413,7 +1413,7 @@ class RefreshManager {
     manual() {
         this.app.closeAllModals();
         this.app.refresh();
-        this.app.toastManager.info('Bot instances refreshed');
+        this.app.toastManager.info('机器人实例已刷新');
     }
 
     /**
@@ -1424,7 +1424,7 @@ class RefreshManager {
         const indicator = document.querySelector('.refresh-indicator');
         if (indicator) {
             indicator.classList.toggle('paused', paused);
-            indicator.title = paused ? 'Auto-refresh paused' : 'Auto-refresh active';
+            indicator.title = paused ? '自动刷新已暂停' : '自动刷新已激活';
         }
     }
 }
@@ -1447,7 +1447,7 @@ class CommandManager {
      * @param {string} command - Command to send
      */
     async sendGlobal(command) {
-        this.app.toastManager.info(`Sending ${command} to all instances...`);
+        this.app.toastManager.info(`正在向所有实例发送 ${command}...`);
 
         try {
             const result = await this.app.api.post(this.app.api.endpoints.commandAll, { command });
@@ -1456,17 +1456,17 @@ class CommandManager {
             const totalCount = result.totalInstances || 0;
 
             if (successCount === totalCount && totalCount > 0) {
-                this.app.toastManager.success(`Successfully sent ${command} to all ${totalCount} instances`);
+                this.app.toastManager.success(`已成功向所有 ${totalCount} 个实例发送 ${command}`);
             } else if (successCount > 0) {
-                this.app.toastManager.warning(`Command sent to ${successCount} of ${totalCount} instances`);
+                this.app.toastManager.warning(`命令已发送到 ${totalCount} 个实例中的 ${successCount} 个`);
             } else {
-                this.app.toastManager.error('Failed to send command to any instances');
+                this.app.toastManager.error('向所有实例发送命令失败');
             }
 
             setTimeout(() => this.app.refresh(), 1000);
         } catch (error) {
             console.error('Error sending global command:', error);
-            this.app.toastManager.error(`Failed to send command: ${command}`);
+            this.app.toastManager.error(`发送命令失败: ${command}`);
         }
     }
 
@@ -1478,22 +1478,22 @@ class CommandManager {
     async sendToInstance(port, command) {
         this.app.closeAllModals();
         this.app.state.set('isInteracting', false);
-        this.app.toastManager.info(`Sending ${command} to instance on port ${port}...`);
+        this.app.toastManager.info(`正在向端口 ${port} 的实例发送 ${command}...`);
 
         try {
             const url = `${this.app.api.baseUrl}/instances/${port}/command`;
             const result = await this.app.api.post(url, { command });
 
             if (result.success !== false && !result.error) {
-                this.app.toastManager.success(`Successfully sent ${command} to port ${port}`);
+                this.app.toastManager.success(`已成功向端口 ${port} 发送 ${command}`);
             } else {
-                this.app.toastManager.error(result.message || `Failed to send command to port ${port}`);
+                this.app.toastManager.error(result.message || `向端口 ${port} 发送命令失败`);
             }
 
             setTimeout(() => this.app.refresh(), 1000);
         } catch (error) {
             console.error(`Error sending command to port ${port}:`, error);
-            this.app.toastManager.error(`Failed to send command to port ${port}`);
+            this.app.toastManager.error(`向端口 ${port} 发送命令失败`);
         }
     }
 }
@@ -1534,22 +1534,22 @@ class UpdateManager {
             // Show confirmation first
             const instance = this.app.state.get('instances').find(i => i.port === port);
             if (!instance) {
-                this.app.toastManager.error(`Instance on port ${port} not found`);
+                this.app.toastManager.error(`未找到端口 ${port} 的实例`);
                 return;
             }
 
-            const confirmed = confirm(`Update instance on port ${port} (${instance.name || 'Unknown'})?\n\nThis will restart the instance with the latest version.`);
+            const confirmed = confirm(`是否更新端口 ${port} 的实例 (${instance.name || '未知'})？\n\n这将使用最新版本重启实例。`);
             if (!confirmed) return;
 
             // Start single instance update
             const response = await this.app.api.post(`/api/bot/instances/${port}/update`);
 
             if (response.success) {
-                this.app.toastManager.success(`Started update for instance on port ${port}`);
+                this.app.toastManager.success(`已开始更新端口 ${port} 的实例`);
                 
                 // Show progress modal
                 this.showModal('progress');
-                document.getElementById('progress-modal-title').textContent = `Updating Instance ${port}`;
+                document.getElementById('progress-modal-title').textContent = `正在更新实例 ${port}`;
                 
                 // Initialize update state
                 const updateState = this.app.state.get('updateState');
@@ -1563,11 +1563,11 @@ class UpdateManager {
                 this.startStatusCheck();
                 this.app.state.set('refreshPaused', true);
             } else {
-                this.app.toastManager.error(`Failed to start update: ${response.message || 'Unknown error'}`);
+                this.app.toastManager.error(`启动更新失败: ${response.message || '未知错误'}`);
             }
         } catch (error) {
             console.error('Error starting single instance update:', error);
-            this.app.toastManager.error(`Failed to start update: ${error.message}`);
+            this.app.toastManager.error(`启动更新失败: ${error.message}`);
         }
     }
 
@@ -1577,20 +1577,20 @@ class UpdateManager {
     async showUpdateModal() {
         try {
             const instancesData = await this.app.api.get(this.app.api.endpoints.instances);
-            const currentVersion = instancesData.instances?.[0]?.version || 'Unknown';
+            const currentVersion = instancesData.instances?.[0]?.version || '未知';
 
             document.getElementById('current-version').textContent = currentVersion;
-            document.getElementById('new-version').textContent = 'Checking...';
+            document.getElementById('new-version').textContent = '检查中...';
             document.getElementById('changelog-content').innerHTML = '<div class="spinner"></div>';
 
             const checkResponse = await fetch(this.app.api.endpoints.updateCheck);
-            let updateInfo = { version: 'Unknown', changelog: 'No changelog available' };
+            let updateInfo = { version: '未知', changelog: '暂无更新日志' };
 
             if (checkResponse.ok) {
                 updateInfo = await checkResponse.json();
             } else {
-                updateInfo.version = 'Latest';
-                updateInfo.changelog = 'Unable to fetch changelog. Update will proceed to latest version.';
+                updateInfo.version = '最新';
+                updateInfo.changelog = '无法获取更新日志。将继续更新到最新版本。';
             }
 
             document.getElementById('new-version').textContent = updateInfo.version;
@@ -1598,8 +1598,8 @@ class UpdateManager {
 
         } catch (error) {
             console.error('Error checking updates:', error);
-            document.getElementById('new-version').textContent = 'Latest';
-            document.getElementById('changelog-content').textContent = 'Unable to fetch update information.';
+            document.getElementById('new-version').textContent = '最新';
+            document.getElementById('changelog-content').textContent = '无法获取更新信息。';
         }
     }
 
@@ -1619,7 +1619,7 @@ class UpdateManager {
             const response = await this.app.api.post(this.app.api.endpoints.updateAll, { force: true });
 
             if (!response.ok && !response.sessionId) {
-                throw new Error('Failed to start update');
+                throw new Error('启动更新失败');
             }
 
             updateState.id = response.sessionId;
@@ -1630,7 +1630,7 @@ class UpdateManager {
 
         } catch (error) {
             console.error('Error starting update:', error);
-            this.app.toastManager.error('Failed to start update process');
+            this.app.toastManager.error('启动更新流程失败');
             this.app.state.set('refreshPaused', false);
             this.closeModal('progress');
         }
@@ -1674,7 +1674,7 @@ class UpdateManager {
             if (!response.active || !response.session) {
                 // Get current version to check if update succeeded
                 const instancesResponse = await this.app.api.get(this.app.api.endpoints.instances);
-                const currentVersion = instancesResponse.instances?.[0]?.version || 'Unknown';
+                const currentVersion = instancesResponse.instances?.[0]?.version || '未知';
                 
                 // If version changed or session disappeared, assume success
                 console.log('Update session ended - checking completion');
@@ -1683,7 +1683,7 @@ class UpdateManager {
                     success: true,
                     successCount: instancesResponse.instances?.length || 0,
                     failureCount: 0,
-                    message: 'Update completed successfully'
+                    message: '更新已成功完成'
                 });
                 return;
             }
@@ -1699,8 +1699,8 @@ class UpdateManager {
         } catch (error) {
             if (this.app.state.get('connectionLost')) {
                 this.updateProgress({
-                    phase: 'Connection Lost',
-                    message: 'Master instance may be updating...',
+                    phase: '连接丢失',
+                    message: '主实例可能正在更新...',
                     progress: -1
                 });
             }
@@ -1722,7 +1722,7 @@ class UpdateManager {
         if (progressDetails) {
             let details = status.message || '';
             if (status.currentUpdatingInstance) {
-                details = `Updating: ${status.currentUpdatingInstance} - ${details}`;
+                details = `正在更新: ${status.currentUpdatingInstance} - ${details}`;
             }
             progressDetails.textContent = details;
         }
@@ -1770,14 +1770,14 @@ class UpdateManager {
      */
     getPhaseText(phase) {
         const phaseMap = {
-            'Checking': 'Checking for updates',
-            'Idling': 'Idling bots',
-            'Updating': 'Updating instances',
-            'Verifying': 'Verifying updates',
-            'Complete': 'Update complete!',
-            'Failed': 'Update error'
+            'Checking': '正在检查更新',
+            'Idling': '正在空闲机器人',
+            'Updating': '正在更新实例',
+            'Verifying': '正在验证更新',
+            'Complete': '更新完成！',
+            'Failed': '更新错误'
         };
-        return phaseMap[phase] || 'Processing...';
+        return phaseMap[phase] || '处理中...';
     }
 
     /**
@@ -1807,7 +1807,7 @@ class UpdateManager {
                 const logHtml = progress.instances.map(inst => {
                     const statusClass = inst.allIdle ? 'success' : 'warning';
                     const statusIcon = inst.allIdle ? '✅' : '⏳';
-                    const idleInfo = `${inst.idleBots}/${inst.totalBots} idle`;
+                    const idleInfo = `${inst.idleBots}/${inst.totalBots} 已空闲`;
                     
                     let html = `<div class="idle-instance ${statusClass}">`;
                     html += `<span class="instance-name">${statusIcon} ${inst.name}:</span>`;
@@ -1851,25 +1851,25 @@ class UpdateManager {
                     case 'Completed':
                         statusClass = 'completed';
                         statusIcon = '✅';
-                        statusText = 'Updated';
+                        statusText = '已更新';
                         break;
                     case 'Updating':
                         statusClass = 'updating';
                         statusIcon = '🔄';
-                        statusText = 'Updating...';
+                        statusText = '更新中...';
                         break;
                     case 'Failed':
                         statusClass = 'failed';
                         statusIcon = '❌';
-                        statusText = inst.error || 'Failed';
+                        statusText = inst.error || '失败';
                         break;
                     default:
                         statusClass = 'pending';
                         statusIcon = '⏳';
-                        statusText = 'Pending';
+                        statusText = '等待中';
                 }
                 
-                const instanceName = inst.isMaster ? 'Master' : `Instance ${inst.tcpPort}`;
+                const instanceName = inst.isMaster ? '主实例' : `实例 ${inst.tcpPort}`;
                 const isCurrent = status.currentUpdatingInstance === instanceName;
                 
                 return `<div class="timeline-item ${statusClass} ${isCurrent ? 'current' : ''}">
@@ -1879,7 +1879,7 @@ class UpdateManager {
                 </div>`;
             }).join('');
             
-            timeline.innerHTML = `<div class="timeline-header">Update Progress:</div>${timelineHtml}`;
+            timeline.innerHTML = `<div class="timeline-header">更新进度:</div>${timelineHtml}`;
             timeline.style.display = 'block';
         } else if (status.phase !== 'Idling') {
             timeline.style.display = 'none';
@@ -1907,15 +1907,15 @@ class UpdateManager {
         
         if (status.success) {
             // Update UI to show success
-            if (progressStatus) progressStatus.textContent = '✅ Update Complete!';
-            if (progressDetails) progressDetails.textContent = `Successfully updated ${status.successCount || 'all'} instance(s)`;
+            if (progressStatus) progressStatus.textContent = '✅ 更新完成！';
+            if (progressDetails) progressDetails.textContent = `已成功更新 ${status.successCount || '所有'} 个实例`;
             if (progressBar) {
                 progressBar.style.width = '100%';
                 progressBar.style.background = 'var(--status-online)';
                 progressBar.classList.remove('indeterminate');
             }
             
-            this.app.toastManager.success(`Update completed successfully! Refreshing...`);
+            this.app.toastManager.success(`更新已成功完成！正在刷新...`);
             
             // Reload page after showing success
             setTimeout(() => {
@@ -1923,14 +1923,14 @@ class UpdateManager {
             }, 2000);
         } else {
             // Update UI to show failure
-            if (progressStatus) progressStatus.textContent = '❌ Update Failed';
-            if (progressDetails) progressDetails.textContent = `Update completed with ${status.failureCount || 'some'} error(s)`;
+            if (progressStatus) progressStatus.textContent = '❌ 更新失败';
+            if (progressDetails) progressDetails.textContent = `更新完成，有 ${status.failureCount || '一些'} 个错误`;
             if (progressBar) {
                 progressBar.style.background = 'var(--danger-red)';
                 progressBar.classList.remove('indeterminate');
             }
             
-            this.app.toastManager.error(`Update completed with errors`);
+            this.app.toastManager.error(`更新完成但有错误`);
             
             setTimeout(() => {
                 this.closeModal('progress');
@@ -2007,41 +2007,41 @@ class RestartManager {
         const slaveInstances = response.instances.filter(i => !i.isMaster);
 
         if (!masterInstance) {
-            this.app.toastManager.error('No master instance found. Cannot initiate restart.');
+            this.app.toastManager.error('未找到主实例。无法启动重启。');
             return;
         }
 
         this.showModal('progress');
-        document.getElementById('progress-modal-title').textContent = 'Restart in Progress';
+        document.getElementById('progress-modal-title').textContent = '重启进行中';
 
         // Track restart phases
         this.restartPhases = [
-            { name: 'Stopping bots', progress: 10 },
-            { name: 'Verifying bot status', progress: 25 },
-            { name: 'Stopping services', progress: 40 },
-            { name: 'Restarting slaves', progress: 60 },
-            { name: 'Restarting master', progress: 80 },
-            { name: 'Finalizing', progress: 100 }
+            { name: '正在停止机器人', progress: 10 },
+            { name: '正在验证机器人状态', progress: 25 },
+            { name: '正在停止服务', progress: 40 },
+            { name: '正在重启从实例', progress: 60 },
+            { name: '正在重启主实例', progress: 80 },
+            { name: '正在完成', progress: 100 }
         ];
         this.currentPhase = 0;
 
         try {
             // Phase 2: Initiate coordinated restart
-            this.updateRestartPhase('Initializing restart sequence');
+            this.updateRestartPhase('正在初始化重启序列');
             const result = await this.app.api.post(this.app.api.endpoints.restartAll);
 
             if (result.success) {
                 // Monitor the restart process
                 await this.monitorRestartProgress(masterInstance, slaveInstances);
             } else {
-                throw new Error(result.error || result.message || 'Failed to initiate restart');
+                throw new Error(result.error || result.message || '启动重启失败');
             }
         } catch (error) {
             console.error('Error restarting instances:', error);
-            this.updateProgress('Restart failed', error.message, 0);
+            this.updateProgress('重启失败', error.message, 0);
             setTimeout(() => {
                 this.closeModal('progress');
-                this.app.toastManager.error('Failed to restart instances');
+                this.app.toastManager.error('重启实例失败');
             }, 2000);
         }
     }
@@ -2059,18 +2059,18 @@ class RestartManager {
             try {
                 const elapsed = Date.now() - startTime;
                 if (elapsed > maxWaitTime) {
-                    throw new Error('Restart timeout - process took too long');
+                    throw new Error('重启超时 - 进程耗时过长');
                 }
 
                 // Try to get restart status
                 const statusResponse = await this.app.api.get(`${this.app.api.baseUrl}/restart/status`)
-                    .catch(() => ({ state: 'unknown', message: 'API unavailable' }));
+                    .catch(() => ({ state: 'unknown', message: 'API 不可用' }));
 
                 if (statusResponse.state === 'completed') {
-                    this.updateProgress('Restart complete', 'All instances have been restarted successfully', 100);
+                    this.updateProgress('重启完成', '所有实例已成功重启', 100);
                     setTimeout(() => {
                         this.closeModal('progress');
-                        this.app.toastManager.success('All instances restarted successfully');
+                        this.app.toastManager.success('所有实例已成功重启');
                         this.app.refresh();
                     }, 2000);
                     return;
@@ -2084,10 +2084,10 @@ class RestartManager {
 
             } catch (error) {
                 if (error.message.includes('timeout')) {
-                    this.updateProgress('Timeout', error.message, 0);
+                    this.updateProgress('超时', error.message, 0);
                 } else {
                     // API might be temporarily unavailable during restart
-                    this.updateProgress('Restarting...', 'Waiting for services to come back online', 75);
+                    this.updateProgress('正在重启...', '等待服务恢复在线', 75);
                     setTimeout(checkProgress, pollInterval * 2);
                 }
             }
@@ -2102,19 +2102,19 @@ class RestartManager {
      */
     updateProgressFromState(status) {
         const stateMessages = {
-            'idle': { msg: 'Ready to restart', progress: 0 },
-            'preparing': { msg: 'Preparing restart sequence', progress: 10 },
-            'stopping_bots': { msg: 'Stopping all bots', progress: 20 },
-            'waiting_idle': { msg: 'Waiting for bots to stop', progress: 30 },
-            'stopping_services': { msg: 'Stopping services', progress: 40 },
-            'restarting_slaves': { msg: 'Restarting slave instances', progress: 60 },
-            'restarting_master': { msg: 'Restarting master instance', progress: 80 },
-            'finalizing': { msg: 'Finalizing restart', progress: 90 },
-            'completed': { msg: 'Restart completed', progress: 100 },
-            'failed': { msg: 'Restart failed', progress: 0 }
+            'idle': { msg: '准备重启', progress: 0 },
+            'preparing': { msg: '正在准备重启序列', progress: 10 },
+            'stopping_bots': { msg: '正在停止所有机器人', progress: 20 },
+            'waiting_idle': { msg: '等待机器人停止', progress: 30 },
+            'stopping_services': { msg: '正在停止服务', progress: 40 },
+            'restarting_slaves': { msg: '正在重启从实例', progress: 60 },
+            'restarting_master': { msg: '正在重启主实例', progress: 80 },
+            'finalizing': { msg: '正在完成重启', progress: 90 },
+            'completed': { msg: '重启已完成', progress: 100 },
+            'failed': { msg: '重启失败', progress: 0 }
         };
 
-        const info = stateMessages[status.state] || { msg: status.message || 'Processing...', progress: 50 };
+        const info = stateMessages[status.state] || { msg: status.message || '处理中...', progress: 50 };
         this.updateProgress(status.state, info.msg, info.progress);
     }
 
@@ -2212,7 +2212,7 @@ class RestartManager {
             console.log('Restart schedule update response:', response);
 
             this.app.toastManager.success(
-                enabled ? `Scheduled restart enabled for ${time}` : 'Scheduled restart disabled'
+                enabled ? `已启用定时重启，时间: ${time}` : '已禁用定时重启'
             );
 
             if (enabled) {
@@ -2228,7 +2228,7 @@ class RestartManager {
             // Revert the toggle on error
             toggle.checked = !enabled;
             timeInput.disabled = !toggle.checked;
-            this.app.toastManager.error('Failed to update restart schedule');
+            this.app.toastManager.error('更新重启计划失败');
         }
     }
 
@@ -2260,10 +2260,10 @@ class RestartManager {
             console.log('Restart time update response:', response);
 
             this.updateNextRestartTime();
-            this.app.toastManager.success(`Restart time changed to ${time}`);
+            this.app.toastManager.success(`重启时间已更改为 ${time}`);
         } catch (error) {
             console.error('Error updating restart schedule:', error);
-            this.app.toastManager.error('Failed to update restart time');
+            this.app.toastManager.error('更新重启时间失败');
             // Reload the schedule to get the correct state
             await this.loadSchedule();
         }
@@ -2284,13 +2284,13 @@ class RestartManager {
             next.setDate(next.getDate() + 1);
         }
 
-        const formatter = new Intl.DateTimeFormat('en-US', {
+        const formatter = new Intl.DateTimeFormat('zh-CN', {
             weekday: 'short',
             month: 'short',
             day: 'numeric',
             hour: 'numeric',
             minute: '2-digit',
-            hour12: true
+            hour12: false
         });
 
         const element = document.getElementById('next-restart-time');
@@ -2336,7 +2336,7 @@ class RestartManager {
 
                 if (timeDiff > 0 && timeDiff < 60000) {
                     this.app.toastManager.warning(
-                        `System will restart in ${Math.ceil(timeDiff / 1000)} seconds`,
+                        `系统将在 ${Math.ceil(timeDiff / 1000)} 秒后重启`,
                         10000
                     );
                 }
@@ -2722,7 +2722,7 @@ class RemoteControl {
             }
         } catch (error) {
             console.error('Failed to load bots:', error);
-            this.app.toastManager.error('Failed to load bot list');
+            this.app.toastManager.error('加载机器人列表失败');
         }
     }
 
@@ -2752,7 +2752,7 @@ class RemoteControl {
         selector.innerHTML = '';
         
         if (!bots || bots.length === 0) {
-            selector.innerHTML = '<option value="">No bots available</option>';
+            selector.innerHTML = '<option value="">无可用机器人</option>';
             return;
         }
         
@@ -2762,7 +2762,7 @@ class RemoteControl {
             
             const isRunning = this.isBotRunning(bot);
             const status = isRunning ? '🟢' : '🔴';
-            const name = bot.Name || bot.name || `Bot ${index + 1}`;
+            const name = bot.Name || bot.name || `机器人 ${index + 1}`;
             
             option.textContent = `${status} ${name}`;
             option.disabled = !isRunning;
@@ -2781,8 +2781,8 @@ class RemoteControl {
         const connectionInfo = document.getElementById('bot-connection-info');
         if (connectionInfo) {
             const isRunning = this.isBotRunning(bot);
-            const name = bot.Name || bot.name || 'Bot';
-            const status = bot.Status || bot.status || 'Unknown';
+            const name = bot.Name || bot.name || '机器人';
+            const status = bot.Status || bot.status || '未知';
             
             connectionInfo.textContent = `${name} - ${status}`;
             connectionInfo.className = `connection-info status-${isRunning ? 'success' : 'warning'}`;
@@ -2798,7 +2798,7 @@ class RemoteControl {
         
         const selectedBot = this.availableBots[this.currentBotIndex];
         if (!selectedBot || !this.isBotRunning(selectedBot)) {
-            this.app.toastManager.error('Selected bot is not running');
+            this.app.toastManager.error('所选机器人未运行');
             return;
         }
 
@@ -2813,11 +2813,11 @@ class RemoteControl {
             if (response.success) {
                 this.animateButton(button);
             } else {
-                this.app.toastManager.error(response.error || 'Failed to send button');
+                this.app.toastManager.error(response.error || '发送按钮失败');
             }
         } catch (error) {
             console.error('Remote button error:', error);
-            this.app.toastManager.error('Connection error');
+            this.app.toastManager.error('连接错误');
         } finally {
             this.isProcessing = false;
         }
@@ -2832,7 +2832,7 @@ class RemoteControl {
         
         const selectedBot = this.availableBots[this.currentBotIndex];
         if (!selectedBot || !this.isBotRunning(selectedBot)) {
-            this.app.toastManager.error('Selected bot is not running');
+            this.app.toastManager.error('所选机器人未运行');
             return;
         }
 
@@ -2845,13 +2845,13 @@ class RemoteControl {
             );
 
             if (response.success) {
-                this.app.toastManager.success(`Macro executed: ${response.commandCount || 0} commands`);
+                this.app.toastManager.success(`宏已执行: ${response.commandCount || 0} 条命令`);
             } else {
-                this.app.toastManager.error(response.error || 'Failed to execute macro');
+                this.app.toastManager.error(response.error || '执行宏失败');
             }
         } catch (error) {
             console.error('Remote macro error:', error);
-            this.app.toastManager.error('Connection error');
+            this.app.toastManager.error('连接错误');
         } finally {
             this.isProcessing = false;
         }

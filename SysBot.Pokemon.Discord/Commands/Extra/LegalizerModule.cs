@@ -9,9 +9,9 @@ namespace SysBot.Pokemon.Discord
     public class LegalizerModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
     {
         [Command("convert"), Alias("showdown")]
-        [Summary("Tries to convert the Showdown Set to RegenTemplate format.")]
+        [Summary("尝试将 Showdown 配置转换为 RegenTemplate 格式。")]
         [Priority(1)]
-        public async Task ConvertShowdown([Summary("Generation/Format")] byte gen, [Remainder][Summary("Showdown Set")] string content)
+        public async Task ConvertShowdown([Summary("世代/格式")] byte gen, [Remainder][Summary("Showdown 配置")] string content)
         {
             var deleteMessageTask = LegalizerModule<T>.DeleteCommandMessageAsync(Context.Message, 2000);
             var convertTask = Context.Channel.ReplyWithLegalizedSetAsync(content, gen);
@@ -19,9 +19,9 @@ namespace SysBot.Pokemon.Discord
         }
 
         [Command("convert"), Alias("showdown")]
-        [Summary("Tries to convert the Showdown Set to RegenTemplate format.")]
+        [Summary("尝试将 Showdown 配置转换为 RegenTemplate 格式。")]
         [Priority(0)]
-        public async Task ConvertShowdown([Remainder][Summary("Showdown Set")] string content)
+        public async Task ConvertShowdown([Remainder][Summary("Showdown 配置")] string content)
         {
             var deleteMessageTask = LegalizerModule<T>.DeleteCommandMessageAsync(Context.Message, 2000);
             var convertTask = Context.Channel.ReplyWithLegalizedSetAsync<T>(content);
@@ -29,7 +29,7 @@ namespace SysBot.Pokemon.Discord
         }
 
         [Command("legalize"), Alias("alm")]
-        [Summary("Tries to legalize the attached pkm data and output as RegenTemplate.")]
+        [Summary("尝试合法化附加的 PKM 数据并输出为 RegenTemplate 格式。")]
         public async Task LegalizeAsync()
         {
             var deleteMessageTask = LegalizerModule<T>.DeleteCommandMessageAsync(Context.Message, 2000);

@@ -14,8 +14,8 @@ public static class SimpleLegalityFeedback
         var sb = new StringBuilder();
 
         // Header
-        sb.AppendLine($"**Legality Analysis for {speciesName}**");
-        sb.AppendLine($"Status: {(la.Valid ? "✅ Legal" : "❌ Illegal")}");
+        sb.AppendLine($"**{speciesName} 合法性分析**");
+        sb.AppendLine($"状态: {(la.Valid ? "✅ 合法" : "❌ 非法")}");
 
         if (!la.Valid)
         {
@@ -24,7 +24,7 @@ public static class SimpleLegalityFeedback
 
             if (invalidChecks.Count > 0)
             {
-                sb.AppendLine("\n**Issues Found:**");
+                sb.AppendLine("\n**发现的问题:**");
 
                 // Group by identifier for better organization
                 var groupedIssues = invalidChecks.GroupBy(r => r.Identifier);
@@ -42,7 +42,7 @@ public static class SimpleLegalityFeedback
                         // Clean up the comment for display
                         var cleanComment = context.Humanize(issue)
                             .Replace("Invalid:", "")
-                            .Replace("Fishy:", "Warning:")
+                            .Replace("Fishy:", "警告:")
                             .Trim();
 
                         sb.AppendLine($"  • {cleanComment}");
@@ -54,18 +54,18 @@ public static class SimpleLegalityFeedback
             var moveIssues = invalidChecks.Where(r => r.Identifier == CheckIdentifier.CurrentMove).ToList();
             if (moveIssues.Count > 0)
             {
-                sb.AppendLine("\n**Move Tips:**");
-                sb.AppendLine("  • Check if moves are available in the target generation");
-                sb.AppendLine("  • Verify move combinations are legal together");
-                sb.AppendLine("  • Some moves are event-exclusive");
+                sb.AppendLine("\n**招式提示:**");
+                sb.AppendLine("  • 检查招式是否在目标世代中可用");
+                sb.AppendLine("  • 验证招式组合是否合法");
+                sb.AppendLine("  • 部分招式为活动配布专属");
             }
         }
         else
         {
-            sb.AppendLine($"\n✨ Your {speciesName} passed all legality checks!");
+            sb.AppendLine($"\n✨ 您的 {speciesName} 通过了所有合法性检查!");
             if (la.EncounterOriginal != null)
             {
-                sb.AppendLine($"Encounter: {la.EncounterOriginal.LongName}");
+                sb.AppendLine($"遭遇方式: {la.EncounterOriginal.LongName}");
             }
         }
 
@@ -87,19 +87,19 @@ public static class SimpleLegalityFeedback
 
     public static string GetCategoryName(CheckIdentifier identifier) => identifier switch
     {
-        CheckIdentifier.CurrentMove => "Moves",
-        CheckIdentifier.RelearnMove => "Relearn Moves",
-        CheckIdentifier.Ability => "Ability",
-        CheckIdentifier.Ball => "Poké Ball",
-        CheckIdentifier.Level => "Level",
-        CheckIdentifier.Shiny => "Shiny Status",
-        CheckIdentifier.Form => "Form",
-        CheckIdentifier.GameOrigin => "Game Origin",
-        CheckIdentifier.Encounter => "Encounter",
-        CheckIdentifier.IVs => "IVs",
-        CheckIdentifier.EVs => "EVs",
-        CheckIdentifier.Nature => "Nature",
-        CheckIdentifier.Gender => "Gender",
+        CheckIdentifier.CurrentMove => "招式",
+        CheckIdentifier.RelearnMove => "回忆招式",
+        CheckIdentifier.Ability => "特性",
+        CheckIdentifier.Ball => "精灵球",
+        CheckIdentifier.Level => "等级",
+        CheckIdentifier.Shiny => "闪光状态",
+        CheckIdentifier.Form => "形态",
+        CheckIdentifier.GameOrigin => "游戏来源",
+        CheckIdentifier.Encounter => "遭遇方式",
+        CheckIdentifier.IVs => "个体值",
+        CheckIdentifier.EVs => "努力值",
+        CheckIdentifier.Nature => "性格",
+        CheckIdentifier.Gender => "性别",
         _ => identifier.ToString()
     };
 }

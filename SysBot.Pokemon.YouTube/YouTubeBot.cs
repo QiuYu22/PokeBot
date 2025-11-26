@@ -109,15 +109,15 @@ public class YouTubeBot<T> where T : PKM, new()
             return string.Empty; // sudo only commands
 
         if (args.Length > 0)
-            return "Commands don't use arguments. Try again with just the command code.";
+            return "命令不使用参数。请只输入命令代码重试。";
 
         return cmd switch
         {
             "pr" => (Info.Hub.Ledy.Pool.Reload(Hub.Config.Folder.DistributeFolder)
-                ? $"Reloaded from folder. Pool count: {Info.Hub.Ledy.Pool.Count}"
-                : "Failed to reload from folder."),
+                ? $"已从文件夹重新加载。池数量: {Info.Hub.Ledy.Pool.Count}"
+                : "从文件夹重新加载失败。"),
 
-            "pc" => $"The pool count is: {Info.Hub.Ledy.Pool.Count}",
+            "pc" => $"池数量为: {Info.Hub.Ledy.Pool.Count}",
 
             _ => string.Empty,
         };

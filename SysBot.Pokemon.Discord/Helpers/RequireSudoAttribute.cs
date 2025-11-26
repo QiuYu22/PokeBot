@@ -17,12 +17,12 @@ public sealed class RequireSudoAttribute : PreconditionAttribute
 
         // Check if this user is a Guild User, which is the only context where roles exist
         if (context.User is not SocketGuildUser gUser)
-            return Task.FromResult(PreconditionResult.FromError("You must be in a guild to run this command."));
+            return Task.FromResult(PreconditionResult.FromError("您必须在服务器中才能运行此命令。"));
 
         if (mgr.CanUseSudo(gUser.Roles.Select(z => z.Name)))
             return Task.FromResult(PreconditionResult.FromSuccess());
 
         // Since it wasn't, fail
-        return Task.FromResult(PreconditionResult.FromError("You are not permitted to run this command."));
+        return Task.FromResult(PreconditionResult.FromError("您没有权限运行此命令。"));
     }
 }

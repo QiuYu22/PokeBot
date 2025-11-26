@@ -26,12 +26,14 @@ public class RemoteControlAccessList
     /// <remarks>
     /// Also used by Channel White-lists. No channels whitelisted &amp; true => any channel can be used for bot commands.
     /// </remarks>
+    [Description("当列表为空时是否允许所有人。"), DisplayName("空时允许")]
     public bool AllowIfEmpty { get; set; } = true;
 
     /// <summary>
     /// Don't mutate this list; use <see cref="AddIfNew"/> and <see cref="RemoveAll"/>.
     /// This is public for serialization purposes.
     /// </summary>
+    [Description("访问控制条目列表。"), DisplayName("列表")]
     public List<RemoteControlAccess> List { get; set; } = [];
 
     /// <summary>
@@ -77,7 +79,7 @@ public class RemoteControlAccessList
     public override string ToString()
     {
         return List.Count == 0
-            ? (AllowIfEmpty ? "Anyone allowed" : "None allowed (none specified).")
-            : $"{List.Count} entries specified.";
+            ? (AllowIfEmpty ? "允许所有人" : "不允许任何人（未指定）。")
+            : $"已指定 {List.Count} 个条目。";
     }
 }

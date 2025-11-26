@@ -46,22 +46,22 @@ public static class QueueHelper<T> where T : PKM, new()
     {
         return tradeCount switch
         {
-            1 => "Congratulations on your first trade!\n**Status:** Newbie Trainer.",
-            50 => "You've reached 50 trades!\n**Status:** Novice Trainer.",
-            100 => "You've reached 100 trades!\n**Status:** Pokémon Professor.",
-            150 => "You've reached 150 trades!\n**Status:** Pokémon Specialist.",
-            200 => "You've reached 200 trades!\n**Status:** Pokémon Champion.",
-            250 => "You've reached 250 trades!\n**Status:** Pokémon Hero.",
-            300 => "You've reached 300 trades!\n**Status:** Pokémon Elite.",
-            350 => "You've reached 350 trades!\n**Status:** Pokémon Trader.",
-            400 => "You've reached 400 trades!\n**Status:** Pokémon Sage.",
-            450 => "You've reached 450 trades!\n**Status:** Pokémon Legend.",
-            500 => "You've reached 500 trades!\n**Status:** Region Master.",
-            550 => "You've reached 550 trades!\n**Status:** Trade Master.",
-            600 => "You've reached 600 trades!\n**Status:** World Famous.",
-            650 => "You've reached 650 trades!\n**Status:** Pokémon Master.",
-            700 => "You've reached 700 trades!\n**Status:** Pokémon God.",
-            _ => $"Congratulations on reaching {tradeCount} trades! Keep it going!"
+            1 => "恭喜您完成第一次交易！\n**称号:** 新手训练家。",
+            50 => "您已完成 50 次交易！\n**称号:** 初级训练家。",
+            100 => "您已完成 100 次交易！\n**称号:** 宝可梦博士。",
+            150 => "您已完成 150 次交易！\n**称号:** 宝可梦专家。",
+            200 => "您已完成 200 次交易！\n**称号:** 宝可梦冠军。",
+            250 => "您已完成 250 次交易！\n**称号:** 宝可梦英雄。",
+            300 => "您已完成 300 次交易！\n**称号:** 宝可梦精英。",
+            350 => "您已完成 350 次交易！\n**称号:** 宝可梦交易员。",
+            400 => "您已完成 400 次交易！\n**称号:** 宝可梦贤者。",
+            450 => "您已完成 450 次交易！\n**称号:** 宝可梦传奇。",
+            500 => "您已完成 500 次交易！\n**称号:** 地区大师。",
+            550 => "您已完成 550 次交易！\n**称号:** 交易大师。",
+            600 => "您已完成 600 次交易！\n**称号:** 世界闻名。",
+            650 => "您已完成 650 次交易！\n**称号:** 宝可梦大师。",
+            700 => "您已完成 700 次交易！\n**称号:** 宝可梦之神。",
+            _ => $"恭喜您完成 {tradeCount} 次交易！继续加油！"
         };
     }
 
@@ -69,7 +69,7 @@ public static class QueueHelper<T> where T : PKM, new()
     {
         if ((uint)code > MaxTradeCode)
         {
-            await context.Channel.SendMessageAsync("Trade code should be 00000000-99999999!").ConfigureAwait(false);
+            await context.Channel.SendMessageAsync("交易密码应为 00000000-99999999！").ConfigureAwait(false);
             return;
         }
 
@@ -81,7 +81,7 @@ public static class QueueHelper<T> where T : PKM, new()
                 if (trade is PB7 && lgcode != null)
                 {
                     var (thefile, lgcodeembed) = CreateLGLinkCodeSpriteEmbed(lgcode);
-                    await trader.SendFileAsync(thefile, "Your trade code will be.", embed: lgcodeembed).ConfigureAwait(false);
+                    await trader.SendFileAsync(thefile, "您的交易密码是:", embed: lgcodeembed).ConfigureAwait(false);
                 }
                 else
                 {
@@ -148,7 +148,7 @@ public static class QueueHelper<T> where T : PKM, new()
 
         if (added == QueueResultAdd.AlreadyInQueue)
         {
-            await context.Channel.SendMessageAsync($"{trader.Mention} - You are already in the queue!").ConfigureAwait(false);
+            await context.Channel.SendMessageAsync($"{trader.Mention} - 您已在队列中！").ConfigureAwait(false);
             return new TradeQueueResult(false);
         }
 
@@ -157,9 +157,9 @@ public static class QueueHelper<T> where T : PKM, new()
             var maxCount = SysCord<T>.Runner.Config.Queues.MaxQueueCount;
             var embed = new EmbedBuilder()
                 .WithColor(DiscordColor.Red)
-                .WithTitle("🚫 Queue Full")
-                .WithDescription($"The queue is currently full ({maxCount}/{maxCount}). Please try again later when space becomes available.")
-                .WithFooter("Queue will open up as trades are completed")
+                .WithTitle("🚫 队列已满")
+                .WithDescription($"队列当前已满 ({maxCount}/{maxCount})。请稍后在有空位时重试。")
+                .WithFooter("交易完成后队列将会开放")
                 .WithTimestamp(DateTimeOffset.Now)
                 .Build();
 
@@ -170,8 +170,8 @@ public static class QueueHelper<T> where T : PKM, new()
         if (added == QueueResultAdd.NotAllowedItem)
         {
             var held = pk.HeldItem;
-            var itemName = held > 0 ? PKHeX.Core.GameInfo.GetStrings("en").Item[held] : "(none)";
-            await context.Channel.SendMessageAsync($"{trader.Mention} - Trade blocked: the held item '{itemName}' cannot be traded in PLZA.").ConfigureAwait(false);
+            var itemName = held > 0 ? PKHeX.Core.GameInfo.GetStrings("en").Item[held] : "(无)";
+            await context.Channel.SendMessageAsync($"{trader.Mention} - 交易被阻止：携带道具 '{itemName}' 无法在 PLZA 中交易。").ConfigureAwait(false);
             return new TradeQueueResult(false);
         }
 
@@ -203,8 +203,8 @@ public static class QueueHelper<T> where T : PKM, new()
             var position = Info.CheckPosition(userID, uniqueTradeID, type);
             var botct = Info.Hub.Bots.Count;
             var baseEta = position.Position > botct ? Info.Hub.Config.Queues.EstimateDelay(position.Position, botct) : 0;
-            var etaMessage = $"Estimated: {baseEta:F1} min(s) for trade.";
-            string footerText = $"Current Position: {(position.Position == -1 ? 1 : position.Position)}";
+            var etaMessage = $"预计: {baseEta:F1} 分钟后交易。";
+            string footerText = $"当前位置: {(position.Position == -1 ? 1 : position.Position)}";
 
             string userDetailsText = DetailsExtractor<T>.GetUserDetails(totalTradeCount, tradeDetails);
             if (!string.IsNullOrEmpty(userDetailsText))
@@ -239,23 +239,23 @@ public static class QueueHelper<T> where T : PKM, new()
                 if (homeTrack.HasTracker && isNonNative)
                 {
                     embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/hexbyt3/sprites/main/exclamation.gif";
-                    embedBuilder.AddField("**__Notice__**: **This Pokemon is Non-Native & Has Home Tracker.**", "*AutoOT not applied.*");
+                    embedBuilder.AddField("**__注意__**: **此宝可梦为非原生且有 Home 追踪器。**", "*未应用自动OT。*");
                 }
                 else if (homeTrack.HasTracker)
                 {
                     embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/hexbyt3/sprites/main/exclamation.gif";
-                    embedBuilder.AddField("**__Notice__**: **Home Tracker Detected.**", "*AutoOT not applied.*");
+                    embedBuilder.AddField("**__注意__**: **检测到 Home 追踪器。**", "*未应用自动OT。*");
                 }
                 else if (isNonNative)
                 {
                     embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/hexbyt3/sprites/main/exclamation.gif";
-                    embedBuilder.AddField("**__Notice__**: **This Pokemon is Non-Native.**", "*Cannot enter HOME & AutoOT not applied.*");
+                    embedBuilder.AddField("**__注意__**: **此宝可梦为非原生。**", "*无法进入 HOME 且未应用自动OT。*");
                 }
             }
             else if (isNonNative)
             {
                 embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/hexbyt3/sprites/main/exclamation.gif";
-                embedBuilder.AddField("**__Notice__**: **This Pokemon is Non-Native.**", "*Cannot enter HOME & AutoOT not applied.*");
+                embedBuilder.AddField("**__注意__**: **此宝可梦为非原生。**", "*无法进入 HOME 且未应用自动OT。*");
             }
 
             DetailsExtractor<T>.AddThumbnails(embedBuilder, type == PokeRoutineType.Clone, type == PokeRoutineType.SeedCheck, embedData.HeldItemUrl);
@@ -266,7 +266,7 @@ public static class QueueHelper<T> where T : PKM, new()
                 if (embed == null)
                 {
                     Console.WriteLine("Error: Embed is null.");
-                    await context.Channel.SendMessageAsync("An error occurred while preparing the trade details.");
+                    await context.Channel.SendMessageAsync("准备交易详情时发生错误。");
                     return new TradeQueueResult(false);
                 }
 
@@ -337,7 +337,7 @@ public static class QueueHelper<T> where T : PKM, new()
         // Handle the display
         if (added == QueueResultAdd.AlreadyInQueue)
         {
-            await context.Channel.SendMessageAsync($"{trader.Mention} - You are already in the queue!").ConfigureAwait(false);
+            await context.Channel.SendMessageAsync($"{trader.Mention} - 您已在队列中！").ConfigureAwait(false);
             return;
         }
 
@@ -346,9 +346,9 @@ public static class QueueHelper<T> where T : PKM, new()
             var maxCount = SysCord<T>.Runner.Config.Queues.MaxQueueCount;
             var embed = new EmbedBuilder()
                 .WithColor(DiscordColor.Red)
-                .WithTitle("🚫 Queue Full")
-                .WithDescription($"The queue is currently full ({maxCount}/{maxCount}). Please try again later when space becomes available.")
-                .WithFooter("Queue will open up as trades are completed")
+                .WithTitle("🚫 队列已满")
+                .WithDescription($"队列当前已满 ({maxCount}/{maxCount})。请稍后在有空位时重试。")
+                .WithFooter("交易完成后队列将会开放")
                 .WithTimestamp(DateTimeOffset.Now)
                 .Build();
 
@@ -359,8 +359,8 @@ public static class QueueHelper<T> where T : PKM, new()
         if (added == QueueResultAdd.NotAllowedItem)
         {
             var held = firstTrade.HeldItem;
-            var itemName = held > 0 ? PKHeX.Core.GameInfo.GetStrings("en").Item[held] : "(none)";
-            await context.Channel.SendMessageAsync($"{trader.Mention} - Trade blocked: the held item '{itemName}' cannot be traded in PLZA.").ConfigureAwait(false);
+            var itemName = held > 0 ? PKHeX.Core.GameInfo.GetStrings("en").Item[held] : "(无)";
+            await context.Channel.SendMessageAsync($"{trader.Mention} - 交易被阻止：携带道具 '{itemName}' 无法在 PLZA 中交易。").ConfigureAwait(false);
             return;
         }
 
@@ -379,7 +379,7 @@ public static class QueueHelper<T> where T : PKM, new()
         }
 
         // Send initial batch summary message
-        await context.Channel.SendMessageAsync($"{trader.Mention} - Added batch trade with {totalBatchTrades} Pokémon to the queue! Position: {position.Position}. Estimated: {baseEta:F1} min(s).").ConfigureAwait(false);
+        await context.Channel.SendMessageAsync($"{trader.Mention} - 已将包含 {totalBatchTrades} 只宝可梦的批量交易添加到队列！位置: {position.Position}。预计: {baseEta:F1} 分钟。").ConfigureAwait(false);
 
         // Create and send embeds for each Pokémon in the batch
         if (SysCord<T>.Runner.Config.Trade.TradeEmbedSettings.UseEmbeds)
@@ -410,16 +410,16 @@ public static class QueueHelper<T> where T : PKM, new()
                     embedData.IsLocalFile = File.Exists(embedData.EmbedImageUrl);
 
                     // Build footer text with batch info
-                    string footerText = $"Batch Trade {batchTradeNumber} of {totalBatchTrades}";
+                    string footerText = $"批量交易 {batchTradeNumber}/{totalBatchTrades}";
                     if (i == 0) // Only show position and ETA on first embed
                     {
-                        footerText += $" | Position: {position.Position}";
+                        footerText += $" | 位置: {position.Position}";
                         string userDetailsText = DetailsExtractor<T>.GetUserDetails(totalTradeCount, tradeDetails);
                         if (!string.IsNullOrEmpty(userDetailsText))
                         {
                             footerText += $"\n{userDetailsText}";
                         }
-                        footerText += $"\nEstimated: {baseEta:F1} min(s) for batch";
+                        footerText += $"\n预计: {baseEta:F1} 分钟完成批量交易";
                     }
 
                     // Create embed
@@ -441,7 +441,7 @@ public static class QueueHelper<T> where T : PKM, new()
                         if (homeTrack.HasTracker)
                         {
                             embedBuilder.Footer.IconUrl = "https://raw.githubusercontent.com/hexbyt3/sprites/main/exclamation.gif";
-                            embedBuilder.AddField("**__Notice__**: **Home Tracker Detected.**", "*AutoOT not applied.*");
+                            embedBuilder.AddField("**__注意__**: **检测到 Home 追踪器。**", "*未应用自动OT。*");
                         }
                     }
 
@@ -720,7 +720,7 @@ public static class QueueHelper<T> where T : PKM, new()
         if (MilestoneImages.TryGetValue(tradeCount, out string? imageUrl))
         {
             var embed = new EmbedBuilder()
-                .WithTitle($"{user.Username}'s Milestone Medal")
+                .WithTitle($"{user.Username} 的里程碑勋章")
                 .WithDescription(GetMilestoneDescription(tradeCount))
                 .WithColor(new DiscordColor(255, 215, 0)) // Gold color
                 .WithThumbnailUrl(imageUrl)
@@ -815,28 +815,28 @@ public static class QueueHelper<T> where T : PKM, new()
                     var permissions = context.Guild.CurrentUser.GetPermissions(context.Channel as IGuildChannel);
                     if (!permissions.SendMessages)
                     {
-                        message = "You must grant me \"Send Messages\" permissions!";
-                        Base.LogUtil.LogError("QueueHelper", message);
+                        message = "您必须授予我\"发送消息\"权限！";
+                        Base.LogUtil.LogError("队列助手", message);
                         return;
                     }
                     if (!permissions.ManageMessages)
                     {
                         var app = await context.Client.GetApplicationInfoAsync().ConfigureAwait(false);
                         var owner = app.Owner.Id;
-                        message = $"<@{owner}> You must grant me \"Manage Messages\" permissions!";
+                        message = $"<@{owner}> 您必须授予我\"管理消息\"权限！";
                     }
                 }
                 break;
 
             case DiscordErrorCode.CannotSendMessageToUser:
                 {
-                    message = context.User == trader ? "You must enable private messages in order to be queued!" : "The mentioned user must enable private messages in order for them to be queued!";
+                    message = context.User == trader ? "您必须启用私信才能排队！" : "被提及的用户必须启用私信才能被排队！";
                 }
                 break;
 
             default:
                 {
-                    message = ex.DiscordCode != null ? $"Discord error {(int)ex.DiscordCode}: {ex.Reason}" : $"Http error {(int)ex.HttpCode}: {ex.Message}";
+                    message = ex.DiscordCode != null ? $"Discord 错误 {(int)ex.DiscordCode}: {ex.Reason}" : $"Http 错误 {(int)ex.HttpCode}: {ex.Message}";
                 }
                 break;
         }

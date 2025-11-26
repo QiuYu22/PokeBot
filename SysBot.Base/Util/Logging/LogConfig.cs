@@ -51,28 +51,29 @@ public static class LogConfig
     /// <summary>
     /// List of identity prefixes that are considered "system" components
     /// These will all log to the "System" folder if ConsolidateSystemLogs is enabled
+    /// 被视为"系统"组件的标识前缀列表
     /// </summary>
     public static readonly string[] SystemIdentities =
     [
-        // Core system components
-        "System", "SysBot", "Bot", "Form", "Hub",
+        // Core system components / 核心系统组件
+        "System", "系统", "SysBot", "系统机器人", "Bot", "机器人", "Form", "窗体", "Hub", "中心",
 
-        // Recovery and monitoring
-        "Recovery", "RecoveryNotification",
+        // Recovery and monitoring / 恢复和监控
+        "Recovery", "恢复", "RecoveryNotification", "恢复通知",
 
-        // Web services
-        "WebServer", "WebTrade", "WebDump", "WebTradeNotifier", "TCP",
+        // Web services / Web 服务
+        "WebServer", "Web服务器", "WebTrade", "Web交易", "WebDump", "Web导出", "WebTradeNotifier", "Web交易通知", "TCP",
 
-        // Discord integration
+        // Discord integration / Discord 集成
         "Discord", "SysCord",
 
-        // Queue and trade management
-        "QueueHelper", "TradeQueueInfo", "BatchTracker", "Barrier",
+        // Queue and trade management / 队列和交易管理
+        "QueueHelper", "队列助手", "TradeQueueInfo", "交易队列信息", "BatchTracker", "批量追踪器", "Barrier", "同步屏障", "TradeCodeStorage", "交易码存储",
 
-        // Utilities
-        "Echo", "Dump", "Tray", "Legalizer",
+        // Utilities / 工具
+        "Echo", "回显", "Dump", "导出", "Tray", "托盘", "Legalizer", "合法化管理", "AutoOT", "自动OT",
 
-        // Services
-        "BotTaskService", "RestartManager", "PokemonPool"
+        // Services / 服务
+        "BotTaskService", "机器人任务服务", "RestartManager", "重启管理器", "PokemonPool", "宝可梦数据库", "UpdateManager", "更新管理器"
     ];
 }

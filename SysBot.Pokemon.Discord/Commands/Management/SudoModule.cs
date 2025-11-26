@@ -13,9 +13,9 @@ namespace SysBot.Pokemon.Discord;
 public class SudoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
 {
     [Command("banID")]
-    [Summary("Bans online user IDs.")]
+    [Summary("封禁在线用户 ID。")]
     [RequireSudo]
-    public async Task BanOnlineIDs([Summary("Comma Separated Online IDs")][Remainder] string content)
+    public async Task BanOnlineIDs([Summary("逗号分隔的在线 ID")][Remainder] string content)
     {
         var IDs = GetIDs(content);
         var objects = IDs.Select(GetReference);
@@ -23,11 +23,11 @@ public class SudoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
         var me = SysCord<T>.Runner;
         var hub = me.Hub;
         hub.Config.TradeAbuse.BannedIDs.AddIfNew(objects);
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("完成。").ConfigureAwait(false);
     }
 
     [Command("bannedIDComment")]
-    [Summary("Adds a comment for a banned online user ID.")]
+    [Summary("为已封禁的在线用户 ID 添加备注。")]
     [RequireSudo]
     public async Task BanOnlineIDs(ulong id, [Remainder] string comment)
     {
@@ -36,71 +36,71 @@ public class SudoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
         var obj = hub.Config.TradeAbuse.BannedIDs.List.Find(z => z.ID == id);
         if (obj is null)
         {
-            await ReplyAsync($"Unable to find a user with that online ID ({id}).").ConfigureAwait(false);
+            await ReplyAsync($"无法找到具有该在线 ID ({id}) 的用户。").ConfigureAwait(false);
             return;
         }
 
         var oldComment = obj.Comment;
         obj.Comment = comment;
-        await ReplyAsync($"Done. Changed existing comment ({oldComment}) to ({comment}).").ConfigureAwait(false);
+        await ReplyAsync($"完成。已将现有备注 ({oldComment}) 更改为 ({comment})。").ConfigureAwait(false);
     }
 
     [Command("blacklistId")]
-    [Summary("Blacklists Discord user IDs. (Useful if user is not in the server).")]
+    [Summary("将 Discord 用户 ID 加入黑名单。（适用于用户不在服务器中的情况）")]
     [RequireSudo]
-    public async Task BlackListIDs([Summary("Comma Separated Discord IDs")][Remainder] string content)
+    public async Task BlackListIDs([Summary("逗号分隔的 Discord ID")][Remainder] string content)
     {
         var IDs = GetIDs(content);
         var objects = IDs.Select(GetReference);
         SysCordSettings.Settings.UserBlacklist.AddIfNew(objects);
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("完成。").ConfigureAwait(false);
     }
 
     [Command("blacklist")]
-    [Summary("Blacklists a mentioned Discord user.")]
+    [Summary("将提及的 Discord 用户加入黑名单。")]
     [RequireSudo]
     public async Task BlackListUsers([Remainder] string _)
     {
         var users = Context.Message.MentionedUsers;
         var objects = users.Select(GetReference);
         SysCordSettings.Settings.UserBlacklist.AddIfNew(objects);
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("完成。").ConfigureAwait(false);
     }
 
     [Command("blacklistComment")]
-    [Summary("Adds a comment for a blacklisted Discord user ID.")]
+    [Summary("为已加入黑名单的 Discord 用户 ID 添加备注。")]
     [RequireSudo]
     public async Task BlackListUsers(ulong id, [Remainder] string comment)
     {
         var obj = SysCordSettings.Settings.UserBlacklist.List.Find(z => z.ID == id);
         if (obj is null)
         {
-            await ReplyAsync($"Unable to find a user with that ID ({id}).").ConfigureAwait(false);
+            await ReplyAsync($"无法找到具有该 ID ({id}) 的用户。").ConfigureAwait(false);
             return;
         }
 
         var oldComment = obj.Comment;
         obj.Comment = comment;
-        await ReplyAsync($"Done. Changed existing comment ({oldComment}) to ({comment}).").ConfigureAwait(false);
+        await ReplyAsync($"完成。已将现有备注 ({oldComment}) 更改为 ({comment})。").ConfigureAwait(false);
     }
 
     [Command("forgetUser")]
     [Alias("forget")]
-    [Summary("Forgets users that were previously encountered.")]
+    [Summary("忘记之前遇到的用户。")]
     [RequireSudo]
-    public async Task ForgetPreviousUser([Summary("Comma Separated Online IDs")][Remainder] string content)
+    public async Task ForgetPreviousUser([Summary("逗号分隔的在线 ID")][Remainder] string content)
     {
         foreach (var ID in GetIDs(content))
         {
             PokeRoutineExecutorBase.PreviousUsers.RemoveAllNID(ID);
             PokeRoutineExecutorBase.PreviousUsersDistribution.RemoveAllNID(ID);
         }
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("完成。").ConfigureAwait(false);
     }
 
     [Command("bannedIDSummary")]
     [Alias("printBannedID", "bannedIDPrint")]
-    [Summary("Prints the list of banned online IDs.")]
+    [Summary("打印已封禁的在线 ID 列表。")]
     [RequireSudo]
     public async Task PrintBannedOnlineIDs()
     {
@@ -113,7 +113,7 @@ public class SudoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
 
     [Command("blacklistSummary")]
     [Alias("printBlacklist", "blacklistPrint")]
-    [Summary("Prints the list of blacklisted Discord users.")]
+    [Summary("打印已加入黑名单的 Discord 用户列表。")]
     [RequireSudo]
     public async Task PrintBlacklist()
     {
@@ -124,7 +124,7 @@ public class SudoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
 
     [Command("previousUserSummary")]
     [Alias("prevUsers")]
-    [Summary("Prints a list of previously encountered users.")]
+    [Summary("打印之前遇到的用户列表。")]
     [RequireSudo]
     public async Task PrintPreviousUsers()
     {
@@ -133,7 +133,7 @@ public class SudoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
         if (lines.Count != 0)
         {
             found = true;
-            var msg = "Previous Users:\n" + string.Join("\n", lines);
+            var msg = "之前的用户:\n" + string.Join("\n", lines);
             await ReplyAsync(Format.Code(msg)).ConfigureAwait(false);
         }
 
@@ -141,49 +141,49 @@ public class SudoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
         if (lines.Count != 0)
         {
             found = true;
-            var msg = "Previous Distribution Users:\n" + string.Join("\n", lines);
+            var msg = "之前的分发用户:\n" + string.Join("\n", lines);
             await ReplyAsync(Format.Code(msg)).ConfigureAwait(false);
         }
         if (!found)
-            await ReplyAsync("No previous users found.").ConfigureAwait(false);
+            await ReplyAsync("未找到之前的用户。").ConfigureAwait(false);
     }
 
     [Command("unbanID")]
-    [Summary("Bans online user IDs.")]
+    [Summary("解封在线用户 ID。")]
     [RequireSudo]
-    public async Task UnBanOnlineIDs([Summary("Comma Separated Online IDs")][Remainder] string content)
+    public async Task UnBanOnlineIDs([Summary("逗号分隔的在线 ID")][Remainder] string content)
     {
         var IDs = GetIDs(content);
         var me = SysCord<T>.Runner;
         var hub = me.Hub;
         hub.Config.TradeAbuse.BannedIDs.RemoveAll(z => IDs.Any(o => o == z.ID));
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("完成。").ConfigureAwait(false);
     }
 
     [Command("unBlacklistId")]
-    [Summary("Removes Discord user IDs from the blacklist. (Useful if user is not in the server).")]
+    [Summary("从黑名单中移除 Discord 用户 ID。（适用于用户不在服务器中的情况）")]
     [RequireSudo]
-    public async Task UnBlackListIDs([Summary("Comma Separated Discord IDs")][Remainder] string content)
+    public async Task UnBlackListIDs([Summary("逗号分隔的 Discord ID")][Remainder] string content)
     {
         var IDs = GetIDs(content);
         SysCordSettings.Settings.UserBlacklist.RemoveAll(z => IDs.Any(o => o == z.ID));
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("完成。").ConfigureAwait(false);
     }
 
     [Command("unblacklist")]
-    [Summary("Removes a mentioned Discord user from the blacklist.")]
+    [Summary("从黑名单中移除提及的 Discord 用户。")]
     [RequireSudo]
     public async Task UnBlackListUsers([Remainder] string _)
     {
         var users = Context.Message.MentionedUsers;
         var objects = users.Select(GetReference);
         SysCordSettings.Settings.UserBlacklist.RemoveAll(z => objects.Any(o => o.ID == z.ID));
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("完成。").ConfigureAwait(false);
     }
 
     [Command("banTrade")]
     [Alias("bant")]
-    [Summary("Bans a user from trading with a reason.")]
+    [Summary("禁止用户交易并附带原因。")]
     [RequireSudo]
     public async Task BanTradeUser(ulong userNID, string? userName = null, [Remainder] string? banReason = null)
     {
@@ -194,14 +194,14 @@ public class SudoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
             // Check if the ban reason is provided
             if (string.IsNullOrWhiteSpace(banReason))
             {
-                await dmChannel.SendMessageAsync("No reason was supplied. Please use the command as follows:\n.banTrade {NID} {optional: Name} {Reason}\nExample: .banTrade 123456789 Spamming trades");
+                await dmChannel.SendMessageAsync("未提供原因。请按以下格式使用命令:\n.banTrade {NID} {可选: 名称} {原因}\n示例: .banTrade 123456789 滥发交易");
                 return;
             }
 
             // Use a default name if none is provided
             if (string.IsNullOrWhiteSpace(userName))
             {
-                userName = "Unknown";
+                userName = "未知";
             }
 
             var me = SysCord<T>.Runner;
@@ -210,15 +210,15 @@ public class SudoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
             {
                 ID = userNID,
                 Name = userName,
-                Comment = $"Banned by {Context.User.Username} on {DateTime.Now:yyyy.MM.dd-hh:mm:ss}. Reason: {banReason}"
+                Comment = $"由 {Context.User.Username} 于 {DateTime.Now:yyyy.MM.dd-hh:mm:ss} 封禁。原因: {banReason}"
             };
 
             hub.Config.TradeAbuse.BannedIDs.AddIfNew([bannedUser]);
-            await dmChannel.SendMessageAsync($"Done. User {userName} with NID {userNID} has been banned from trading.");
+            await dmChannel.SendMessageAsync($"完成。用户 {userName}（NID {userNID}）已被禁止交易。");
         }
         catch (Exception ex)
         {
-            await dmChannel.SendMessageAsync($"An error occurred: {ex.Message}");
+            await dmChannel.SendMessageAsync($"发生错误: {ex.Message}");
         }
     }
 
