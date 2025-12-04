@@ -22,7 +22,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 {
     [Command("listguilds")]
     [Alias("lg", "servers", "listservers")]
-    [Summary("Lists all guilds the bot is part of.")]
+    [Summary("列出机器人当前所在的所有服务器。")]
     [RequireSudo]
     public async Task ListGuilds(int page = 1)
     {
@@ -36,18 +36,18 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
             .Take(guildsPerPage);
 
         var embedBuilder = new EmbedBuilder()
-            .WithTitle($"List of Guilds - Page {page}/{totalPages}")
-            .WithDescription("Here are the guilds I'm currently in:")
+            .WithTitle($"服务器列表 - 第 {page}/{totalPages} 页")
+            .WithDescription("以下是我当前所在的服务器：")
             .WithColor((DiscordColor)Color.Blue);
 
         foreach (var guild in guilds)
         {
-            embedBuilder.AddField(guild.Name, $"ID: {guild.Id}", inline: true);
+            embedBuilder.AddField(guild.Name, $"ID：{guild.Id}", inline: true);
         }
         var dmChannel = await Context.User.CreateDMChannelAsync();
         await dmChannel.SendMessageAsync(embed: embedBuilder.Build());
 
-        await ReplyAsync($"{Context.User.Mention}, I've sent you a DM with the list of guilds (Page {page}).");
+        await ReplyAsync($"{Context.User.Mention}，我已通过私信发送服务器列表（第 {page} 页）。");
 
         if (Context.Message is IUserMessage userMessage)
         {
@@ -58,7 +58,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
     [Command("blacklistserver")]
     [Alias("bls")]
-    [Summary("Adds a server ID to the bot's server blacklist.")]
+    [Summary("将指定服务器 ID 加入机器人黑名单。")]
     [RequireOwner]
     public async Task BlacklistServer(ulong serverId)
     {
@@ -66,28 +66,28 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
         if (settings.ServerBlacklist.Contains(serverId))
         {
-            await ReplyAsync("This server is already blacklisted.");
+            await ReplyAsync("该服务器已在黑名单中。");
             return;
         }
 
         var server = Context.Client.GetGuild(serverId);
         if (server == null)
         {
-            await ReplyAsync("Cannot find a server with the provided ID. Ensure the bot is a member of the server you wish to blacklist.");
+            await ReplyAsync("找不到该 ID 对应的服务器，请确认机器人在该服务器内。");
             return;
         }
 
-        var newServerAccess = new RemoteControlAccess { ID = serverId, Name = server.Name, Comment = "Blacklisted server" };
+        var newServerAccess = new RemoteControlAccess { ID = serverId, Name = server.Name, Comment = "已加入黑名单的服务器" };
 
         settings.ServerBlacklist.AddIfNew([newServerAccess]);
 
         await server.LeaveAsync();
-        await ReplyAsync($"Left the server '{server.Name}' and added it to the blacklist.");
+        await ReplyAsync($"已退出服务器“{server.Name}”并将其加入黑名单。");
     }
 
     [Command("unblacklistserver")]
     [Alias("ubls")]
-    [Summary("Removes a server ID from the bot's server blacklist.")]
+    [Summary("将指定服务器 ID 从机器人黑名单中移除。")]
     [RequireOwner]
     public async Task UnblacklistServer(ulong serverId)
     {
@@ -95,7 +95,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
         if (!settings.ServerBlacklist.Contains(serverId))
         {
-            await ReplyAsync("This server is not currently blacklisted.");
+            await ReplyAsync("该服务器不在黑名单中。");
             return;
         }
 
@@ -103,49 +103,49 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
         if (wasRemoved)
         {
-            await ReplyAsync($"Server with ID {serverId} has been removed from the blacklist.");
+            await ReplyAsync($"已将 ID 为 {serverId} 的服务器移出黑名单。");
         }
         else
         {
-            await ReplyAsync("An error occurred while trying to remove the server from the blacklist. Please check the server ID and try again.");
+            await ReplyAsync("移除黑名单时出现错误，请检查服务器 ID 后重试。");
         }
     }
 
     [Command("addSudo")]
-    [Summary("Adds mentioned user to global sudo")]
+    [Summary("将被提及的用户加入全局 sudo 列表。")]
     [RequireOwner]
     public async Task SudoUsers([Remainder] string _)
     {
         var users = Context.Message.MentionedUsers;
         var objects = users.Select(GetReference);
         SysCordSettings.Settings.GlobalSudoList.AddIfNew(objects);
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("已完成。").ConfigureAwait(false);
     }
 
     [Command("removeSudo")]
-    [Summary("Removes mentioned user from global sudo")]
+    [Summary("将被提及的用户从全局 sudo 列表中移除。")]
     [RequireOwner]
     public async Task RemoveSudoUsers([Remainder] string _)
     {
         var users = Context.Message.MentionedUsers;
         var objects = users.Select(GetReference);
         SysCordSettings.Settings.GlobalSudoList.RemoveAll(z => objects.Any(o => o.ID == z.ID));
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("已完成。").ConfigureAwait(false);
     }
 
     [Command("addChannel")]
-    [Summary("Adds a channel to the list of channels that are accepting commands.")]
+    [Summary("将当前频道加入允许执行指令的白名单。")]
     [RequireOwner]
     public async Task AddChannel()
     {
         var obj = GetReference(Context.Message.Channel);
         SysCordSettings.Settings.ChannelWhitelist.AddIfNew([obj]);
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("已完成。").ConfigureAwait(false);
     }
 
     [Command("syncChannels")]
     [Alias("sch", "syncchannels")]
-    [Summary("Copies all channels from ChannelWhitelist to AnnouncementChannel.")]
+    [Summary("将频道白名单中的所有频道同步到公告频道列表。")]
     [RequireOwner]
     public async Task SyncChannels()
     {
@@ -165,63 +165,63 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
         if (changesMade)
         {
-            await ReplyAsync("Channel whitelist has been successfully synchronized with the announcement channels.").ConfigureAwait(false);
+            await ReplyAsync("频道白名单已成功同步至公告频道列表。").ConfigureAwait(false);
         }
         else
         {
-            await ReplyAsync("All channels from the whitelist are already in the announcement channels, no changes made.").ConfigureAwait(false);
+            await ReplyAsync("白名单中的频道均已在公告频道列表，无需修改。").ConfigureAwait(false);
         }
     }
 
     [Command("removeChannel")]
-    [Summary("Removes a channel from the list of channels that are accepting commands.")]
+    [Summary("将当前频道从指令白名单中移除。")]
     [RequireOwner]
     public async Task RemoveChannel()
     {
         var obj = GetReference(Context.Message.Channel);
         SysCordSettings.Settings.ChannelWhitelist.RemoveAll(z => z.ID == obj.ID);
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("已完成。").ConfigureAwait(false);
     }
 
     [Command("leave")]
     [Alias("bye")]
-    [Summary("Leaves the current server.")]
+    [Summary("离开当前服务器。")]
     [RequireOwner]
     public async Task Leave()
     {
-        await ReplyAsync("Goodbye.").ConfigureAwait(false);
+        await ReplyAsync("再见。").ConfigureAwait(false);
         await Context.Guild.LeaveAsync().ConfigureAwait(false);
     }
 
     [Command("leaveguild")]
     [Alias("lg")]
-    [Summary("Leaves guild based on supplied ID.")]
+    [Summary("根据提供的 ID 退出对应服务器。")]
     [RequireOwner]
     public async Task LeaveGuild(string userInput)
     {
         if (!ulong.TryParse(userInput, out ulong id))
         {
-            await ReplyAsync("Please provide a valid Guild ID.").ConfigureAwait(false);
+            await ReplyAsync("请输入有效的服务器 ID。").ConfigureAwait(false);
             return;
         }
 
         var guild = Context.Client.Guilds.FirstOrDefault(x => x.Id == id);
         if (guild is null)
         {
-            await ReplyAsync($"Provided input ({userInput}) is not a valid guild ID or the bot is not in the specified guild.").ConfigureAwait(false);
+            await ReplyAsync($"输入 ({userInput}) 不是有效的服务器 ID，或机器人不在该服务器。").ConfigureAwait(false);
             return;
         }
 
-        await ReplyAsync($"Leaving {guild}.").ConfigureAwait(false);
+        await ReplyAsync($"正在离开 {guild}。").ConfigureAwait(false);
         await guild.LeaveAsync().ConfigureAwait(false);
     }
 
     [Command("leaveall")]
-    [Summary("Leaves all servers the bot is currently in.")]
+    [Summary("退出机器人当前所在的所有服务器。")]
     [RequireOwner]
     public async Task LeaveAll()
     {
-        await ReplyAsync("Leaving all servers.").ConfigureAwait(false);
+        await ReplyAsync("正在离开所有服务器。").ConfigureAwait(false);
         foreach (var guild in Context.Client.Guilds)
         {
             await guild.LeaveAsync().ConfigureAwait(false);
@@ -230,7 +230,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
     [Command("repeek")]
     [Alias("peek")]
-    [Summary("Take and send a screenshot from the currently configured Switch.")]
+    [Summary("截取当前配置的 Switch 屏幕并发送。")]
     [RequireSudo]
     public async Task RePeek()
     {
@@ -241,7 +241,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
         var bot = SysCord<T>.Runner.GetBot(ip);
         if (bot == null)
         {
-            await ReplyAsync($"No bot found with the specified IP address ({ip}).").ConfigureAwait(false);
+            await ReplyAsync($"未找到 IP 为 {ip} 的机器人。").ConfigureAwait(false);
             return;
         }
 
@@ -253,31 +253,31 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
         }
         catch (Exception ex)
         {
-            await ReplyAsync($"Error while fetching pixels: {ex.Message}");
+            await ReplyAsync($"获取截图数据时出错：{ex.Message}");
             return;
         }
 
         if (bytes.Length == 0)
         {
-            await ReplyAsync("No screenshot data received.");
+            await ReplyAsync("未收到任何截图数据。");
             return;
         }
 
         await using MemoryStream ms = new(bytes);
         const string img = "cap.jpg";
-        var embed = new EmbedBuilder { ImageUrl = $"attachment://{img}", Color = (DiscordColor?)Color.Purple }
-            .WithFooter(new EmbedFooterBuilder { Text = "Here's your screenshot." });
+        var embed = new EmbedBuilder { ImageUrl = $"附件://{img}", Color = (DiscordColor?)Color.Purple }
+            .WithFooter(new EmbedFooterBuilder { Text = "这是你的截图。" });
 
         await Context.Channel.SendFileAsync(ms, img, embed: embed.Build());
     }
 
     [Command("video")]
     [Alias("video")]
-    [Summary("Take and send a GIF from the currently configured Switch.")]
+    [Summary("截取当前配置的 Switch 并生成 GIF。")]
     [RequireSudo]
     public async Task RePeekGIF()
     {
-        await Context.Channel.SendMessageAsync("Processing GIF request...").ConfigureAwait(false);
+        await Context.Channel.SendMessageAsync("正在处理 GIF 请求…").ConfigureAwait(false);
 
         try
         {
@@ -288,7 +288,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
             if (bot == null)
             {
-                await ReplyAsync($"No bot found with the specified IP address ({ip}).").ConfigureAwait(false);
+                await ReplyAsync($"未找到 IP 为 {ip} 的机器人。").ConfigureAwait(false);
                 return;
             }
 
@@ -305,13 +305,13 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
                 }
                 catch (Exception ex)
                 {
-                    await ReplyAsync($"Error while fetching pixels: {ex.Message}").ConfigureAwait(false);
+                    await ReplyAsync($"获取截图数据时出错：{ex.Message}").ConfigureAwait(false);
                     return;
                 }
 
                 if (bytes.Length == 0)
                 {
-                    await ReplyAsync("No screenshot data received.").ConfigureAwait(false);
+                    await ReplyAsync("未收到任何截图数据。").ConfigureAwait(false);
                     return;
                 }
 
@@ -329,8 +329,8 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
                 ms.Position = 0;
                 const string gifFileName = "screenshot.gif";
-                var embed = new EmbedBuilder { ImageUrl = $"attachment://{gifFileName}", Color = (DiscordColor?)Color.Red }
-                    .WithFooter(new EmbedFooterBuilder { Text = "Here's your GIF." });
+                var embed = new EmbedBuilder { ImageUrl = $"附件://{gifFileName}", Color = (DiscordColor?)Color.Red }
+                    .WithFooter(new EmbedFooterBuilder { Text = "这是你的 GIF。" });
 
                 await Context.Channel.SendFileAsync(ms, gifFileName, embed: embed.Build()).ConfigureAwait(false);
             }
@@ -339,7 +339,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
         }
         catch (Exception ex)
         {
-            await ReplyAsync($"Error while processing GIF: {ex.Message}").ConfigureAwait(false);
+            await ReplyAsync($"处理 GIF 时出错：{ex.Message}").ConfigureAwait(false);
         }
     }
 
@@ -379,23 +379,23 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error reading config file: {ex.Message}");
+            Console.WriteLine($"读取配置文件时出错：{ex.Message}");
             return "192.168.1.1";
         }
     }
 
     [Command("kill")]
     [Alias("shutdown")]
-    [Summary("Causes the entire process to end itself!")]
+    [Summary("立即终止整个进程。")]
     [RequireOwner]
     public async Task ExitProgram()
     {
-        await Context.Channel.EchoAndReply("Shutting down... goodbye! **Bot services are going offline.**").ConfigureAwait(false);
+        await Context.Channel.EchoAndReply("正在关闭……再见！**机器人服务即将下线。**").ConfigureAwait(false);
         Environment.Exit(0);
     }
 
     [Command("dm")]
-    [Summary("Sends a direct message to a specified user.")]
+    [Summary("向指定用户发送私信。")]
     [RequireOwner]
     public async Task DMUserAsync(SocketUser user, [Remainder] string message)
     {
@@ -404,7 +404,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
         var embed = new EmbedBuilder
         {
-            Title = "Private Message from the Bot Owner",
+            Title = "来自机器人所有者的私信",
             Description = message,
             Color = (DiscordColor?)Color.Gold,
             Timestamp = DateTimeOffset.Now,
@@ -430,19 +430,19 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
                 await dmChannel.SendMessageAsync(embed: embed.Build());
             }
 
-            var confirmationMessage = await ReplyAsync($"Message successfully sent to {user.Username}.");
+            var confirmationMessage = await ReplyAsync($"已成功向 {user.Username} 发送私信。");
             await Context.Message.DeleteAsync();
             await Task.Delay(TimeSpan.FromSeconds(10));
             await confirmationMessage.DeleteAsync();
         }
         catch (Exception ex)
         {
-            await ReplyAsync($"Failed to send message to {user.Username}. Error: {ex.Message}");
+            await ReplyAsync($"向 {user.Username} 发送私信失败：{ex.Message}");
         }
     }
 
     [Command("say")]
-    [Summary("Sends a message to a specified channel.")]
+    [Summary("向指定频道发送消息。")]
     [RequireSudo]
     public async Task SayAsync([Remainder] string message)
     {
@@ -453,7 +453,7 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
         var indexOfChannelMentionEnd = message.LastIndexOf('>');
         if (indexOfChannelMentionStart == -1 || indexOfChannelMentionEnd == -1)
         {
-            await ReplyAsync("Please mention a channel properly using #channel.");
+            await ReplyAsync("请使用 #频道 的格式正确提及频道。");
             return;
         }
 
@@ -464,13 +464,13 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
 
         if (channel == null)
         {
-            await ReplyAsync("Channel not found.");
+            await ReplyAsync("找不到该频道。");
             return;
         }
 
         if (channel is not IMessageChannel messageChannel)
         {
-            await ReplyAsync("The mentioned channel is not a text channel.");
+            await ReplyAsync("提及的频道不是文字频道。");
             return;
         }
 
@@ -491,20 +491,20 @@ public class OwnerModule<T> : SudoModule<T> where T : PKM, new()
         }
 
         // Send confirmation message to the user
-        await ReplyAsync($"Message successfully posted in {channelMention}.");
+        await ReplyAsync($"已成功在 {channelMention} 发送消息。");
     }
 
     private RemoteControlAccess GetReference(IUser channel) => new()
     {
         ID = channel.Id,
         Name = channel.Username,
-        Comment = $"Added by {Context.User.Username} on {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
+        Comment = $"{Context.User.Username} 于 {DateTime.Now:yyyy.MM.dd.hh\\:mm\\:ss} 添加",
     };
 
     private RemoteControlAccess GetReference(IChannel channel) => new()
     {
         ID = channel.Id,
         Name = channel.Name,
-        Comment = $"Added by {Context.User.Username} on {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
+        Comment = $"{Context.User.Username} 于 {DateTime.Now:yyyy.MM.dd.hh\\:mm\\:ss} 添加",
     };
 }

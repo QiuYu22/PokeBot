@@ -155,7 +155,7 @@ public sealed record TradeQueueInfo<T>(PokeTradeHub<T> Hub)
         {
             var queue = Hub.Queues.GetQueue(t);
             if (queue.Count == 0)
-                return "Nobody in queue.";
+                return "队列中没有人。";
             return queue.Summary();
         }
     }
@@ -283,7 +283,7 @@ public sealed record TradeQueueInfo<T>(PokeTradeHub<T> Hub)
     {
         lock (_sync)
         {
-            LogUtil.LogInfo(nameof(TradeQueueInfo<T>), $"Removing {detail.Trade.Trainer.TrainerName}");
+            LogUtil.LogInfo(nameof(TradeQueueInfo<T>), $"正在移除 {detail.Trade.Trainer.TrainerName}");
             return UsersInQueue.Remove(detail);
         }
     }
@@ -305,7 +305,7 @@ public sealed record TradeQueueInfo<T>(PokeTradeHub<T> Hub)
                     if (!allowMultiple)
                     {
                         LogUtil.LogInfo(nameof(TradeQueueInfo<T>),
-                            $"Blocked duplicate queue entry: User {userID} already has {existingEntries.Count} entry(s) in queue");
+                            $"阻止重复排队：用户 {userID} 已有 {existingEntries.Count} 条排队记录");
                         return QueueResultAdd.AlreadyInQueue;
                     }
 
@@ -314,8 +314,7 @@ public sealed record TradeQueueInfo<T>(PokeTradeHub<T> Hub)
                     if (existingEntries.Any(e => e.UniqueTradeID != trade.Trade.UniqueTradeID))
                     {
                         LogUtil.LogInfo(nameof(TradeQueueInfo<T>),
-                            $"Blocked different batch: User {userID} trying to queue UniqueTradeID {trade.Trade.UniqueTradeID} " +
-                            $"but already has UniqueTradeID {existingEntries.First().UniqueTradeID}");
+                            $"阻止不同批次：用户 {userID} 尝试排入 UniqueTradeID {trade.Trade.UniqueTradeID}，但已存在 UniqueTradeID {existingEntries.First().UniqueTradeID}");
                         return QueueResultAdd.AlreadyInQueue;
                     }
                 }
@@ -331,9 +330,9 @@ public sealed record TradeQueueInfo<T>(PokeTradeHub<T> Hub)
             if (TradeExtensions<T>.IsItemBlocked(trade.Trade.TradeData))
             {
                 var held = trade.Trade.TradeData.HeldItem;
-                var itemName = held > 0 ? GameInfo.GetStrings("en").Item[held] : "(none)";
+                var itemName = held > 0 ? GameInfo.GetStrings("zh-Hans").Item[held] : "（无）";
                 LogUtil.LogInfo(nameof(TradeQueueInfo<T>),
-                    $"Blocked trade for user {userID}: held item '{itemName}' is not allowed");
+                    $"阻止用户 {userID} 的交易：携带物品“{itemName}”不被允许");
                 return QueueResultAdd.NotAllowedItem;
             }
 
@@ -345,10 +344,10 @@ public sealed record TradeQueueInfo<T>(PokeTradeHub<T> Hub)
                     if (TradeExtensions<T>.IsItemBlocked(trade.Trade.BatchTrades[i]))
                     {
                         var held = trade.Trade.BatchTrades[i].HeldItem;
-                        var itemName = held > 0 ? GameInfo.GetStrings("en").Item[held] : "(none)";
+                        var itemName = held > 0 ? GameInfo.GetStrings("zh-Hans").Item[held] : "（无）";
                         var speciesName = GameInfo.Strings.Species[trade.Trade.BatchTrades[i].Species];
                         LogUtil.LogInfo(nameof(TradeQueueInfo<T>),
-                            $"Blocked batch trade for user {userID}: Pokemon #{i + 1} ({speciesName}) has held item '{itemName}' which is not allowed");
+                            $"阻止用户 {userID} 的批量交易：第 {i + 1} 只宝可梦（{speciesName}）携带不被允许的物品“{itemName}”");
                         return QueueResultAdd.NotAllowedItem;
                     }
                 }

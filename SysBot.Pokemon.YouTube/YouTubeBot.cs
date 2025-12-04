@@ -46,7 +46,7 @@ public class YouTubeBot<T> where T : PKM, new()
             }
             catch (Exception ex)
             {
-                LogUtil.LogError(ex.Message, nameof(YouTubeBot<T>));
+                LogUtil.LogError($"YouTube 机器人连接失败：{ex.Message}", nameof(YouTubeBot<T>));
             }
         });
     }
@@ -109,15 +109,15 @@ public class YouTubeBot<T> where T : PKM, new()
             return string.Empty; // sudo only commands
 
         if (args.Length > 0)
-            return "Commands don't use arguments. Try again with just the command code.";
+            return "指令不支持附加参数，请仅输入指令代号。";
 
         return cmd switch
         {
             "pr" => (Info.Hub.Ledy.Pool.Reload(Hub.Config.Folder.DistributeFolder)
-                ? $"Reloaded from folder. Pool count: {Info.Hub.Ledy.Pool.Count}"
-                : "Failed to reload from folder."),
+                ? $"已从文件夹重新加载。当前数据库精灵数量：{Info.Hub.Ledy.Pool.Count}"
+                : "从文件夹重新加载失败。"),
 
-            "pc" => $"The pool count is: {Info.Hub.Ledy.Pool.Count}",
+            "pc" => $"当前数据库精灵数量：{Info.Hub.Ledy.Pool.Count}",
 
             _ => string.Empty,
         };

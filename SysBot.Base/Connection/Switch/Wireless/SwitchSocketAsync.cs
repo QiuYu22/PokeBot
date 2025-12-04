@@ -31,35 +31,35 @@ public sealed class SwitchSocketAsync : SwitchSocket, ISwitchConnectionAsync
     {
         if (Connected)
         {
-            Log("Already connected prior, skipping initial connection.");
+            Log("已连接，跳过初始连接步骤。");
             return;
         }
 
-        Log("Connecting to device...");
+        Log("正在连接到设备...");
         IAsyncResult result = Connection.BeginConnect(Info.IP, Info.Port, null, null);
         bool success = result.AsyncWaitHandle.WaitOne(5000, true);
         if (!success || !Connection.Connected)
         {
             InitializeSocket();
-            throw new Exception("Failed to connect to device.");
+            throw new Exception("连接设备失败。");
         }
         Connection.EndConnect(result);
-        Log("Connected!");
+        Log("连接成功！");
         Label = Name;
     }
 
     public override void Disconnect()
     {
-        Log("Disconnecting from device...");
+        Log("正在断开设备连接...");
         IAsyncResult result = Connection.BeginDisconnect(false, null, null);
         bool success = result.AsyncWaitHandle.WaitOne(5000, true);
         if (!success || Connection.Connected)
         {
             InitializeSocket();
-            throw new Exception("Failed to disconnect from device.");
+            throw new Exception("断开设备失败。");
         }
         Connection.EndDisconnect(result);
-        Log("Disconnected! Resetting Socket.");
+        Log("已断开，正在重置 Socket。");
         InitializeSocket();
     }
 
@@ -114,7 +114,7 @@ public sealed class SwitchSocketAsync : SwitchSocket, ISwitchConnectionAsync
         }
         catch (Exception e)
         {
-            LogError($"Malformed screenshot data received: {e.Message}");
+            LogError($"收到格式错误的截图数据：{e.Message}");
             throw; // Rethrow the exception to the caller
         }
     }
@@ -216,7 +216,7 @@ public sealed class SwitchSocketAsync : SwitchSocket, ISwitchConnectionAsync
             }
             catch (Exception ex)
             {
-                LogError($"Socket exception thrown while receiving data:\n{ex.Message}");
+                LogError($"接收数据时发生 Socket 异常：\n{ex.Message}");
                 return Array.Empty<byte>();
             }
 

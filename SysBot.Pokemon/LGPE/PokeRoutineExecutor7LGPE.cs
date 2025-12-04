@@ -27,10 +27,10 @@ public abstract class PokeRoutineExecutor7LGPE : PokeRoutineExecutor<PB7>
     {
         if (settings.ScreenOff)
         {
-            Log("Turning on screen.");
+            Log("正在开启屏幕。");
             await SetScreen(ScreenState.On, token).ConfigureAwait(false);
         }
-        Log("Detaching controllers on routine exit.");
+        Log("例程退出时正在断开控制器。");
         await DetachController(token).ConfigureAwait(false);
     }
 
@@ -48,7 +48,7 @@ public abstract class PokeRoutineExecutor7LGPE : PokeRoutineExecutor<PB7>
         await Click(HOME, 2_000 + timing.ExtraTimeReturnHome, token).ConfigureAwait(false);
         await Click(X, 1_000, token).ConfigureAwait(false);
         await Click(A, 5_000 + timing.ExtraTimeCloseGame, token).ConfigureAwait(false);
-        Log("Closed out of the game!");
+        Log("游戏已关闭！");
     }
 
     public ulong GetBoxOffset(int box) => BoxStart + (ulong)((SlotSize + GapSize) * SlotCount * box);
@@ -89,26 +89,26 @@ public abstract class PokeRoutineExecutor7LGPE : PokeRoutineExecutor<PB7>
         // Check title so we can warn if mode is incorrect.
         string title = await SwitchConnection.GetTitleID(token).ConfigureAwait(false);
         if (title != LetsGoEeveeID && title != LetsGoPikachuID)
-            throw new Exception($"{title} is not a valid Pokémon: Let's Go title. Is your mode correct?");
+            throw new Exception($"{title} 不是有效的《精灵宝可梦 Let's Go》标题，是否选择了正确的游戏模式？");
 
         var sav = await GetFakeTrainerSAV(token).ConfigureAwait(false);
         InitSaveData(sav);
 
         if (!IsValidTrainerData())
-            throw new Exception("Trainer data is not valid. Refer to the SysBot.NET wiki for bad or no trainer data.");
+            throw new Exception("训练家数据无效。请参阅 SysBot.NET wiki 了解训练家数据异常的解决方案。");
         if (await GetTextSpeed(token).ConfigureAwait(false) < TextSpeedOption.Fast)
-            throw new Exception("Text speed should be set to FAST. Fix this for correct operation.");
+            throw new Exception("文本速度需设置为快速，请调整后继续操作。");
 
         return sav;
     }
 
     public async Task InitializeHardware(IBotStateSettings settings, CancellationToken token)
     {
-        Log("Detaching on startup.");
+        Log("启动时正在断开控制器。");
         await DetachController(token).ConfigureAwait(false);
         if (settings.ScreenOff)
         {
-            Log("Turning off screen.");
+            Log("正在关闭屏幕。");
             await SetScreen(ScreenState.Off, token).ConfigureAwait(false);
         }
         await SetController(ControllerType.JoyRight1, token);
@@ -181,8 +181,8 @@ public abstract class PokeRoutineExecutor7LGPE : PokeRoutineExecutor<PB7>
 
     public async Task SetLure(bool activate, CancellationToken token)
     {
-        var msg = activate ? "Activating" : "Deactivating";
-        Log($"{msg} Max Lure.");
+        var msg = activate ? "正在启用" : "正在关闭";
+        Log($"{msg} 最大诱饵。");
 
         var lure_type = activate ? 902 : 0; // Max Lure
         var data = BitConverter.GetBytes(lure_type);
@@ -238,14 +238,14 @@ public abstract class PokeRoutineExecutor7LGPE : PokeRoutineExecutor<PB7>
 
         await Click(A, 0_600, token).ConfigureAwait(false);
 
-        Log("Restarting the game!");
+        Log("正在重启游戏！");
         await Task.Delay(4_000 + timing.ExtraTimeLoadGame, token).ConfigureAwait(false);
         await DetachController(token).ConfigureAwait(false);
 
         while (!await IsOnOverworldStandard(token).ConfigureAwait(false))
             await Click(A, 1_000, token).ConfigureAwait(false);
 
-        Log("Back in the overworld!");
+        Log("已返回到场景。");
     }
 
     public async Task WriteBoxPokemon(PB7 pk, int box, int slot, CancellationToken token)
@@ -258,9 +258,9 @@ public abstract class PokeRoutineExecutor7LGPE : PokeRoutineExecutor<PB7>
 
     /// public async Task ActivateCatchCombo(PokeTradeHub<PB7> hub, bool activate, CancellationToken token)
     ///  {
-    ///     var msg = activate ? "Activating" : "Deactivating";
-    //    var msgspecies = $" for {hub.Config.EncounterLGPE.CatchComboSpecies}";
-    //     Log($"{msg} Catch Combo{msgspecies}.");
+    ///     var msg = activate ? "正在启用" : "正在关闭";
+    //    var msgspecies = $"，目标：{hub.Config.EncounterLGPE.CatchComboSpecies}";
+    //     Log($"{msg} 连锁捕获{msgspecies}。");
 
     //      var species = activate ? (int)hub.Config.EncounterLGPE.CatchComboSpecies : 0;
     //      var data = BitConverter.GetBytes(species);
@@ -272,8 +272,8 @@ public abstract class PokeRoutineExecutor7LGPE : PokeRoutineExecutor<PB7>
     //  }
     // public async Task SetFortuneTeller(PokeTradeHub<PB7> hub, bool activate, CancellationToken token)
     // {
-    //     var msg = activate ? "Activating" : "Deactivating";
-    //     Log($"{msg} Fortune Teller.");
+    //     var msg = activate ? "正在启用" : "正在关闭";
+    //     Log($"{msg} 占卜功能。");
 
     //     var bytedata = activate ? (byte)0x4 : (byte)0x0;
     //     var data = new byte[] { bytedata };
@@ -282,7 +282,7 @@ public abstract class PokeRoutineExecutor7LGPE : PokeRoutineExecutor<PB7>
     //    if (!activate)
     //         return;
 
-    //   Log($"Setting Fortune Teller nature to {hub.Config.EncounterLGPE.FortuneTellerNature}.");
+    //   Log($"正在将占卜性格设置为 {hub.Config.EncounterLGPE.FortuneTellerNature}。");
     //    data = BitConverter.GetBytes((int)hub.Config.EncounterLGPE.FortuneTellerNature);
     //   await Connection.WriteBytesAsync(data, FortuneTellerNature, token).ConfigureAwait(false);
     // }

@@ -3,9 +3,9 @@ using PKHeX.Core;
 namespace SysBot.Pokemon;
 
 /// <summary>
-/// Contains the details about an out-of-game player's data request to be traded in-game.
+/// 包含游戏外玩家提交的游戏内交易数据请求详情。
 /// </summary>
-/// <typeparam name="T">Format specific to the game it is received in</typeparam>
+/// <typeparam name="T">与所接收游戏相匹配的格式。</typeparam>
 public sealed record TradeEntry<T> where T : PKM, new()
 {
     public readonly ulong UserID;
@@ -24,7 +24,7 @@ public sealed record TradeEntry<T> where T : PKM, new()
     }
 
     /// <summary>
-    /// Checks if the provided <see cref="uid"/> and <see cref="uniqueTradeID"/> match this object's data.
+    /// 检查提供的 <see cref="uid"/> 与 <see cref="uniqueTradeID"/> 是否与本对象匹配。
     /// </summary>
     /// <param name="uid"></param>
     /// <param name="uniqueTradeID"></param>
@@ -38,5 +38,5 @@ public sealed record TradeEntry<T> where T : PKM, new()
         return type == 0 || type == Type;
     }
 
-    public override string ToString() => $"(ID {Trade.ID}) {Username} {UserID:D19} - {Type} - UniqueTradeID: {UniqueTradeID}";
+    public override string ToString() => $"(ID {Trade.ID}) {Username} {UserID:D19} - {Type} - 唯一交易 ID：{UniqueTradeID}";
 }

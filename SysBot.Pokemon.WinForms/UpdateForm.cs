@@ -44,17 +44,17 @@ namespace SysBot.Pokemon.WinForms
 
             if (isUpdateRequired)
             {
-                labelUpdateInfo.Text = "A required update is available. You must update to continue using this application.";
+                labelUpdateInfo.Text = "当前版本为强制更新，请更新后继续使用。";
                 ControlBox = false;
             }
             else if (isUpdateAvailable)
             {
-                labelUpdateInfo.Text = "A new version is available. Please download the latest version.";
+                labelUpdateInfo.Text = "检测到新版本，请下载最新版本。";
             }
             else
             {
-                labelUpdateInfo.Text = "You are on the latest version. You can re-download if needed.";
-                buttonDownload.Text = "Re-Download Latest Version";
+                labelUpdateInfo.Text = "您已在最新版本，如需可重新下载。";
+                buttonDownload.Text = "重新下载最新版本";
             }
 
             buttonDownload.Size = new Size(130, 23);
@@ -63,7 +63,7 @@ namespace SysBot.Pokemon.WinForms
             buttonDownload.Location = new Point(buttonX, buttonY);
             if (string.IsNullOrEmpty(buttonDownload.Text))
             {
-                buttonDownload.Text = "Download Update";
+                buttonDownload.Text = "下载更新";
             }
             buttonDownload.Click += ButtonDownload_Click;
 
@@ -71,7 +71,7 @@ namespace SysBot.Pokemon.WinForms
             labelChangelogTitle.Location = new Point(10, 60);
             labelChangelogTitle.Size = new Size(70, 15);
             labelChangelogTitle.Font = new Font(labelChangelogTitle.Font.FontFamily, 11, FontStyle.Bold);
-            labelChangelogTitle.Text = $"Changelog ({newVersion}):";
+            labelChangelogTitle.Text = $"更新日志（{newVersion}）：";
 
             textBoxChangelog = new TextBox
             {
@@ -99,18 +99,18 @@ namespace SysBot.Pokemon.WinForms
         {
             if (isUpdateAvailable)
             {
-                Text = $"Update Available ({newVersion})";
+                Text = $"发现新版本（{newVersion}）";
             }
             else
             {
-                Text = "Re-Download Latest Version";
+                Text = "重新下载最新版本";
             }
         }
 
         public async void PerformUpdate()
         {
             buttonDownload.Enabled = false;
-            buttonDownload.Text = "Downloading...";
+            buttonDownload.Text = "正在下载…";
 
             try
             {
@@ -136,7 +136,7 @@ namespace SysBot.Pokemon.WinForms
         private async void ButtonDownload_Click(object? sender, EventArgs? e)
         {
             buttonDownload.Enabled = false;
-            buttonDownload.Text = "Downloading...";
+            buttonDownload.Text = "正在下载…";
 
             try
             {
@@ -151,18 +151,18 @@ namespace SysBot.Pokemon.WinForms
                 }
                 else
                 {
-                    MessageBox.Show("Failed to fetch the download URL. Please check your internet connection and try again.",
-                        "Download Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("获取下载链接失败，请检查网络后重试。",
+                        "下载错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Update failed: {ex.Message}", "Update Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"更新失败：{ex.Message}", "更新错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
                 buttonDownload.Enabled = true;
-                buttonDownload.Text = isUpdateAvailable ? "Download Update" : "Re-Download Latest Version";
+                buttonDownload.Text = isUpdateAvailable ? "下载更新" : "重新下载最新版本";
             }
         }
 
@@ -180,7 +180,7 @@ namespace SysBot.Pokemon.WinForms
                 {
                     // Wait before retry (exponential backoff)
                     await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retry)));
-                    Console.WriteLine($"Retrying download attempt {retry + 1}/{maxRetries}...");
+                    Console.WriteLine($"正在重试下载（第 {retry + 1}/{maxRetries} 次）…");
                 }
 
                 using (var client = new HttpClient())
@@ -213,7 +213,7 @@ namespace SysBot.Pokemon.WinForms
                                     if (totalBytes > 0)
                                     {
                                         var progress = (int)((bytesRead * 100L) / totalBytes);
-                                        Console.WriteLine($"Download progress: {progress}%");
+                                        Console.WriteLine($"下载进度：{progress}%");
                                     }
                                 }
                                 
@@ -221,26 +221,26 @@ namespace SysBot.Pokemon.WinForms
                                 await File.WriteAllBytesAsync(tempPath, fileBytes);
                             }
                         }
-                        Console.WriteLine($"Successfully downloaded update to {tempPath}");
+                        Console.WriteLine($"已成功下载更新至 {tempPath}");
                         return tempPath;
                     }
                     catch (TaskCanceledException ex)
                     {
-                        Console.WriteLine($"Download timed out on attempt {retry + 1}: {ex.Message}");
+                        Console.WriteLine($"第 {retry + 1} 次下载超时：{ex.Message}");
                         lastException = ex;
                         if (File.Exists(tempPath))
                             File.Delete(tempPath);
                     }
                     catch (HttpRequestException ex)
                     {
-                        Console.WriteLine($"Download failed on attempt {retry + 1}: {ex.Message}");
+                        Console.WriteLine($"第 {retry + 1} 次下载失败：{ex.Message}");
                         lastException = ex;
                         if (File.Exists(tempPath))
                             File.Delete(tempPath);
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Error during download on attempt {retry + 1}: {ex.Message}");
+                        Console.WriteLine($"第 {retry + 1} 次下载发生错误：{ex.Message}");
                         lastException = ex;
                         if (File.Exists(tempPath))
                             File.Delete(tempPath);
@@ -249,8 +249,8 @@ namespace SysBot.Pokemon.WinForms
             }
 
             // All retries failed
-            Console.WriteLine($"Failed to download update after {maxRetries} attempts");
-            throw lastException ?? new Exception("Download failed after all retry attempts");
+            Console.WriteLine($"连续 {maxRetries} 次尝试后仍未能下载更新");
+            throw lastException ?? new Exception("多次重试后下载失败");
         }
 
         private static void InstallUpdate(string downloadedFilePath)
@@ -267,7 +267,7 @@ namespace SysBot.Pokemon.WinForms
                 string batchContent = @$"
                                             @echo off
                                             timeout /t 2 /nobreak >nul
-                                            echo Updating SysBot...
+                                            echo 正在更新 SysBot...
 
                                             rem Backup current version
                                             if exist ""{currentExePath}"" (
@@ -305,7 +305,7 @@ namespace SysBot.Pokemon.WinForms
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to install update: {ex.Message}", "Update Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"安装更新失败：{ex.Message}", "更新错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

@@ -9,7 +9,7 @@ namespace SysBot.Pokemon;
 public class QueueMonitor<T>(PokeTradeHub<T> Hub)
     where T : PKM, new()
 {
-    // Action to be called when queue status changes: (isFull, currentCount, maxCount)
+    // 队列状态变更时调用的动作：(是否满员, 当前数量, 最大数量)
     public static Action<bool, int, int>? OnQueueStatusChanged { get; set; }
     public async Task MonitorOpenQueue(CancellationToken token)
     {
@@ -29,11 +29,11 @@ public class QueueMonitor<T>(PokeTradeHub<T> Hub)
                 continue;
             }
 
-            // Queue setting has been updated. Echo out that things have changed.
+            // 队列设置已更新，广播状态变更。
             secWaited = 0;
             var state = queues.GetCanQueue()
-                ? "Users are now able to join the trade queue."
-                : "Changed queue settings: **Users CANNOT join the queue until it is turned back on.**";
+                ? "交易队列已开启，用户可以加入。"
+                : "队列设置已更改：**用户暂时无法加入队列，直到重新开启。**";
             EchoUtil.Echo(state);
         }
     }
@@ -65,7 +65,7 @@ public class QueueMonitor<T>(PokeTradeHub<T> Hub)
             if (queues.Count >= settings.ThresholdLock)
             {
                 queues.ToggleQueue();
-                // Notify that queue is now full/closed
+                // 队列已满/已关闭
                 if (settings.NotifyOnQueueClose)
                     OnQueueStatusChanged?.Invoke(true, queues.Count, settings.MaxQueueCount);
             }
@@ -77,7 +77,7 @@ public class QueueMonitor<T>(PokeTradeHub<T> Hub)
             if (queues.Count <= settings.ThresholdUnlock)
             {
                 queues.ToggleQueue();
-                // Notify that queue is now open
+                // 队列已重新开放
                 if (settings.NotifyOnQueueClose)
                     OnQueueStatusChanged?.Invoke(false, queues.Count, settings.MaxQueueCount);
             }

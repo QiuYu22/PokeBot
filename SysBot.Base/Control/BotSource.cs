@@ -92,24 +92,24 @@ public class BotSource<T>(RoutineExecutor<T> Bot)
         var ae = finishedTask.Exception;
         if (ae == null)
         {
-            LogUtil.LogError("Bot has stopped without error.", ident);
+            LogUtil.LogError(ident, "机器人在无错误情况下停止。");
             return;
         }
 
-        LogUtil.LogError("Bot has crashed!", ident);
+        LogUtil.LogError(ident, "机器人发生崩溃！");
 
         if (!string.IsNullOrEmpty(ae.Message))
-            LogUtil.LogError("Aggregate message: " + ae.Message, ident);
+            LogUtil.LogError(ident, "聚合异常消息：" + ae.Message);
 
         var st = ae.StackTrace;
         if (!string.IsNullOrEmpty(st))
-            LogUtil.LogError("Aggregate stacktrace: " + st, ident);
+            LogUtil.LogError(ident, "聚合异常堆栈：" + st);
 
         foreach (var e in ae.InnerExceptions)
         {
             if (!string.IsNullOrEmpty(e.Message))
-                LogUtil.LogError("Inner message: " + e.Message, ident);
-            LogUtil.LogError("Inner stacktrace: " + e.StackTrace, ident);
+                LogUtil.LogError(ident, "内部异常消息：" + e.Message);
+            LogUtil.LogError(ident, "内部异常堆栈：" + e.StackTrace);
         }
     }
 }

@@ -126,15 +126,15 @@ public class TradeCodeStorage
         }
         catch (IOException ex)
         {
-            LogUtil.LogInfo("TradeCodeStorage", $"Error saving trade codes to file: {ex.Message}");
+            LogUtil.LogInfo("交易代码存储", $"保存交易代码到文件时出错：{ex.Message}");
         }
         catch (UnauthorizedAccessException ex)
         {
-            LogUtil.LogInfo("TradeCodeStorage", $"Access denied while saving trade codes to file: {ex.Message}");
+            LogUtil.LogInfo("交易代码存储", $"保存交易代码到文件时被拒绝访问：{ex.Message}");
         }
         catch (Exception ex)
         {
-            LogUtil.LogInfo("TradeCodeStorage", $"An error occurred while saving trade codes to file: {ex.Message}");
+            LogUtil.LogInfo("交易代码存储", $"保存交易代码到文件时发生错误：{ex.Message}");
         }
     }
     public class TradeCodeDetails

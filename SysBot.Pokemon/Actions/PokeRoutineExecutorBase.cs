@@ -33,7 +33,7 @@ public abstract class PokeRoutineExecutorBase(IConsoleBotManaged<IConsoleConnect
     {
         var current = Config.CurrentRoutineType;
         var initial = Config.InitialRoutine;
-        // Use TrainerLabel if available (shows in-game name), otherwise use Connection.Name (IP/USB)
+        // 如果可用则优先使用 TrainerLabel（显示游戏内名称），否则使用 Connection.Name（IP/USB）
         var displayLabel = !string.IsNullOrEmpty(TrainerLabel) ? TrainerLabel : Connection.Name;
         if (current == initial)
             return $"{displayLabel} - {initial}";
@@ -52,17 +52,17 @@ public abstract class PokeRoutineExecutorBase(IConsoleBotManaged<IConsoleConnect
         InGameName = sav.OT;
         TrainerLabel = $"{InGameName}-{sav.DisplayTID:000000}";
 
-        // Flush buffered logs from early identifier (IP/USB) to trainer folder
+        // 将初始标识（IP/USB）的缓存日志刷新到训练家目录
         var earlyIdentifier = Connection.Label;
 
-        // Update Connection.Label to use trainer identifier for logging
-        // This creates log folders like: logs/HeXbyt3-483256/ instead of logs/192.168.0.106/
+        // 更新 Connection.Label 为训练家标识，用于日志分类
+        // 这样可生成类似 logs/HeXbyt3-483256/ 的目录，而不是 logs/192.168.0.106/
         Connection.Label = TrainerLabel;
 
-        // Flush any buffered logs to the trainer folder
+        // 将所有缓存日志写入训练家目录
         LogUtil.FlushBufferedLogs(earlyIdentifier, TrainerLabel);
 
-        Log($"{Connection.Name} identified as {TrainerLabel}, using {GameLang}.");
+        Log($"{Connection.Name} 已识别为 {TrainerLabel}，使用语言 {GameLang}。");
     }
 
     protected bool IsValidTrainerData() => GameLang is > 0 and <= LanguageID.SpanishL && InGameName.Length > 0 && Version > 0;

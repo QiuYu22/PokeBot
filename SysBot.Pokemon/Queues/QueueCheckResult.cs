@@ -30,17 +30,17 @@ public sealed record QueueCheckResult<T> where T : PKM, new()
     public string GetMessage()
     {
         if (!InQueue || Detail is null)
-            return "You are not in the queue.";
+            return "你不在队列中。";
 
         var position = $"{Position + BatchNumber - 1}/{QueueCount}";
-        var msg = $"You are in the {Detail.Type} queue! Position: {position} (ID {Detail.Trade.ID})";
+        var msg = $"你在 {Detail.Type} 队列中！位置：{position}（ID {Detail.Trade.ID}）";
 
         var pk = Detail.Trade.TradeData;
         if (pk.Species != 0)
-            msg += $", Receiving: {GameInfo.GetStrings("en").Species[pk.Species]}";
+            msg += $"，将收到：{GameInfo.GetStrings("zh-Hans").Species[pk.Species]}";
 
         if (TotalBatchTrades > 1)
-            msg += $" (Batch trade {BatchNumber}/{TotalBatchTrades})";
+            msg += $"（批量交易 {BatchNumber}/{TotalBatchTrades}）";
 
         return msg;
     }

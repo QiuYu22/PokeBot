@@ -11,7 +11,7 @@ using static SysBot.Pokemon.PokeDataOffsetsSWSH;
 namespace SysBot.Pokemon;
 
 /// <summary>
-/// Executor for SW/SH games.
+/// 剑盾例程执行器。
 /// </summary>
 public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutineExecutor<PK8>(Config)
 {
@@ -19,7 +19,7 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
 
     public async Task<bool> CheckIfSoftBanned(CancellationToken token)
     {
-        // Check if the Unix Timestamp isn't zero, if so we are soft-banned.
+        // 检查 Unix 时间戳是否非零，若非零则表示被软封禁。
         var data = await Connection.ReadBytesAsync(SoftBanUnixTimespanOffset, 1, token).ConfigureAwait(false);
         return data[0] > 1;
     }
@@ -27,7 +27,7 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
     public async Task CleanExit(CancellationToken token)
     {
         await SetScreen(ScreenState.On, token).ConfigureAwait(false);
-        Log("Detaching controllers on routine exit.");
+        Log("例程结束时正在断开控制器。");
         await DetachController(token).ConfigureAwait(false);
     }
 
@@ -35,19 +35,19 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
     {
         var timing = config.Timings;
 
-        // Close out of the game
+        // 退出游戏
         await Click(B, 0_500, token).ConfigureAwait(false);
         await Click(HOME, 2_000 + timing.ExtraTimeReturnHome, token).ConfigureAwait(false);
         await Click(X, 1_000, token).ConfigureAwait(false);
         await Click(A, 5_000 + timing.ExtraTimeCloseGame, token).ConfigureAwait(false);
-        Log("Closed out of the game!");
+        Log("已退出游戏！");
     }
 
     public async Task EnsureConnectedToYComm(ulong overworldOffset, PokeTradeHubConfig config, CancellationToken token)
     {
         if (!await IsGameConnectedToYComm(token).ConfigureAwait(false))
         {
-            Log("Reconnecting to Y-Comm...");
+            Log("正在重新连接 Y 通讯…");
             await ReconnectToYComm(overworldOffset, config, token).ConfigureAwait(false);
         }
     }
@@ -65,7 +65,7 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
     }
 
     /// <summary>
-    /// Identifies the trainer information and loads the current runtime language.
+    /// 标识训练家信息并加载当前运行时语言。
     /// </summary>
     public async Task<SAV8SWSH> GetFakeTrainerSAV(CancellationToken token)
     {
@@ -85,42 +85,42 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
 
     public async Task<SAV8SWSH> IdentifyTrainer(CancellationToken token)
     {
-        // Check if botbase is on the correct version or later.
+        // 检查 Botbase 是否为正确版本或更高版本。
         await VerifyBotbaseVersion(token).ConfigureAwait(false);
 
-        // Check title so we can warn if mode is incorrect.
+        // 检查标题 ID，以便在模式选择错误时提醒。
         string title = await SwitchConnection.GetTitleID(token).ConfigureAwait(false);
         if (title is not (SwordID or ShieldID))
-            throw new Exception($"{title} is not a valid SWSH title. Is your mode correct?");
+            throw new Exception($"{title} 不是有效的剑/盾标题，请确认已选择正确模式。");
 
-        // Verify the game version.
+        // 核对游戏版本。
         var game_version = await SwitchConnection.GetGameInfo("version", token).ConfigureAwait(false);
         if (!game_version.SequenceEqual(SWSHGameVersion))
-            throw new Exception($"Game version is not supported. Expected version {SWSHGameVersion}, and current game version is {game_version}.");
+            throw new Exception($"当前游戏版本不受支持，应为 {SWSHGameVersion}，检测到 {game_version}。");
 
-        Log("Grabbing trainer data of host console...");
+        Log("正在读取主机的训练家数据…");
         var sav = await GetFakeTrainerSAV(token).ConfigureAwait(false);
         InitSaveData(sav);
 
         if (!IsValidTrainerData())
         {
             await CheckForRAMShiftingApps(token).ConfigureAwait(false);
-            throw new Exception("Refer to the SysBot.NET wiki (https://github.com/kwsch/SysBot.NET/wiki/Troubleshooting) for more information.");
+            throw new Exception("训练家数据无效，请参阅 SysBot.NET Wiki（https://github.com/kwsch/SysBot.NET/wiki/Troubleshooting）了解详情。");
         }
 
         if (await GetTextSpeed(token).ConfigureAwait(false) < TextSpeedOption.Fast)
-            throw new Exception("Text speed should be set to FAST. Fix this for correct operation.");
+            throw new Exception("文本速度需设置为“快速”，请调整后再继续。");
 
         return sav;
     }
 
     public async Task InitializeHardware(IBotStateSettings settings, CancellationToken token)
     {
-        Log("Detaching on startup.");
+        Log("启动时正在断开控制器。");
         await DetachController(token).ConfigureAwait(false);
         if (settings.ScreenOff)
         {
-            Log("Turning off screen.");
+            Log("正在关闭屏幕。");
             await SetScreen(ScreenState.Off, token).ConfigureAwait(false);
         }
         await SetController(ControllerType.ProController, token);
@@ -134,7 +134,7 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
 
     public async Task<bool> IsGameConnectedToYComm(CancellationToken token)
     {
-        // Reads the Y-Comm Flag to check if the game is connected online
+        // 读取 Y 通讯标志以检查游戏是否联网
         var data = await Connection.ReadBytesAsync(IsConnectedOffset, 1, token).ConfigureAwait(false);
         return data[0] == 1;
     }
@@ -194,10 +194,10 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
 
     public async Task ReconnectToYComm(ulong overworldOffset, PokeTradeHubConfig config, CancellationToken token)
     {
-        // Press B in case an Error Message is Present
+        // 先按 B，防止存在错误弹窗
         await Click(B, 2000, token).ConfigureAwait(false);
 
-        // Return to Overworld
+        // 返回场景
         if (!await IsOnOverworld(overworldOffset, token).ConfigureAwait(false))
         {
             for (int i = 0; i < 5; i++)
@@ -208,7 +208,7 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
 
         await Click(Y, 1000, token).ConfigureAwait(false);
 
-        // Press it twice for safety -- sometimes misses it the first time.
+        // 为确保成功按两次，防止第一次未生效。
         await Click(PLUS, 2_000, token).ConfigureAwait(false);
         await Click(PLUS, 5_000 + config.Timings.ExtraTimeConnectOnline, token).ConfigureAwait(false);
 
@@ -220,12 +220,12 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
 
     public async Task ReOpenGame(PokeTradeHubConfig config, CancellationToken token)
     {
-        // Reopen the game if we get soft-banned
-        Log("Potential soft ban detected, reopening game just in case!");
+        // 遭遇软封禁时重新启动游戏
+        Log("检测到可能的软封禁，正在重新启动游戏以防万一！");
         await CloseGame(config, token).ConfigureAwait(false);
         await StartGame(config, token).ConfigureAwait(false);
 
-        // In case we are soft-banned, reset the timestamp
+        // 若确实被封禁则重置时间戳
         await UnSoftBan(token).ConfigureAwait(false);
     }
 
@@ -253,7 +253,7 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
         await Connection.WriteBytesAsync(data, TextSpeedOffset, token).ConfigureAwait(false);
     }
 
-    // Switches to box 1, then clears slot1 to prep fossil and egg bots.
+        // 切换到盒 1 并清空槽位 1，为化石/孵蛋机器人做好准备。
     public async Task SetupBoxState(IDumper DumpSetting, CancellationToken token)
     {
         await SetCurrentBox(0, token).ConfigureAwait(false);
@@ -261,11 +261,11 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
         var existing = await ReadBoxPokemon(0, 0, token).ConfigureAwait(false);
         if (existing.Species != 0 && existing.ChecksumValid)
         {
-            Log("Destination slot is occupied! Dumping the Pokémon found there...");
+            Log("目标槽位已有宝可梦，正在转储该宝可梦…");
             DumpPokemon(DumpSetting.DumpFolder, "saved", existing);
         }
 
-        Log("Clearing destination slot to start the bot.");
+        Log("正在清空目标槽位，准备启动机器人。");
         PK8 blank = new();
         await SetBoxPokemon(blank, 0, 0, token).ConfigureAwait(false);
     }
@@ -277,24 +277,24 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
         var timing = config.Timings;
         var loadPro = timing.ProfileSelectionRequired ? timing.ExtraTimeLoadProfile : 0;
 
-        await Click(A, 1_000 + loadPro, token).ConfigureAwait(false); // Initial "A" Press to start the Game + a delay if needed for profiles to load
+        await Click(A, 1_000 + loadPro, token).ConfigureAwait(false); // 初始 “A” 用于开始游戏，如需等待档案则额外延时
 
-        // Menus here can go in the order: Update Prompt -> Profile -> DLC check -> Unable to use DLC.
-        //  The user can optionally turn on the setting if they know of a breaking system update incoming.
+        // 菜单可能按以下顺序出现：系统更新提示 -> 档案选择 -> DLC 检查 -> 无法使用 DLC。
+        // 若用户知道系统更新会导致异常，可提前开启相关设置避开更新。
         if (timing.AvoidSystemUpdate)
         {
             await Click(DUP, 0_600, token).ConfigureAwait(false);
             await Click(A, 1_000 + timing.ExtraTimeLoadProfile, token).ConfigureAwait(false);
         }
 
-        // Only send extra Presses if we need to
+        // 仅在需要时才额外按键
         if (timing.ProfileSelectionRequired)
         {
-            await Click(A, 1_000, token).ConfigureAwait(false); // Now we are on the Profile Screen
-            await Click(A, 1_000, token).ConfigureAwait(false); // Select the profile
+            await Click(A, 1_000, token).ConfigureAwait(false); // 进入档案界面
+            await Click(A, 1_000, token).ConfigureAwait(false); // 选择档案
         }
 
-        // Digital game copies take longer to load
+        // 数字版游戏加载更久
         if (timing.CheckGameDelay)
         {
             await Task.Delay(2_000 + timing.ExtraTimeCheckGame, token).ConfigureAwait(false);
@@ -302,9 +302,9 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
 
         await Click(A, 0_600, token).ConfigureAwait(false);
 
-        Log("Restarting the game!");
+        Log("正在重启游戏！");
 
-        // Switch Logo lag, skip cutscene, game load screen
+        // Switch Logo 延迟、跳过过场、加载游戏
         await Task.Delay(10_000 + timing.ExtraTimeLoadGame, token).ConfigureAwait(false);
 
         for (int i = 0; i < 4; i++)
@@ -316,26 +316,23 @@ public abstract class PokeRoutineExecutor8SWSH(PokeBotState Config) : PokeRoutin
             await Task.Delay(0_200, token).ConfigureAwait(false);
             timer -= 0_250;
 
-            // We haven't made it back to overworld after a minute, so press A every 6 seconds hoping to restart the game.
-            // Don't risk it if hub is set to avoid updates.
+            // 若 1 分钟仍未回到场景，则每 6 秒按一次 A 尝试重启；若配置要求避免更新，则不冒险。
             if (timer <= 0 && !timing.AvoidSystemUpdate)
             {
-                Log("Still not in the game, initiating rescue protocol!");
+                Log("仍未进入游戏，正在启动救援流程！");
                 while (!await IsOnOverworldTitle(token).ConfigureAwait(false) && !await IsInBattle(token).ConfigureAwait(false))
                     await Click(A, 6_000, token).ConfigureAwait(false);
                 break;
             }
         }
 
-        Log("Back in the overworld!");
+        Log("已返回场景！");
     }
 
     public Task UnSoftBan(CancellationToken token)
     {
-        // Like previous generations, the game uses a Unix timestamp for
-        // how long we are soft banned and once the soft ban is lifted
-        // the game sets the value back to 0 (1970/01/01 12:00 AM (UTC))
-        Log("Soft ban detected, unbanning.");
+        // 与旧世代相同，游戏使用 Unix 时间戳记录软封禁时长，解禁后会将其重置为 0（1970/01/01 00:00 UTC）。
+        Log("检测到软封禁，正在解除。");
         var data = BitConverter.GetBytes(0);
         return Connection.WriteBytesAsync(data, SoftBanUnixTimespanOffset, token);
     }

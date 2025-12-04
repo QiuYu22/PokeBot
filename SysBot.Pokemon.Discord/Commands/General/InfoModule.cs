@@ -16,7 +16,7 @@ namespace SysBot.Pokemon.Discord;
 // Copyright 2017, Christopher F. <foxbot@protonmail.com>
 public class InfoModule : ModuleBase<SocketCommandContext>
 {
-    private const string detail = "I am an open-source Pokemon Trading Discord bot developed by hexbyt3.";
+    private const string detail = "我是由 hexbyt3 开发的开源宝可梦交易 Discord 机器人。";
 
     private const string repo = "https://github.com/hexbyt3/PokeBot";
 
@@ -32,8 +32,8 @@ public class InfoModule : ModuleBase<SocketCommandContext>
             Description = detail,
         };
 
-        builder.AddField("Info",
-            $"- [Source Code]({repo})\n" +
+        builder.AddField("信息",
+            $"- [源代码]({repo})\n" +
             $"- {Format.Bold("Owner")}: {app.Owner} ({app.Owner.Id})\n" +
             $"- {Format.Bold("Library")}: Discord.Net ({DiscordConfig.Version})\n" +
             $"- {Format.Bold("Uptime")}: {GetUptime()}\n" +
@@ -45,14 +45,14 @@ public class InfoModule : ModuleBase<SocketCommandContext>
             $"- {Format.Bold("AutoLegality Version")}: {GetVersionInfo("PKHeX.Core.AutoMod")}\n"
         );
 
-        builder.AddField("Stats",
+        builder.AddField("统计",
             $"- {Format.Bold("Heap Size")}: {GetHeapSize()}MiB\n" +
             $"- {Format.Bold("Guilds")}: {Context.Client.Guilds.Count}\n" +
             $"- {Format.Bold("Channels")}: {Context.Client.Guilds.Sum(g => g.Channels.Count)}\n" +
             $"- {Format.Bold("Users")}: {Context.Client.Guilds.Sum(g => g.MemberCount)}\n"
         );
 
-        await ReplyAsync("Here's a bit about me!", embed: builder.Build()).ConfigureAwait(false);
+        await ReplyAsync("以下是我的相关信息：", embed: builder.Build()).ConfigureAwait(false);
     }
 
     private static string GetHeapSize() => Math.Round(GC.GetTotalMemory(true) / (1024.0 * 1024.0), 2).ToString(CultureInfo.CurrentCulture);

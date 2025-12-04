@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="zh-Hans" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0, viewport-fit=cover">
-    <meta name="description" content="Pokemon Bot Control Panel - Manage and monitor your Pokemon automation bots">
-    <title>PokéBot Control Center</title>
+    <meta name="description" content="PokéBot 控制中心 - 管理与监控宝可梦自动化机器人">
+    <title>PokéBot 控制中心</title>
     <link rel="icon" type="image/x-icon" href="/icon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,8 +30,8 @@
                             <span class="title-suffix">Control Center</span>
                         </h1>
                     </div>
-                    <nav class="header-controls" role="navigation" aria-label="Main controls">
-                        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" title="Toggle dark/light mode">
+                    <nav class="header-controls" role="navigation" aria-label="主控制区">
+                        <button class="theme-toggle" id="theme-toggle" aria-label="切换主题" title="切换深浅色模式">
                             <svg class="theme-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <circle cx="12" cy="12" r="5"></circle>
                                 <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -47,15 +47,15 @@
                                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                             </svg>
                         </button>
-                        <button class="btn btn-refresh" id="refresh-button" aria-label="Refresh data">
+                        <button class="btn btn-refresh" id="refresh-button" aria-label="刷新数据">
                             <svg class="refresh-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
                             </svg>
-                            <span>Refresh</span>
+                            <span>刷新</span>
                         </button>
                         <div class="refresh-status" role="status" aria-live="polite">
-                            <span class="refresh-indicator" id="refresh-indicator" title="Auto-refresh active"></span>
-                            <span class="refresh-text">Auto</span>
+                            <span class="refresh-indicator" id="refresh-indicator" title="自动刷新进行中"></span>
+                            <span class="refresh-text">自动</span>
                         </div>
                     </nav>
                 </div>
@@ -64,8 +64,8 @@
 
         <main class="container" role="main">
             <section class="dashboard-overview" aria-labelledby="dashboard-title">
-                <h2 id="dashboard-title" class="visually-hidden">Dashboard Overview</h2>
-                <div class="overview-grid" id="overview-grid" role="region" aria-label="Bot statistics">
+                <h2 id="dashboard-title" class="visually-hidden">总览面板</h2>
+                <div class="overview-grid" id="overview-grid" role="region" aria-label="机器人统计数据">
                     <article class="stat-card stat-card-instances">
                         <div class="stat-icon-wrapper">
                             <div class="stat-icon stat-icon-robot">
@@ -80,7 +80,7 @@
                         </div>
                         <div class="stat-content">
                             <h3 class="stat-value" id="total-instances">0</h3>
-                            <p class="stat-label">Total Instances</p>
+                            <p class="stat-label">实例总数</p>
                         </div>
                         <div class="stat-background" aria-hidden="true"></div>
                     </article>
@@ -94,7 +94,7 @@
                         </div>
                         <div class="stat-content">
                             <h3 class="stat-value" id="active-bots">0</h3>
-                            <p class="stat-label">Active Bots</p>
+                            <p class="stat-label">活跃机器人</p>
                         </div>
                         <div class="stat-background" aria-hidden="true"></div>
                     </article>
@@ -109,7 +109,7 @@
                         </div>
                         <div class="stat-content">
                             <h3 class="stat-value" id="idle-bots">0</h3>
-                            <p class="stat-label">Idle Bots</p>
+                            <p class="stat-label">空闲机器人</p>
                         </div>
                         <div class="stat-background" aria-hidden="true"></div>
                     </article>
@@ -126,48 +126,48 @@
                         </div>
                         <div class="stat-content">
                             <h3 class="stat-value" id="online-instances">0</h3>
-                            <p class="stat-label">Online</p>
+                            <p class="stat-label">在线实例</p>
                         </div>
                         <div class="stat-background" aria-hidden="true"></div>
                     </article>
                 </div>
 
-                <div class="control-buttons" role="toolbar" aria-label="Global bot controls">
-                    <button class="btn btn-action btn-start" data-global-action="start" aria-label="Start all bots">
+                <div class="control-buttons" role="toolbar" aria-label="全局机器人控制">
+                    <button class="btn btn-action btn-start" data-global-action="start" aria-label="启动所有机器人">
                         <span class="btn-icon">
                             <svg viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M8 5v14l11-7z"/>
                             </svg>
                         </span>
-                        <span class="btn-text">Start All</span>
+                        <span class="btn-text">全部启动</span>
                     </button>
-                    <button class="btn btn-action btn-stop" data-global-action="stop" aria-label="Stop all bots">
+                    <button class="btn btn-action btn-stop" data-global-action="stop" aria-label="停止所有机器人">
                         <span class="btn-icon">
                             <svg viewBox="0 0 24 24" fill="currentColor">
                                 <rect x="6" y="6" width="12" height="12"/>
                             </svg>
                         </span>
-                        <span class="btn-text">Stop All</span>
+                        <span class="btn-text">全部停止</span>
                     </button>
-                    <button class="btn btn-action btn-idle" data-global-action="idle" aria-label="Idle all bots">
+                    <button class="btn btn-action btn-idle" data-global-action="idle" aria-label="全部设为空闲">
                         <span class="btn-icon">
                             <svg viewBox="0 0 24 24" fill="currentColor">
                                 <rect x="6" y="4" width="4" height="16"/>
                                 <rect x="14" y="4" width="4" height="16"/>
                             </svg>
                         </span>
-                        <span class="btn-text">Idle All</span>
+                        <span class="btn-text">全部空闲</span>
                     </button>
-                    <button class="btn btn-action btn-resume" data-global-action="resume" aria-label="Resume all bots">
+                    <button class="btn btn-action btn-resume" data-global-action="resume" aria-label="恢复所有机器人">
                         <span class="btn-icon">
                             <svg viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M8 5v14l11-7z"/>
                                 <rect x="6" y="6" width="3" height="12" opacity="0.5"/>
                             </svg>
                         </span>
-                        <span class="btn-text">Resume All</span>
+                        <span class="btn-text">全部恢复</span>
                     </button>
-                    <button class="btn btn-action btn-screen-on" data-global-action="screenon" aria-label="Turn on all screens">
+                    <button class="btn btn-action btn-screen-on" data-global-action="screenon" aria-label="打开所有屏幕">
                         <span class="btn-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <circle cx="12" cy="12" r="5"/>
@@ -181,17 +181,17 @@
                                 <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
                             </svg>
                         </span>
-                        <span class="btn-text">Screen On</span>
+                        <span class="btn-text">屏幕全开</span>
                     </button>
-                    <button class="btn btn-action btn-screen-off" data-global-action="screenoff" aria-label="Turn off all screens">
+                    <button class="btn btn-action btn-screen-off" data-global-action="screenoff" aria-label="关闭所有屏幕">
                         <span class="btn-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
                             </svg>
                         </span>
-                        <span class="btn-text">Screen Off</span>
+                        <span class="btn-text">屏幕全关</span>
                     </button>
-                    <button class="btn btn-action btn-update" data-global-action="update" aria-label="Update all bots">
+                    <button class="btn btn-action btn-update" data-global-action="update" aria-label="更新所有机器人">
                         <span class="btn-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polyline points="16 3 21 3 21 8"/>
@@ -201,15 +201,15 @@
                                 <line x1="4" y1="4" x2="9" y2="9"/>
                             </svg>
                         </span>
-                        <span class="btn-text">Update All</span>
+                        <span class="btn-text">全部更新</span>
                     </button>
-                    <button class="btn btn-action btn-restart" data-global-action="restart" aria-label="Restart all bots">
+                    <button class="btn btn-action btn-restart" data-global-action="restart" aria-label="重启所有机器人">
                         <span class="btn-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
                             </svg>
                         </span>
-                        <span class="btn-text">Restart All</span>
+                        <span class="btn-text">全部重启</span>
                     </button>
                 </div>
             </section>
@@ -222,16 +222,16 @@
                                 <circle cx="12" cy="12" r="10"/>
                                 <polyline points="12 6 12 12 16 14"/>
                             </svg>
-                            <span>Scheduled Restart</span>
+                            <span>定时重启</span>
                         </h3>
                         <div class="schedule-controls">
                             <label class="toggle-switch" for="schedule-restart-toggle">
-                                <input type="checkbox" id="schedule-restart-toggle" aria-label="Enable scheduled restart">
+                                <input type="checkbox" id="schedule-restart-toggle" aria-label="启用定时重启">
                                 <span class="toggle-slider"></span>
-                                <span class="toggle-label-on">ON</span>
-                                <span class="toggle-label-off">OFF</span>
+                                <span class="toggle-label-on">开</span>
+                                <span class="toggle-label-off">关</span>
                             </label>
-                            <input type="time" id="restart-time" class="time-input" value="00:00" disabled aria-label="Restart time">
+                            <input type="time" id="restart-time" class="time-input" value="00:00" disabled aria-label="重启时间">
                         </div>
                     </div>
                     <div class="schedule-status" id="schedule-status" style="display: none;" role="status" aria-live="polite">
@@ -239,17 +239,17 @@
                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                             <polyline points="22 4 12 14.01 9 11.01"/>
                         </svg>
-                        <span>Next restart: <strong id="next-restart-time">-</strong></span>
+                        <span>下次重启：<strong id="next-restart-time">-</strong></span>
                     </div>
                 </div>
             </section>
 
             <section class="instances-section" aria-labelledby="instances-title">
                 <h2 id="instances-title" class="section-title">
-                    <span class="section-title-text">Bot Instances</span>
+                    <span class="section-title-text">机器人实例</span>
                     <span class="section-title-count" id="instance-count">(0)</span>
                 </h2>
-                <div class="instances-container" id="instances-container" role="region" aria-label="Bot instances list">
+                <div class="instances-container" id="instances-container" role="region" aria-label="机器人实例列表">
                     <div class="skeleton-card" aria-hidden="true">
                         <div class="skeleton-shimmer"></div>
                     </div>
@@ -267,38 +267,38 @@
     <div class="modal" id="update-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>System Update</h2>
+                <h2>系统更新</h2>
                 <button class="modal-close" id="close-update-modal">×</button>
             </div>
             <div class="modal-body">
                 <div class="update-info" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
                     <div class="version-card">
-                        <div class="version-label">Current Version</div>
-                        <div class="version-value" id="current-version">Loading...</div>
+                        <div class="version-label">当前版本</div>
+                        <div class="version-value" id="current-version">加载中...</div>
                     </div>
                     <div class="version-card">
-                        <div class="version-label">Repository Version</div>
-                        <div class="version-value" id="new-version" style="color: var(--status-online);">Loading...</div>
+                        <div class="version-label">仓库版本</div>
+                        <div class="version-value" id="new-version" style="color: var(--status-online);">加载中...</div>
                     </div>
                 </div>
 
                 <div style="background: var(--glass-highlight); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1rem;">
                     <p style="margin: 0; font-size: 0.875rem; color: var(--text-secondary);">
-                        ⚡ All instances will be updated to the latest version from the repository, regardless of their current version.
+                        ⚡ 所有实例都会更新到仓库中的最新版本，与当前版本无关。
                     </p>
                 </div>
 
                 <div class="changelog-section">
-                    <h3 style="margin-bottom: 1rem;">📝 What's New</h3>
+                    <h3 style="margin-bottom: 1rem;">📝 更新内容</h3>
                     <div class="changelog-content" id="changelog-content" style="background: var(--glass-highlight); padding: 1rem; border-radius: var(--radius-md); max-height: 300px; overflow-y: auto;">
-                        Loading changelog...
+                        正在加载更新日志...
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" id="cancel-update">Cancel</button>
+                <button class="btn btn-secondary" id="cancel-update">取消</button>
                 <button class="btn btn-primary" id="confirm-update">
-                    📦 Update Now
+                    📦 立即更新
                 </button>
             </div>
         </div>
@@ -307,14 +307,14 @@
     <div class="modal" id="progress-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="progress-modal-title">Update in Progress</h2>
+                <h2 id="progress-modal-title">更新进行中</h2>
             </div>
             <div class="modal-body">
                 <div class="progress-header">
                     <div class="step-icon" id="step-icon">⏳</div>
                     <div class="step-details">
-                        <div class="step-status" id="progress-status">Initializing...</div>
-                        <div class="step-description" id="progress-details">Starting update process</div>
+                        <div class="step-status" id="progress-status">正在初始化...</div>
+                        <div class="step-description" id="progress-details">正在启动更新流程</div>
                     </div>
                 </div>
 
@@ -327,16 +327,16 @@
                 <div class="idle-status" id="idle-status" style="display: none;">
                     <div class="idle-progress">
                         <div class="idle-count">
-                            <strong id="bots-idled">0</strong> / <strong id="bots-total">0</strong> bots idled
+                            <strong id="bots-idled">0</strong> / <strong id="bots-total">0</strong> 台机器人已空闲
                         </div>
                         <div class="timeout-warning">
-                            ⏱️ Timeout in <strong id="timeout-countdown">300</strong>s
+                            ⏱️ <strong id="timeout-countdown">300</strong>s 后超时
                         </div>
                     </div>
                 </div>
 
                 <div class="info-message" id="force-update-info" style="display: none; background: var(--glass-highlight); padding: 1rem; border-radius: var(--radius-md); margin-top: 1rem;">
-                    ⚡ Update will be forced automatically after timeout
+                    ⚡ 超时后将自动强制更新
                 </div>
 
                 <div class="update-log" id="update-log"></div>
@@ -347,23 +347,23 @@
     <div class="toast" id="toast">
         <span class="toast-icon">ℹ️</span>
         <div class="toast-content">
-            <div class="toast-title">Title</div>
-            <div class="toast-message">Message</div>
+            <div class="toast-title">提示</div>
+            <div class="toast-message">消息内容</div>
         </div>
     </div>
 
     <div class="modal" id="remote-control-modal">
         <div class="modal-content modal-large">
             <div class="modal-header">
-                <h2>🎮 Remote Control</h2>
+                <h2>🎮 远程控制</h2>
                 <button class="modal-close" id="close-remote-control">×</button>
             </div>
             <div class="modal-body">
                 <div class="remote-control-container">
                     <div class="bot-selector">
-                        <label for="remote-bot-select">Select Bot/Switch:</label>
+                        <label for="remote-bot-select">选择机器人/主机：</label>
                         <select id="remote-bot-select" class="bot-select">
-                            <option value="">Loading bots...</option>
+                            <option value="">正在加载机器人...</option>
                         </select>
                         <span id="bot-connection-info" class="connection-info"></span>
                     </div>
@@ -371,7 +371,7 @@
                     <div class="controller-section">
                         <div class="left-controller">
                             <button class="system-btn btn-minus" data-button="MINUS">−</button>
-                            <button class="control-btn lstick-btn" data-button="LSTICK" title="Left Stick - Click and drag to move">LS</button>
+                            <button class="control-btn lstick-btn" data-button="LSTICK" title="左摇杆 - 点击并拖拽">LS</button>
                             <div class="dpad">
                                 <button class="dpad-btn dpad-up" data-button="UP">▲</button>
                                 <button class="dpad-btn dpad-left" data-button="LEFT">◄</button>
@@ -390,7 +390,7 @@
                                 <button class="control-btn action-btn btn-a" data-button="A">A</button>
                                 <button class="control-btn action-btn btn-b" data-button="B">B</button>
                             </div>
-                            <button class="control-btn rstick-btn" data-button="RSTICK" title="Right Stick - Click and drag to move">RS</button>
+                            <button class="control-btn rstick-btn" data-button="RSTICK" title="右摇杆 - 点击并拖拽">RS</button>
                             <button class="system-btn btn-home" data-button="HOME">⌂</button>
                         </div>
                     </div>
@@ -407,20 +407,20 @@
                     </div>
                     
                     <div class="macro-section">
-                        <h3>Macro Commands</h3>
+                        <h3>宏命令</h3>
                         <div class="macro-controls">
-                            <textarea id="macro-input" class="macro-input" placeholder="Enter macro commands (e.g., A B X Y d100 UP DOWN)"></textarea>
-                            <button id="execute-macro" type="button" aria-label="Execute macro commands">Execute Macro</button>
+                        <textarea id="macro-input" class="macro-input" placeholder="输入宏命令（例如：A B X Y d100 UP DOWN）"></textarea>
+                        <button id="execute-macro" type="button" aria-label="执行宏命令">执行宏</button>
                         </div>
                         <div class="macro-presets">
-                            <button class="macro-preset" data-macro="A">Confirm</button>
-                            <button class="macro-preset" data-macro="B B B">Back x3</button>
-                            <button class="macro-preset" data-macro="HOME">Home</button>
-                            <button class="macro-preset" data-macro="A d500 A d500 A">Spam A</button>
-                            <button class="macro-preset" data-macro="X d200 A d200 A">Save Game</button>
-                            <button class="macro-preset" data-macro="UP UP UP UP UP">Up x5</button>
-                            <button class="macro-preset" data-macro="A d1000 A d1000 A d1000 A">Dialog Skip</button>
-                            <button class="macro-preset" data-macro="L d200 A d500 A">Trade Accept</button>
+                        <button class="macro-preset" data-macro="A">确认</button>
+                        <button class="macro-preset" data-macro="B B B">返回 x3</button>
+                        <button class="macro-preset" data-macro="HOME">主界面</button>
+                        <button class="macro-preset" data-macro="A d500 A d500 A">连按 A</button>
+                        <button class="macro-preset" data-macro="X d200 A d200 A">存档</button>
+                        <button class="macro-preset" data-macro="UP UP UP UP UP">上移 x5</button>
+                        <button class="macro-preset" data-macro="A d1000 A d1000 A d1000 A">跳过对话</button>
+                        <button class="macro-preset" data-macro="L d200 A d500 A">接受交易</button>
                         </div>
                     </div>
                     
@@ -429,11 +429,11 @@
                             <input type="checkbox" id="remote-live-mode" checked>
                             <span class="toggle-slider"></span>
                         </label>
-                        <span class="toggle-label">Live Mode (instant button press)</span>
+                    <span class="toggle-label">实时模式（立即按键）</span>
                     </div>
                     
                     <div class="remote-status">
-                        <span id="remote-status-text">Ready</span>
+                    <span id="remote-status-text">就绪</span>
                     </div>
                 </div>
             </div>
@@ -443,40 +443,40 @@
     <div class="modal" id="actions-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>⚡ Actions</h2>
+                <h2>⚡ 操作列表</h2>
                 <button class="modal-close" id="close-actions-modal">×</button>
             </div>
             <div class="modal-body">
                 <div class="actions-modal-content" id="actions-modal-content">
                     <button class="action-modal-item success" data-action="start">
-                        ▶️ Start
+                        ▶️ 启动
                     </button>
                     <button class="action-modal-item danger" data-action="stop">
-                        ⏹️ Stop
+                        ⏹️ 停止
                     </button>
                     <button class="action-modal-item warning" data-action="idle">
-                        ⏸️ Idle
+                        ⏸️ 空闲
                     </button>
                     <button class="action-modal-item" data-action="resume">
-                        ⏯️ Resume
+                        ⏯️ 恢复
                     </button>
                     <div class="action-modal-divider"></div>
                     <button class="action-modal-item" data-action="restart">
-                        🔄 Restart
+                        🔄 重启
                     </button>
                     <button class="action-modal-item danger" data-action="reboot">
-                        🔌 Reboot
+                        🔌 重启主机
                     </button>
                     <div class="action-modal-divider"></div>
                     <button class="action-modal-item" data-action="screenon">
-                        💡 Screen On
+                        💡 打开屏幕
                     </button>
                     <button class="action-modal-item" data-action="screenoff">
-                        🌙 Screen Off
+                        🌙 关闭屏幕
                     </button>
                     <div class="action-modal-divider"></div>
                     <button class="action-modal-item" data-action="remote">
-                        🎮 Remote Control
+                        🎮 远程控制
                     </button>
                 </div>
             </div>
@@ -485,7 +485,7 @@
 
     <script src="BotControlPanel.js?v=2.0.0" type="module"></script>
     <script>
-        // Immediate theme initialization to prevent flash
+        // 立即应用主题以避免闪烁
         (function() {
             const stored = localStorage.getItem('bot-panel-theme');
             const theme = stored || 'dark';

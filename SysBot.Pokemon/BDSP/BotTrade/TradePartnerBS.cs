@@ -30,7 +30,7 @@ public sealed class TradePartnerBS
 
     public byte Gender { get; }
 
-    public string GenderString => Gender == 0 ? "Male" : "Female";
+    public string GenderString => Gender == 0 ? "男性" : "女性";
 
     public static string ReadStringFromRAMObject(byte[] obj)
     {

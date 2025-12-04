@@ -40,11 +40,11 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
     private static void ValidateConfiguration(RecoveryConfiguration config)
     {
         if (config.MaxRecoveryAttempts < 1)
-            throw new ArgumentException("MaxRecoveryAttempts must be at least 1", nameof(config));
+            throw new ArgumentException("最大恢复尝试次数至少为 1", nameof(config));
         if (config.InitialRecoveryDelaySeconds < 0)
-            throw new ArgumentException("InitialRecoveryDelaySeconds cannot be negative", nameof(config));
+            throw new ArgumentException("初始恢复延迟（秒）不能为负数", nameof(config));
         if (config.BackoffMultiplier < 1.0)
-            throw new ArgumentException("BackoffMultiplier must be at least 1.0", nameof(config));
+            throw new ArgumentException("退避倍数至少为 1.0", nameof(config));
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
             }
             catch (Exception ex)
             {
-                LogUtil.LogError($"Error in bot recovery monitor: {ex.Message}", "Recovery");
+                LogUtil.LogError("恢复", $"机器人恢复监视器发生错误：{ex.Message}");
             }
         }
     }
@@ -139,7 +139,7 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
                     if (uptime.TotalSeconds >= _config.MinimumStableUptimeSeconds)
                     {
                         state.ConsecutiveFailures = 0;
-                        LogUtil.LogInfo("Recovery", $"Bot {botName} has been stable for {uptime.TotalMinutes:F1} minutes. Resetting recovery attempts.");
+                        LogUtil.LogInfo("恢复", $"机器人 {botName} 已稳定运行 {uptime.TotalMinutes:F1} 分钟，正在重置恢复尝试次数。");
                     }
                 }
             }
@@ -172,7 +172,7 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
         // Check if we've exceeded max attempts
         if (state.ConsecutiveFailures >= _config.MaxRecoveryAttempts)
         {
-            LogUtil.LogError($"Bot {botName} has exceeded maximum recovery attempts ({_config.MaxRecoveryAttempts})", "Recovery");
+            LogUtil.LogError("恢复", $"机器人 {botName} 已超过最大恢复尝试次数（{_config.MaxRecoveryAttempts}）");
             return false;
         }
 
@@ -183,7 +183,7 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
         // Check crash frequency
         if (state.CrashHistory.Count >= _config.MaxCrashesInWindow)
         {
-            LogUtil.LogError($"Bot {botName} has crashed {state.CrashHistory.Count} times in the last {_config.CrashHistoryWindowMinutes} minutes. Disabling recovery.", "Recovery");
+            LogUtil.LogError("恢复", $"机器人 {botName} 在过去 {_config.CrashHistoryWindowMinutes} 分钟内已崩溃 {state.CrashHistory.Count} 次，将禁用恢复。");
             return false;
         }
 
@@ -225,7 +225,7 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
                 AttemptNumber = state.ConsecutiveFailures 
             });
 
-            LogUtil.LogInfo($"Attempting recovery for bot {botName} (attempt {state.ConsecutiveFailures}/{_config.MaxRecoveryAttempts})", "Recovery");
+            LogUtil.LogInfo("恢复", $"正在尝试恢复机器人 {botName}（第 {state.ConsecutiveFailures}/{_config.MaxRecoveryAttempts} 次）");
 
             if (_config.NotifyOnRecoveryAttempt)
             {
@@ -252,7 +252,7 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
                 }
                 catch (Exception ex)
                 {
-                    LogUtil.LogError($"Failed to start bot {botName}: {ex.Message}", "Recovery");
+                    LogUtil.LogError("恢复", $"启动机器人 {botName} 失败：{ex.Message}");
                     throw;
                 }
             }).ConfigureAwait(false);
@@ -262,7 +262,7 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
 
             if (bot.IsRunning)
             {
-                LogUtil.LogInfo($"Successfully recovered bot {botName}", "Recovery");
+                LogUtil.LogInfo("恢复", $"成功恢复机器人 {botName}");
                 RecoverySucceeded?.Invoke(this, new BotRecoveryEventArgs 
                 { 
                     BotName = botName, 
@@ -272,12 +272,12 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
             }
             else
             {
-                throw new Exception("Bot stopped immediately after restart");
+                throw new Exception("机器人在重启后立即停止。");
             }
         }
         catch (Exception ex)
         {
-            LogUtil.LogError($"Recovery failed for bot {botName}: {ex.Message}", "Recovery");
+            LogUtil.LogError("恢复", $"恢复机器人 {botName} 失败：{ex.Message}");
             
             if (state.ConsecutiveFailures >= _config.MaxRecoveryAttempts && _config.NotifyOnRecoveryFailure)
             {
@@ -349,7 +349,7 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
     public void EnableRecovery()
     {
         _config.EnableRecovery = true;
-        LogUtil.LogInfo("Bot recovery service enabled", "Recovery");
+        LogUtil.LogInfo("恢复", "机器人恢复服务已启用");
     }
     
     /// <summary>
@@ -358,7 +358,7 @@ public sealed class BotRecoveryService<T> : IDisposable where T : class, IConsol
     public void DisableRecovery()
     {
         _config.EnableRecovery = false;
-        LogUtil.LogInfo("Bot recovery service disabled", "Recovery");
+        LogUtil.LogInfo("恢复", "机器人恢复服务已禁用");
     }
 }
 

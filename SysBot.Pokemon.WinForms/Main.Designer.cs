@@ -129,7 +129,7 @@ namespace SysBot.Pokemon.WinForms
             Icon = Resources.icon;
             Name = "Main";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "PokéBot Control Center";
+            Text = "PokéBot 控制中心";
             FormClosing += Main_FormClosing;
             DoubleBuffered = true;
             Resize += Main_Resize;
@@ -191,9 +191,9 @@ namespace SysBot.Pokemon.WinForms
             EnableDoubleBuffering(navButtonsPanel);
 
             // Configure Cuztom-style nav buttons with neon accents
-            ConfigureNavButton(btnNavBots, "BOTS", 0, "Manage bot connections", Color.FromArgb(57, 255, 221)); // Neon cyan
-            ConfigureNavButton(btnNavHub, "CONFIGURATION", 1, "System settings", Color.FromArgb(255, 0, 255)); // Neon magenta
-            ConfigureNavButton(btnNavLogs, "SYSTEM LOGS", 2, "View activity logs", Color.FromArgb(255, 165, 0)); // Neon orange
+            ConfigureNavButton(btnNavBots, "机器人", 0, "管理机器人连接", Color.FromArgb(57, 255, 221)); // Neon cyan
+            ConfigureNavButton(btnNavHub, "配置", 1, "系统设置", Color.FromArgb(255, 0, 255)); // Neon magenta
+            ConfigureNavButton(btnNavLogs, "系统日志", 2, "查看活动日志", Color.FromArgb(255, 165, 0)); // Neon orange
 
             var separator = new Panel();
             separator.BackColor = Color.FromArgb(32, 38, 48);
@@ -202,7 +202,7 @@ namespace SysBot.Pokemon.WinForms
             navButtonsPanel.Controls.Add(separator);
 
             var btnTray = new Button();
-            ConfigureNavButton(btnTray, "SEND TO TRAY", 3, "Minimize to system tray", Color.FromArgb(102, 192, 244));
+            ConfigureNavButton(btnTray, "最小化到托盘", 3, "最小化到系统托盘", Color.FromArgb(102, 192, 244));
             btnTray.Click += BtnTray_Click;
             navButtonsPanel.Controls.Add(btnTray);
 
@@ -292,7 +292,7 @@ namespace SysBot.Pokemon.WinForms
             titleLabel.Location = new Point(20, 18);
             titleLabel.Name = "titleLabel";
             titleLabel.TabIndex = 0;
-            titleLabel.Text = "Bot Management";
+            titleLabel.Text = "机器人管理";
             titleLabel.MaximumSize = new Size(350, 35);
             titleLabel.AutoEllipsis = true;
 
@@ -311,9 +311,9 @@ namespace SysBot.Pokemon.WinForms
             controlButtonsPanel.WrapContents = false;
 
             // Modern control buttons with clean design
-            ConfigureEnhancedControlButton(btnStart, "START", Color.FromArgb(90, 186, 71), "▶");
-            ConfigureEnhancedControlButton(btnStop, "STOP", Color.FromArgb(236, 98, 95), "■");
-            ConfigureEnhancedControlButton(btnReboot, "RESTART", Color.FromArgb(102, 192, 244), "↻");
+            ConfigureEnhancedControlButton(btnStart, "启动", Color.FromArgb(90, 186, 71), "▶");
+            ConfigureEnhancedControlButton(btnStop, "停止", Color.FromArgb(236, 98, 95), "■");
+            ConfigureEnhancedControlButton(btnReboot, "重启", Color.FromArgb(102, 192, 244), "↻");
 
             btnStart.Click += B_Start_Click;
             btnStop.Click += B_Stop_Click;
@@ -365,7 +365,7 @@ namespace SysBot.Pokemon.WinForms
             TB_IP.ForeColor = Color.FromArgb(239, 239, 239);
             TB_IP.Location = new Point(15, 18);
             TB_IP.Name = "TB_IP";
-            TB_IP.PlaceholderText = "IP Address";
+            TB_IP.PlaceholderText = "IP 地址";
             TB_IP.Size = new Size(110, 23);
             TB_IP.TabIndex = 0;
             TB_IP.Text = "192.168.0.1";
@@ -395,7 +395,7 @@ namespace SysBot.Pokemon.WinForms
             B_New.Name = "B_New";
             B_New.Size = new Size(85, 28);
             B_New.TabIndex = 4;
-            B_New.Text = "ADD BOT";
+            B_New.Text = "添加机器人";
             B_New.UseVisualStyleBackColor = false;
             B_New.Click += B_New_Click;
             B_New.Cursor = Cursors.Hand;
@@ -522,7 +522,7 @@ namespace SysBot.Pokemon.WinForms
             logSearchBox.ForeColor = Color.FromArgb(239, 239, 239);
             logSearchBox.Location = new Point(0, 0);
             logSearchBox.Name = "logSearchBox";
-            logSearchBox.PlaceholderText = "Search logs (Enter = next, Shift+Enter = previous, Esc = clear)...";
+            logSearchBox.PlaceholderText = "搜索日志（Enter=下一个，Shift+Enter=上一个，Esc=清空）...";
             logSearchBox.Size = new Size(380, 23);
             logSearchBox.TabIndex = 0;
             logSearchBox.TextChanged += LogSearchBox_TextChanged;
@@ -543,9 +543,9 @@ namespace SysBot.Pokemon.WinForms
             searchOptionsPanel.BackColor = Color.FromArgb(22, 32, 45);
             searchOptionsPanel.WrapContents = false;
 
-            ConfigureSearchOption(btnCaseSensitive, "Aa", "Case sensitive search");
-            ConfigureSearchOption(btnRegex, ".*", "Regular expression search");
-            ConfigureSearchOption(btnWholeWord, "W", "Whole word search");
+            ConfigureSearchOption(btnCaseSensitive, "Aa", "区分大小写搜索");
+            ConfigureSearchOption(btnRegex, ".*", "正则表达式搜索");
+            ConfigureSearchOption(btnWholeWord, "W", "全字匹配搜索");
 
             // Search Status Label
             searchStatusLabel.AutoSize = true;
@@ -570,7 +570,7 @@ namespace SysBot.Pokemon.WinForms
             btnClearLogs.Name = "btnClearLogs";
             btnClearLogs.Size = new Size(75, 23);
             btnClearLogs.TabIndex = 3;
-            btnClearLogs.Text = "CLEAR";
+            btnClearLogs.Text = "清空";
             btnClearLogs.UseVisualStyleBackColor = false;
             btnClearLogs.Cursor = Cursors.Hand;
             btnClearLogs.Click += BtnClearLogs_Click;
@@ -843,9 +843,9 @@ namespace SysBot.Pokemon.WinForms
 
                 titleLabel.Text = index switch
                 {
-                    0 => "Bot Management",
-                    1 => "Configuration",
-                    2 => "System Logs",
+                    0 => "机器人管理",
+                    1 => "配置",
+                    2 => "系统日志",
                     _ => "PokéBot"
                 };
             };
@@ -1066,16 +1066,16 @@ namespace SysBot.Pokemon.WinForms
             };
 
             var updateTooltip = new ToolTip();
-            updateTooltip.SetToolTip(btnUpdate, "Check for updates");
+            updateTooltip.SetToolTip(btnUpdate, "检查更新");
             btnUpdate.MouseEnter += (s, e) => {
                 var mainForm = (Main)btnUpdate.FindForm();
                 if (mainForm != null && mainForm.hasUpdate)
                 {
-                    updateTooltip.SetToolTip(btnUpdate, "Update available! Click to download.");
+                    updateTooltip.SetToolTip(btnUpdate, "发现更新！单击以下载。");
                 }
                 else
                 {
-                    updateTooltip.SetToolTip(btnUpdate, "No updates available");
+                    updateTooltip.SetToolTip(btnUpdate, "暂无可用更新");
                 }
             };
 
@@ -1122,7 +1122,7 @@ namespace SysBot.Pokemon.WinForms
                 e.Graphics.DrawString(iconText, iconFont, iconBrush, iconX, iconY);
 
                 using var textFont = ScaleFont(new Font("Segoe UI", 7.5F, FontStyle.Regular));
-                var text = "CHECK FOR UPDATES";
+                var text = "检查更新";
 
                 var textSize = e.Graphics.MeasureString(text, textFont);
                 var textX = iconX + iconSize.Width + 5;
@@ -1364,7 +1364,7 @@ namespace SysBot.Pokemon.WinForms
 
                 using var font = ScaleFont(new Font("Segoe UI", 11F, FontStyle.Regular));
                 using var brush = new SolidBrush(Color.FromArgb(139, 179, 217));
-                var text = "No bots configured. Add a bot using the form above.";
+                var text = "尚未配置机器人，请使用上方表单添加。";
                 var size = g.MeasureString(text, font);
                 g.DrawString(text, font, brush,
                     (panelWidth - size.Width) / 2,
@@ -1423,7 +1423,7 @@ namespace SysBot.Pokemon.WinForms
         private void ConfigureSystemTray()
         {
             trayIcon.Icon = Icon;
-            trayIcon.Text = "PokéBot Control Center";
+            trayIcon.Text = "PokéBot 控制中心";
             trayIcon.Visible = false;
             trayIcon.DoubleClick += TrayIcon_DoubleClick;
 
@@ -1431,31 +1431,31 @@ namespace SysBot.Pokemon.WinForms
             trayContextMenu.Font = ScaleFont(new Font("Segoe UI", 9F));
             trayContextMenu.Renderer = new CuztomMenuRenderer();
 
-            trayMenuShow.Text = "Show Window";
+            trayMenuShow.Text = "显示窗口";
             trayMenuShow.ForeColor = Color.FromArgb(239, 239, 239);
             trayMenuShow.Click += TrayMenuShow_Click;
 
             var separator = new ToolStripSeparator();
 
-            var trayMenuStart = new ToolStripMenuItem("Start All Bots");
+            var trayMenuStart = new ToolStripMenuItem("启动全部机器人");
             trayMenuStart.ForeColor = Color.FromArgb(90, 186, 71);
             trayMenuStart.Click += (s, e) => {
                 RunningEnvironment.InitializeStart();
                 foreach (var c in FLP_Bots.Controls.OfType<BotController>())
                     c.SendCommand(BotControlCommand.Start, false);
-                LogUtil.LogInfo("All bots started from tray", "Tray");
+                LogUtil.LogInfo("托盘", "已从托盘启动全部机器人");
             };
 
-            var trayMenuStop = new ToolStripMenuItem("Stop All Bots");
+            var trayMenuStop = new ToolStripMenuItem("停止全部机器人");
             trayMenuStop.ForeColor = Color.FromArgb(236, 98, 95);
             trayMenuStop.Click += (s, e) => {
                 RunningEnvironment.StopAll();
-                LogUtil.LogInfo("All bots stopped from tray", "Tray");
+                LogUtil.LogInfo("托盘", "已从托盘停止全部机器人");
             };
 
             var separator2 = new ToolStripSeparator();
 
-            trayMenuExit.Text = "Exit";
+            trayMenuExit.Text = "退出";
             trayMenuExit.ForeColor = Color.FromArgb(236, 98, 95);
             trayMenuExit.Click += TrayMenuExit_Click;
 

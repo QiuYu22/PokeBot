@@ -126,7 +126,7 @@ namespace SysBot.Pokemon.WinForms
             this.lblStatusValue.Name = "lblStatusValue";
             this.lblStatusValue.Size = new System.Drawing.Size(180, 16);
             this.lblStatusValue.TabIndex = 1;
-            this.lblStatusValue.Text = "RUNNING";
+            this.lblStatusValue.Text = "运行中";
             this.lblStatusValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 
             // Bot Name Label
@@ -150,7 +150,7 @@ namespace SysBot.Pokemon.WinForms
             this.lblRoutineType.Name = "lblRoutineType";
             this.lblRoutineType.Size = new System.Drawing.Size(400, 14);
             this.lblRoutineType.TabIndex = 3;
-            this.lblRoutineType.Text = "FlexTrade";
+            this.lblRoutineType.Text = "当前流程";
             this.lblRoutineType.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblRoutineType.MouseEnter += new System.EventHandler(this.BotController_MouseEnter);
             this.lblRoutineType.MouseLeave += new System.EventHandler(this.BotController_MouseLeave);
@@ -166,7 +166,7 @@ namespace SysBot.Pokemon.WinForms
             this.lblConnectionInfo.Name = "lblConnectionInfo";
             this.lblConnectionInfo.Size = new System.Drawing.Size(600, 15);
             this.lblConnectionInfo.TabIndex = 4;
-            this.lblConnectionInfo.Text = "→ Waiting for command...";
+            this.lblConnectionInfo.Text = "→ 正在等待指令…";
             this.lblConnectionInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblConnectionInfo.MouseEnter += new System.EventHandler(this.BotController_MouseEnter);
             this.lblConnectionInfo.MouseLeave += new System.EventHandler(this.BotController_MouseLeave);
@@ -185,7 +185,7 @@ namespace SysBot.Pokemon.WinForms
             this.btnActions.Name = "btnActions";
             this.btnActions.Size = new System.Drawing.Size(110, 25);
             this.btnActions.TabIndex = 5;
-            this.btnActions.Text = "➤ BOT MENU";
+            this.btnActions.Text = "➤ 控制菜单";
             this.btnActions.UseVisualStyleBackColor = false;
             this.btnActions.Click += new System.EventHandler(this.BtnActions_Click);
             this.btnActions.Paint += new System.Windows.Forms.PaintEventHandler(this.BtnActions_Paint);

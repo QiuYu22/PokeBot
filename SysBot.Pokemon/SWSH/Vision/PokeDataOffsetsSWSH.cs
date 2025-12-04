@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace SysBot.Pokemon;
 
 /// <summary>
-/// Sword &amp; Shield RAM offsets
+/// 剑/盾 RAM 偏移
 /// </summary>
 public class PokeDataOffsetsSWSH
 {
@@ -20,7 +20,7 @@ public class PokeDataOffsetsSWSH
 
     public const uint InBattleRaidOffsetSH = 0x3F128626;
 
-    // 0 when not in a battle or raid, 0x40 or 0x41 otherwise.
+    // 不在战斗或极巨团战时为 0，否则为 0x40 或 0x41。
     public const uint InBattleRaidOffsetSW = 0x3F128624;
 
     public const uint IsConnectedOffset = 0x30c7cca8;
@@ -40,25 +40,25 @@ public class PokeDataOffsetsSWSH
 
     public const uint LinkTradeSearchingOffset = 0x2F76C3C8;
 
-    // Add to each Pokémon offset.  AltForm used.
+    // 需要加到每只宝可梦偏移上的值，使用 AltForm。
     public const uint RaidAltFormInc = 0x4;
 
     public const uint RaidBossOffset = 0x8398A25C;
 
-    // Add to each Pokémon offset.  0 = male, 1 = female, 2 = genderless.
+    // 需要加到每只宝可梦偏移上的值：0=雄性，1=雌性，2=无性别。
     public const uint RaidGenderIncr = 0x8;
 
-    // Add to each Pokémon offset.  Bool for whether they have locked in their Pokémon.
+    // 需要加到每只宝可梦偏移上的值，用于表示玩家是否已锁定宝可梦。
     public const uint RaidLockedInIncr = 0x1C;
 
-    // Raid Offsets
-    // The dex number of the Pokémon the host currently has chosen.
-    // Details for each player span 0x30, so add 0x30 to get to the next offset.
+    // 团战偏移
+    // 房主当前选择的宝可梦图鉴编号。
+    // 每位玩家详情占 0x30，逐次加 0x30 即可取得下一位玩家。
     public const uint RaidP0PokemonOffset = 0x8398A294;
 
     public const uint RaidPokemonOffset = 0x886A95B8;
 
-    // Add to each Pokémon offset.  Bool for whether the Pokémon is shiny.
+    // 需要加到每只宝可梦偏移上的值，表示该宝可梦是否为闪光。
     public const uint RaidShinyIncr = 0xC;
 
     public const string ShieldID = "01008DB008C2C000";
@@ -97,25 +97,25 @@ public class PokeDataOffsetsSWSH
     // Pokémon Encounter Offsets
     public const uint WildPokemonOffset = 0x8FEA3648;
 
-    /* Route 5 Daycare */
+    /* 5 号道路培育屋 */
 
     #region ScreenDetection
 
-    // For detecting when we're on the in-battle menu, so we can flee.
+    // 用于检测当前是否在战斗菜单，以便可以逃跑。
     public const uint BattleMenuOffset = 0x6B578EDC;
 
-    // Used for checking if we're in a box. It can be either value for different users.
+    // 用于检测是否处于盒子界面，不同用户可能会读到任一数值。
     public const uint CurrentScreen_Box1 = 0xFF00D59B;
 
     public const uint CurrentScreen_Box2 = 0xFF000000;
 
-    // Value when user is softbanned.
+    // 用户被软封禁时的值。
     public const uint CurrentScreen_Softban = 0xFF000000;
 
-    // Original screen detection offset.
+    // 原始的屏幕检测偏移。
     public const uint CurrentScreenOffset = 0x6B30FA00;
 
-    // Stable overworld detection. Value is 1 on overworld and 0 otherwise.
+    // 稳定的场景检测，处于场景时为 1，反之为 0。
     public IReadOnlyList<long> OverworldPointer { get; } = [0x2636678, 0xC0, 0x80];
 
     #endregion ScreenDetection
@@ -124,13 +124,13 @@ public class PokeDataOffsetsSWSH
     {
         TradeMethod.LinkTrade => LinkTradePartnerNameOffset,
         TradeMethod.SurpriseTrade => SurpriseTradePartnerNameOffset,
-        _ => throw new ArgumentException("Trainer name offset is not available for this trade method.", nameof(tradeMethod)),
+        _ => throw new ArgumentException("该交易方式不支持训练家名称偏移。", nameof(tradeMethod)),
     };
 
     public static uint GetTrainerTIDSIDOffset(TradeMethod tradeMethod) => tradeMethod switch
     {
         TradeMethod.LinkTrade => LinkTradePartnerTIDSIDOffset,
         TradeMethod.SurpriseTrade => SurpriseTradePartnerTIDSIDOffset,
-        _ => throw new ArgumentException("Trainer TID/SID offset is not available for this trade method.", nameof(tradeMethod)),
+        _ => throw new ArgumentException("该交易方式不支持训练家 TID/SID 偏移。", nameof(tradeMethod)),
     };
 }

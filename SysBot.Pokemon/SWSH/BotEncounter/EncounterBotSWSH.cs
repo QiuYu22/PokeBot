@@ -54,7 +54,7 @@ public abstract class EncounterBotSWSH : PokeRoutineExecutor8SWSH, IEncounterBot
     public override async Task MainLoop(CancellationToken token)
     {
         var settings = Hub.Config.EncounterSWSH;
-        Log("Identifying trainer data of the host console.");
+        Log("正在识别主机的训练家数据。");
         var sav = await IdentifyTrainer(token).ConfigureAwait(false);
         await InitializeHardware(settings, token).ConfigureAwait(false);
 
@@ -62,7 +62,7 @@ public abstract class EncounterBotSWSH : PokeRoutineExecutor8SWSH, IEncounterBot
 
         try
         {
-            Log($"Starting main {GetType().Name} loop.");
+            Log($"开始主循环：{GetType().Name}。");
             Config.IterateNextRoutine();
 
             // Clear out any residual stick weirdness.
@@ -74,7 +74,7 @@ public abstract class EncounterBotSWSH : PokeRoutineExecutor8SWSH, IEncounterBot
             Log(e.Message);
         }
 
-        Log($"Ending {GetType().Name} loop.");
+        Log($"结束 {GetType().Name} 循环。");
         await HardStop().ConfigureAwait(false);
     }
 
@@ -100,7 +100,7 @@ public abstract class EncounterBotSWSH : PokeRoutineExecutor8SWSH, IEncounterBot
     {
         encounterCount++;
         var print = StopConditionSettings.GetPrintName(pk);
-        Log($"Encounter: {encounterCount}{Environment.NewLine}{print}{Environment.NewLine}");
+        Log($"遭遇：{encounterCount}{Environment.NewLine}{print}{Environment.NewLine}");
 
         var folder = IncrementAndGetDumpFolder(pk);
         if (DumpSetting.Dump && !string.IsNullOrEmpty(DumpSetting.DumpFolder))
@@ -116,7 +116,7 @@ public abstract class EncounterBotSWSH : PokeRoutineExecutor8SWSH, IEncounterBot
         }
 
         var mode = Settings.ContinueAfterMatch;
-        var msg = $"Result found!\n{print}\n" + GetModeMessage(mode);
+        var msg = $"找到目标！\n{print}\n" + GetModeMessage(mode);
 
         if (!string.IsNullOrWhiteSpace(Hub.Config.StopConditions.MatchFoundEchoMention))
             msg = $"{Hub.Config.StopConditions.MatchFoundEchoMention} {msg}";
@@ -141,10 +141,10 @@ public abstract class EncounterBotSWSH : PokeRoutineExecutor8SWSH, IEncounterBot
 
     private static string GetModeMessage(ContinueAfterMatch mode) => mode switch
     {
-        ContinueAfterMatch.Continue => "Continuing...",
-        ContinueAfterMatch.PauseWaitAcknowledge => "Waiting for instructions to continue.",
-        ContinueAfterMatch.StopExit => "Stopping routine execution; restart the bot to search again.",
-        _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, "Match result type was invalid."),
+        ContinueAfterMatch.Continue => "继续执行…",
+        ContinueAfterMatch.PauseWaitAcknowledge => "等待指令以继续。",
+        ContinueAfterMatch.StopExit => "正在停止例程，重启机器人后可重新搜索。",
+        _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, "匹配结果类型无效。"),
     };
 
     private string IncrementAndGetDumpFolder(PK8 pk)

@@ -8,7 +8,7 @@ public static class LanguageHelper
 {
     public static byte GetFinalLanguage(string content, ShowdownSet? set, byte configLanguage, Func<string, byte> detectLanguageFunc)
     {
-        // Check if user explicitly specified a language in the showdown set
+        // 检查 Showdown 数据中是否显式指定语言
         var lines = content.Split('\n', StringSplitOptions.TrimEntries);
         foreach (var line in lines)
         {
@@ -16,13 +16,13 @@ public static class LanguageHelper
             {
                 var languageValue = line["Language:".Length..].Trim();
 
-                // Try to parse as LanguageID enum
+                // 尝试解析为 LanguageID 枚举
                 if (Enum.TryParse<LanguageID>(languageValue, true, out var langId))
                 {
                     return (byte)langId;
                 }
 
-                // Handle common language names
+                // 支持常见语言名称
                 var explicitLang = languageValue.ToLower() switch
                 {
                     "japanese" or "jpn" or "日本語" => (byte)LanguageID.Japanese,
@@ -45,10 +45,10 @@ public static class LanguageHelper
             }
         }
 
-        // No explicit language found, use detection
+        // 未找到显式语言时，通过检测函数获取
         byte detectedLanguage = detectLanguageFunc(content);
 
-        // If no language was detected (0), use the config language setting
+        // 若未检测到语言（0），使用配置语言
         if (detectedLanguage == 0)
         {
             return configLanguage;
@@ -67,7 +67,7 @@ public static class LanguageHelper
             Type t when t == typeof(PK9) => TrainerSettings.GetSavedTrainerData(GameVersion.SV, 9, lang: language),
             Type t when t == typeof(PA9) => TrainerSettings.GetSavedTrainerData(GameVersion.ZA, 9, lang: language),
             Type t when t == typeof(PB7) => TrainerSettings.GetSavedTrainerData(GameVersion.GE, 7, lang: language),
-            _ => throw new ArgumentException("Type does not have a recognized trainer fetch.", typeof(T).Name)
+            _ => throw new ArgumentException("未识别的训练家类型，无法获取对应模板。", typeof(T).Name)
         };
     }
 }

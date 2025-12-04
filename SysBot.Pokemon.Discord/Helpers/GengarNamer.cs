@@ -4,7 +4,7 @@ namespace SysBot.Pokemon.Discord;
 
 public sealed class GengarNamer : IFileNamer<PKM>
 {
-    public string Name => "Default";
+    public string Name => "默认";
 
     public string GetName(PKM obj)
     {
@@ -18,7 +18,7 @@ public sealed class GengarNamer : IFileNamer<PKM>
         int abilityIndex = pk.Ability;
 
         // You need to implement a method similar to Util.GetNaturesList for abilities
-        var abilityStrings = Util.GetAbilitiesList("en");
+        var abilityStrings = Util.GetAbilitiesList("zh-Hans");
         if ((uint)abilityIndex >= abilityStrings.Length)
             abilityIndex = 0;
         return abilityStrings[abilityIndex];
@@ -29,8 +29,8 @@ public sealed class GengarNamer : IFileNamer<PKM>
         if (pk is not ITeraType t)
             return string.Empty;
         var type = t.GetTeraType();
-        var type_str = ((byte)type == TeraTypeUtil.Stellar) ? "Stellar" : type.ToString();
-        return $"Tera({type_str})";
+        var type_str = ((byte)type == TeraTypeUtil.Stellar) ? "星晶" : type.ToString();
+        return $"太晶({type_str})";
     }
 
     private static string GetGBPKM(GBPKM gb)
@@ -47,7 +47,7 @@ public sealed class GengarNamer : IFileNamer<PKM>
     private static string GetNature(PKM pk)
     {
         var nature = pk.Nature;
-        var strings = Util.GetNaturesList("en");
+        var strings = Util.GetNaturesList("zh-Hans");
         if ((uint)nature >= strings.Length)
             nature = 0;
         return strings[(uint)nature];
@@ -81,24 +81,24 @@ public sealed class GengarNamer : IFileNamer<PKM>
 
     private static string GetVersion(PKM pk)
     {
-        if (pk.E) return "Emerald";
-        if (pk.FRLG) return "FRLG";
-        if (pk.Pt) return "Pt";
-        if (pk.HGSS) return "HGSS";
-        if (pk.BW) return "BW";
-        if (pk.B2W2) return "B2W2";
-        if (pk.XY) return "XY";
+        if (pk.E) return "绿宝石";
+        if (pk.FRLG) return "火红叶绿";
+        if (pk.Pt) return "白金";
+        if (pk.HGSS) return "心金魂银";
+        if (pk.BW) return "黑白";
+        if (pk.B2W2) return "黑2白2";
+        if (pk.XY) return "X·Y";
         if (pk.AO) return "ORAS";
-        if (pk.SM) return "SM";
-        if (pk.USUM) return "USUM";
+        if (pk.SM) return "日月";
+        if (pk.USUM) return "究极日月";
         if (pk.GO) return "GO";
-        if (pk.VC1) return "VC1";
-        if (pk.VC2) return "VC2";
-        if (pk.LGPE) return "LGPE";
-        if (pk.SWSH) return "SWSH";
-        if (pk.BDSP) return "BBDSP";
-        if (pk.LA) return "PLA";
-        if (pk.SV) return "SV";
-        return "Unknown";
+        if (pk.VC1) return "VC 红/蓝/黄";
+        if (pk.VC2) return "VC 金/银/水晶";
+        if (pk.LGPE) return "Let's Go";
+        if (pk.SWSH) return "剑盾";
+        if (pk.BDSP) return "晶灿钻石/明亮珍珠";
+        if (pk.LA) return "阿尔宙斯";
+        if (pk.SV) return "朱紫";
+        return "未知";
     }
 }

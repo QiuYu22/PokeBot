@@ -27,7 +27,7 @@ public class PokeTradeHub<T> where T : PKM, new()
         var pool = new PokemonPool<T>(config);
         Ledy = new LedyDistributor<T>(pool);
         BotSync = new BotSynchronizer(config.Distribution);
-        BotSync.BarrierReleasingActions.Add(() => LogUtil.LogInfo("Barrier", $"{BotSync.Barrier.ParticipantCount} bots released."));
+        BotSync.BarrierReleasingActions.Add(() => LogUtil.LogInfo("Barrier", $"{BotSync.Barrier.ParticipantCount} 台机器人已释放。"));
 
         Queues = new TradeQueueManager<T>(this);
     }

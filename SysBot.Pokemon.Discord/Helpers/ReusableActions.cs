@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
 using PKHeX.Core;
 using SysBot.Base;
@@ -43,7 +43,7 @@ public static class ReusableActions
             newShowdown.Add(line);
 
         if (pkm.IsEgg)
-            newShowdown.Add("\nPokémon is an egg");
+            newShowdown.Add("\n宝可梦为蛋");
         if (pkm.Ball > (int)Ball.None)
             newShowdown.Insert(newShowdown.FindIndex(z => z.Contains("Nature")), $"Ball: {(Ball)pkm.Ball} Ball");
         if (pkm.IsShiny)
@@ -83,14 +83,14 @@ public static class ReusableActions
         var speciesImageUrl = TradeExtensions<PK9>.PokeImg(pkm, canGmax, false);
 
         var embed = new EmbedBuilder()
-            .WithTitle("Pokémon Showdown Set")
+            .WithTitle("Pokémon Showdown 配置")
             .WithDescription(txt)
             .WithColor(Color.Blue)
             .WithThumbnailUrl(speciesImageUrl)
             .Build();
 
         var botMessage = await channel.SendMessageAsync(embed: embed).ConfigureAwait(false); // Send the embed
-        var warningMessage = await channel.SendMessageAsync("This message will self-destruct in 15 seconds. Please copy your data.").ConfigureAwait(false);
+        var warningMessage = await channel.SendMessageAsync("此消息将在 15 秒后自动删除，请立即复制你的数据。").ConfigureAwait(false);
 
         _ = Task.Run(async () =>
         {
@@ -134,7 +134,7 @@ public static class ReusableActions
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error deleting temporary file: {ex.Message}");
+                Console.WriteLine($"删除临时文件时出错：{ex.Message}");
             }
         }
     }
@@ -167,7 +167,7 @@ public static class ReusableActions
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error deleting temporary file: {ex.Message}");
+                Console.WriteLine($"删除临时文件时出错：{ex.Message}");
             }
         }
     }

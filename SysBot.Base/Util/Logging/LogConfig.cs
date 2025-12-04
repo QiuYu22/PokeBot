@@ -55,24 +55,24 @@ public static class LogConfig
     public static readonly string[] SystemIdentities =
     [
         // Core system components
-        "System", "SysBot", "Bot", "Form", "Hub",
+        "System", "系统", "SysBot", "机器人系统", "Bot", "机器人", "Form", "窗口", "Hub", "数据中枢",
 
         // Recovery and monitoring
-        "Recovery", "RecoveryNotification",
+        "Recovery", "恢复", "RecoveryNotification", "恢复通知",
 
         // Web services
-        "WebServer", "WebTrade", "WebDump", "WebTradeNotifier", "TCP",
+        "WebServer", "Web服务器", "WebTrade", "Web交易", "WebDump", "Web转储", "WebTradeNotifier", "Web交易通知", "TCP", "TCP服务",
 
         // Discord integration
-        "Discord", "SysCord",
+        "Discord", "Discord集成", "SysCord", "系统连接器",
 
         // Queue and trade management
-        "QueueHelper", "TradeQueueInfo", "BatchTracker", "Barrier",
+        "QueueHelper", "队列助手", "TradeQueueInfo", "交易队列信息", "TradeCodeStorage", "交易代码存储", "BatchTracker", "批次跟踪", "Barrier", "屏障",
 
         // Utilities
-        "Echo", "Dump", "Tray", "Legalizer",
+        "Echo", "回显", "Dump", "转储", "Tray", "托盘", "Legalizer", "合法化工具",
 
         // Services
-        "BotTaskService", "RestartManager", "PokemonPool"
+        "BotTaskService", "机器人任务服务", "RestartManager", "重启管理器", "PokemonPool", "宝可梦数据库"
     ];
 }

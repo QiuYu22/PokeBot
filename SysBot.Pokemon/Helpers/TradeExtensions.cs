@@ -160,7 +160,7 @@ public abstract class TradeExtensions<T> where T : PKM, new()
 
     public static string FormOutput(ushort species, byte form, out string[] formString)
     {
-        var strings = GameInfo.GetStrings("en");
+        var strings = GameInfo.GetStrings("zh-Hans");
         formString = FormConverter.GetFormList(species, strings.Types, strings.forms, GameInfo.GenderSymbolASCII, typeof(T) == typeof(PK8) ? EntityContext.Gen8 : EntityContext.Gen4);
         if (formString.Length is 0)
             return string.Empty;

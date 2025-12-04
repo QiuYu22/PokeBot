@@ -8,40 +8,40 @@ namespace SysBot.Pokemon;
 
 public class LegalitySettings
 {
-    private const string Generate = nameof(Generate);
+    private const string Generate = "生成";
 
-    private const string Misc = nameof(Misc);
+    private const string Misc = "杂项";
 
     private string DefaultTrainerName = "Ash";
 
-    [Category(Generate), Description("Allow users to submit further customization with Batch Editor commands.")]
+    [Category(Generate), DisplayName("允许批量命令"), Description("允许用户使用批量命令提交更多自定义内容。")]
     public bool AllowBatchCommands { get; set; } = true;
 
-    [Category(Generate), Description("Allow users to submit custom OT, TID, SID, and OT Gender in Showdown sets.")]
+    [Category(Generate), DisplayName("允许自定义训练家数据"), Description("允许用户在 Showdown 集合中自定义 OT、TID、SID 和 OT 性别。")]
     public bool AllowTrainerDataOverride { get; set; } = true;
 
-    [Category(Generate), Description("Prevents trading Pokémon that require a HOME Tracker, even if the file has one already."), DisplayName("Disallow Non-Native Pokémon")]
+    [Category(Generate), DisplayName("禁止非原生宝可梦"), Description("禁止交换需要 HOME 追踪码的宝可梦，即使文件中已包含。")]
     public bool DisallowNonNatives { get; set; } = false;
 
-    [Category(Generate), Description("Prevents trading Pokémon that already have a HOME Tracker."), DisplayName("Disallow Home Tracked Pokémon")]
+    [Category(Generate), DisplayName("禁止已有 HOME Tracker"), Description("禁止交换已经拥有 HOME 追踪码的宝可梦。")]
     public bool DisallowTracked { get; set; } = false;
 
-    [Category(Generate), Description("Bot will create an Easter Egg Pokémon if provided an illegal set.")]
+    [Category(Generate), DisplayName("非法集合生成彩蛋"), Description("当提供非法集合时，机器人会生成彩蛋宝可梦。")]
     public bool EnableEasterEggs { get; set; } = false;
 
-    [Category(Generate), Description("Requires HOME tracker when trading Pokémon that had to have traveled between the Switch games.")]
+    [Category(Generate), DisplayName("启用 HOME 跟踪校验"), Description("对必须在 Switch 游戏间旅行的宝可梦要求具备 HOME 追踪码。")]
     public bool EnableHOMETrackerCheck { get; set; } = false;
 
-    [Category(Generate), Description("Assumes level 50 sets are level 100 competitive sets.")]
+    [Category(Generate), DisplayName("50 级视作 100 级"), Description("假定 50 级集合代表 100 级对战集合。")]
     public bool ForceLevel100for50 { get; set; } = true;
 
-    [Category(Generate), Description("Force the specified ball if legal.")]
+    [Category(Generate), DisplayName("强制指定球"), Description("若合法，则强制使用指定的精灵球。")]
     public bool ForceSpecifiedBall { get; set; } = true;
 
-    [Category(Generate), Description("Default language for PKM files that don't match any of the provided PKM files.")]
+    [Category(Generate), DisplayName("默认语言"), Description("当 PKM 不匹配任何提供的文件时使用的默认语言。")]
     public LanguageID GenerateLanguage { get; set; } = LanguageID.English;
 
-    [Category(Generate), Description("Default Original Trainer name for PKM files that don't match any of the provided PKM files.")]
+    [Category(Generate), DisplayName("默认 OT 名称"), Description("当 PKM 不匹配提供的训练家数据时使用的默认 OT 名称。")]
     public string GenerateOT
     {
         get => DefaultTrainerName;
@@ -52,20 +52,20 @@ public class LegalitySettings
         }
     }
 
-    [Category(Generate), Description("Folder for PKM files with trainer data to use for regenerated PKM files.")]
+    [Category(Generate), DisplayName("训练家数据目录"), Description("用于重新生成 PKM 时读取训练家数据的目录。")]
     public string GeneratePathTrainerInfo { get; set; } = string.Empty;
 
-    [Category(Generate), Description("Default 16-bit Secret ID (SID) for requests that don't match any of the provided trainer data files. This should be a 5-digit number.")]
+    [Category(Generate), DisplayName("默认 SID16"), Description("当请求不匹配提供的训练家文件时使用的默认 16 位 SID（5 位数字）。")]
     public ushort GenerateSID16 { get; set; } = 54321;
 
-    [Category(Generate), Description("Default 16-bit Trainer ID (TID) for requests that don't match any of the provided trainer data files. This should be a 5-digit number.")]
+    [Category(Generate), DisplayName("默认 TID16"), Description("当请求不匹配提供的训练家文件时使用的默认 16 位 TID（5 位数字）。")]
     public ushort GenerateTID16 { get; set; } = 12345;
 
     // Generate
-    [Category(Generate), Description("MGDB directory path for Wonder Cards.")]
+    [Category(Generate), DisplayName("MGDB 目录"), Description("奇迹卡片 MGDB 的目录路径。")]
     public string MGDBPath { get; set; } = string.Empty;
 
-    [Category(Generate), Description("The order in which Pokémon encounter types are attempted.")]
+    [Category(Generate), DisplayName("遭遇优先顺序"), Description("尝试不同遭遇类型的顺序。")]
     public List<EncounterTypeGroup> PrioritizeEncounters { get; set; } =
     [
         EncounterTypeGroup.Slot, EncounterTypeGroup.Egg,
@@ -73,33 +73,33 @@ public class LegalitySettings
         EncounterTypeGroup.Trade,
     ];
 
-    [Category(Generate), Description("If PrioritizeGame is set to \"True\", uses PriorityOrder to start looking for encounters. If \"False\", uses newest game as the version. It is recommended to leave this as \"True\".")]
+    [Category(Generate), DisplayName("优先按照游戏排序"), Description("为 True 时按照 PriorityOrder 搜索遭遇；为 False 时使用最新游戏版本。建议保持 True。")]
     public bool PrioritizeGame { get; set; } = false;
 
-    [Category(Generate), Description("The order of GameVersions ALM will attempt to legalize from.")]
+    [Category(Generate), DisplayName("游戏版本优先顺序"), Description("自动合法化 (ALM) 尝试的游戏版本顺序。")]
     public List<GameVersion> PriorityOrder { get; set; } =
         [.. Enum.GetValues<GameVersion>().Where(ver => ver > GameVersion.Any && ver <= (GameVersion)52)];
 
     // Misc
     [Browsable(false)]
-    [Category(Misc), Description("Zero out HOME trackers for cloned and user-requested PKM files. It is recommended to leave this disabled to avoid creating invalid HOME data.")]
+    [Category(Misc), DisplayName("清除 HOME 追踪码"), Description("对克隆或用户请求的 PKM 清零 HOME Tracker，可能导致数据无效，建议保持关闭。")]
     public bool ResetHOMETracker { get; set; } = false;
 
-    [Category(Generate), Description("Set all possible legal ribbons for any generated Pokémon.")]
+    [Category(Generate), DisplayName("设置所有合法缎带"), Description("为生成的宝可梦设置全部可能的合法缎带。")]
     public bool SetAllLegalRibbons { get; set; } = false;
 
     [Browsable(false)]
-    [Category(Generate), Description("Adds Battle Version for games that support it (SWSH only) for using past-gen Pokémon in online competitive play.")]
+    [Category(Generate), DisplayName("设置对战版本"), Description("为支持的游戏（仅 SWSH）添加对战版本，以便旧世代宝可梦在线对战。")]
     public bool SetBattleVersion { get; set; } = false;
 
-    [Category(Generate), Description("Set a matching ball (based on color) for any generated Pokémon.")]
+    [Category(Generate), DisplayName("匹配配色球"), Description("根据颜色为生成的宝可梦设置匹配的精灵球。")]
     public bool SetMatchingBalls { get; set; } = true;
 
-    [Category(Generate), Description("Maximum time in seconds to spend when generating a set before canceling. This prevents difficult sets from freezing the bot.")]
+    [Category(Generate), DisplayName("生成超时时间 (秒)"), Description("生成集合时最多等待的秒数，防止复杂集合卡死机器人。")]
     public int Timeout { get; set; } = 15;
 
-    [Category(Misc), Description("Apply valid pokemon with the trainers OT/SID/TID (AutoOT)")]
+    [Category(Misc), DisplayName("使用交易伙伴信息"), Description("将交易伙伴的 OT/SID/TID 应用于有效宝可梦（AutoOT）。")]
     public bool UseTradePartnerInfo { get; set; } = true;
 
-    public override string ToString() => "Legality Generating Settings";
+    public override string ToString() => "合法性生成设置";
 }

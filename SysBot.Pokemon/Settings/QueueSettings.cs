@@ -21,82 +21,82 @@ public enum FlexYieldMode
 
 public class QueueSettings
 {
-    private const string FeatureToggle = nameof(FeatureToggle);
+    private const string FeatureToggle = "功能开关";
 
-    private const string QueueToggle = nameof(QueueToggle);
+    private const string QueueToggle = "队列切换";
 
-    private const string TimeBias = nameof(TimeBias);
+    private const string TimeBias = "时间权重";
 
-    private const string UserBias = nameof(UserBias);
+    private const string UserBias = "用户权重";
 
-    [Category(FeatureToggle), Description("Allows users to dequeue while being traded.")]
+    [Category(FeatureToggle), DisplayName("交易中允许出队"), Description("启用后，正在交易中的用户仍可被移出队列。")]
     public bool CanDequeueIfProcessing { get; set; }
 
-    [Category(FeatureToggle), Description("Toggles if users can join the queue.")]
+    [Category(FeatureToggle), DisplayName("允许加入队列"), Description("控制是否允许用户加入队列。")]
     public bool CanQueue { get; set; } = true;
 
-    [Category(TimeBias), Description("Multiplies the amount of users in queue to give an estimate of how much time it will take until the user is processed.")]
+    [Category(TimeBias), DisplayName("预计延迟系数"), Description("根据队列人数估算处理时间的乘数因子。")]
     public float EstimatedDelayFactor { get; set; } = 1.1f;
 
-    [Category(FeatureToggle), Description("Determines how Flex Mode will process the queues.")]
+    [Category(FeatureToggle), DisplayName("Flex 模式"), Description("决定 Flex 模式如何处理队列。")]
     public FlexYieldMode FlexMode { get; set; } = FlexYieldMode.Weighted;
 
-    [Category(QueueToggle), Description("Scheduled Mode: Seconds of being closed before the queue unlocks.")]
+    [Category(QueueToggle), DisplayName("定时关闭时长 (秒)"), Description("定时模式下，队列关闭后保持的秒数。")]
     public int IntervalCloseFor { get; set; } = 15 * 60;
 
-    [Category(QueueToggle), Description("Scheduled Mode: Seconds of being open before the queue locks.")]
+    [Category(QueueToggle), DisplayName("定时打开时长 (秒)"), Description("定时模式下，队列打开后持续的秒数。")]
     public int IntervalOpenFor { get; set; } = 5 * 60;
 
     // General
-    [Category(FeatureToggle), Description("Prevents adding users if there are this many users in the queue already.")]
+    [Category(FeatureToggle), DisplayName("最大排队人数"), Description("当队列人数达到该值时，阻止新的用户加入。")]
     public int MaxQueueCount { get; set; } = 30;
 
-    [Category(FeatureToggle), Description("Determines when the queue is turned on and off.")]
+    [Category(FeatureToggle), DisplayName("队列开关模式"), Description("决定队列何时开启或关闭。")]
     public QueueOpening QueueToggleMode { get; set; } = QueueOpening.Threshold;
 
-    [Category(FeatureToggle), Description("When enabled, sends an embed notification to announcement channels when the queue closes due to max capacity.")]
+    [Category(FeatureToggle), DisplayName("队列关闭通知"), Description("启用后，当队列因满员关闭时会向公告频道发送嵌入通知。")]
     public bool NotifyOnQueueClose { get; set; } = true;
 
-    [Category(QueueToggle), Description("Threshold Mode: Count of users that will cause the queue to close.")]
+    [Category(QueueToggle), DisplayName("阈值模式关闭人数"), Description("阈值模式下触发队列关闭的用户数量。")]
     public int ThresholdLock { get; set; } = 30;
 
-    [Category(QueueToggle), Description("Threshold Mode: Count of users that will cause the queue to open.")]
+    [Category(QueueToggle), DisplayName("阈值模式开放人数"), Description("阈值模式下触发队列重新开放的用户数量。")]
     public int ThresholdUnlock { get; set; }
 
-    [Category(UserBias), Description("Biases the Clone Queue's weight based on how many users are in the queue.")]
+    [Category(UserBias), DisplayName("克隆队列人数权重"), Description("根据克隆队列人数调整其权重。")]
     public int YieldMultCountClone { get; set; } = 100;
 
-    [Category(UserBias), Description("Biases the Dump Queue's weight based on how many users are in the queue.")]
+    [Category(UserBias), DisplayName("转储队列人数权重"), Description("根据转储队列人数调整其权重。")]
     public int YieldMultCountDump { get; set; } = 100;
 
-    [Category(UserBias), Description("Biases the FixOT Queue's weight based on how many users are in the queue.")]
+    [Category(UserBias), DisplayName("修复OT 队列人数权重"), Description("根据 FixOT 队列人数调整其权重。")]
     public int YieldMultCountFixOT { get; set; } = 100;
 
-    [Category(UserBias), Description("Biases the Seed Check Queue's weight based on how many users are in the queue.")]
+    [Category(UserBias), DisplayName("种子检查队列人数权重"), Description("根据种子检查队列人数调整其权重。")]
     public int YieldMultCountSeedCheck { get; set; } = 100;
 
-    [Category(UserBias), Description("Biases the Trade Queue's weight based on how many users are in the queue.")]
+    [Category(UserBias), DisplayName("普通交易队列人数权重"), Description("根据普通交易队列人数调整其权重。")]
     public int YieldMultCountTrade { get; set; } = 100;
 
-    [Category(TimeBias), Description("Determines whether the weight should be added or multiplied to the total weight.")]
+    [Category(TimeBias), DisplayName("时间权重叠加方式"), Description("决定时间权重是与计数权重相乘还是相加。")]
     public FlexBiasMode YieldMultWait { get; set; } = FlexBiasMode.Multiply;
 
-    [Category(TimeBias), Description("Checks time elapsed since the user joined the Clone queue, and increases the queue's weight accordingly.")]
+    [Category(TimeBias), DisplayName("克隆队列时间权重"), Description("根据加入克隆队列后的等待时间增加权重。")]
     public int YieldMultWaitClone { get; set; } = 1;
 
-    [Category(TimeBias), Description("Checks time elapsed since the user joined the Dump queue, and increases the queue's weight accordingly.")]
+    [Category(TimeBias), DisplayName("转储队列时间权重"), Description("根据加入转储队列后的等待时间增加权重。")]
     public int YieldMultWaitDump { get; set; } = 1;
 
-    [Category(TimeBias), Description("Checks time elapsed since the user joined the FixOT queue, and increases the queue's weight accordingly.")]
+    [Category(TimeBias), DisplayName("修复OT 队列时间权重"), Description("根据加入 FixOT 队列后的等待时间增加权重。")]
     public int YieldMultWaitFixOT { get; set; } = 1;
 
-    [Category(TimeBias), Description("Checks time elapsed since the user joined the Seed Check queue, and increases the queue's weight accordingly.")]
+    [Category(TimeBias), DisplayName("种子检查时间权重"), Description("根据加入种子检查队列后的等待时间增加权重。")]
     public int YieldMultWaitSeedCheck { get; set; } = 1;
 
     // Queue Toggle
     // Flex Users
     // Flex Time
-    [Category(TimeBias), Description("Checks time elapsed since the user joined the Trade queue, and increases the queue's weight accordingly.")]
+    [Category(TimeBias), DisplayName("交易队列时间权重"), Description("根据加入普通交易队列后的等待时间增加权重。")]
     public int YieldMultWaitTrade { get; set; } = 1;
 
     /// <summary>
@@ -129,7 +129,7 @@ public class QueueSettings
         };
     }
 
-    public override string ToString() => "Queue Joining Settings";
+    public override string ToString() => "队列加入设置";
 
     private int GetCountBias(PokeTradeType type) => type switch
     {

@@ -36,7 +36,7 @@ public class RecoverableBotRunner<T> : BotRunner<T> where T : class, IConsoleBot
         _recoveryService.RecoverySucceeded += OnRecoverySucceeded;
         _recoveryService.RecoveryFailed += OnRecoveryFailed;
         
-        LogUtil.LogInfo("Bot recovery service initialized", "Recovery");
+        LogUtil.LogInfo("恢复", "机器人恢复服务已初始化");
     }
 
     /// <summary>
@@ -45,7 +45,7 @@ public class RecoverableBotRunner<T> : BotRunner<T> where T : class, IConsoleBot
     public override void Add(RoutineExecutor<T> bot)
     {
         if (Bots.Any(z => z.Bot.Connection.Equals(bot.Connection)))
-            throw new ArgumentException($"{nameof(bot.Connection)} has already been added.");
+            throw new ArgumentException($"{nameof(bot.Connection)} 已添加。");
         
         // Create a recoverable bot source if recovery is enabled
         if (_recoveryService != null)
@@ -115,22 +115,22 @@ public class RecoverableBotRunner<T> : BotRunner<T> where T : class, IConsoleBot
     // Event handlers for recovery events
     private void OnBotCrashed(object? sender, BotCrashEventArgs e)
     {
-        LogUtil.LogError($"Bot {e.BotName} crashed at {e.CrashTime:yyyy-MM-dd HH:mm:ss}", "Recovery");
+        LogUtil.LogError("恢复", $"机器人 {e.BotName} 于 {e.CrashTime:yyyy-MM-dd HH:mm:ss} 崩溃");
     }
 
     private void OnRecoveryAttempted(object? sender, BotRecoveryEventArgs e)
     {
-        LogUtil.LogInfo($"Attempting recovery for {e.BotName} (attempt {e.AttemptNumber})", "Recovery");
+        LogUtil.LogInfo("恢复", $"正在尝试恢复机器人 {e.BotName}（第 {e.AttemptNumber} 次）");
     }
 
     private void OnRecoverySucceeded(object? sender, BotRecoveryEventArgs e)
     {
-        LogUtil.LogInfo($"Successfully recovered {e.BotName} after {e.AttemptNumber} attempt(s)", "Recovery");
+        LogUtil.LogInfo("恢复", $"成功恢复机器人 {e.BotName}，累计 {e.AttemptNumber} 次尝试");
     }
 
     private void OnRecoveryFailed(object? sender, BotRecoveryEventArgs e)
     {
-        LogUtil.LogError($"Failed to recover {e.BotName} after {e.AttemptNumber} attempts. Reason: {e.FailureReason}", "Recovery");
+        LogUtil.LogError("恢复", $"恢复机器人 {e.BotName} 失败，已尝试 {e.AttemptNumber} 次。原因：{e.FailureReason}");
     }
 
     /// <summary>

@@ -14,28 +14,25 @@ using DiscordColor = Discord.Color;
 namespace SysBot.Pokemon.Discord
 {
     /// <summary>
-    /// Provides functionality for listing and requesting Pokémon wondercard events via Discord commands.
-    /// Users can interact with the system in multiple ways:
+    /// 提供通过 Discord 指令列出与请求宝可梦 Wondercard 事件的功能。
+    /// 支持以下方式：
     ///
-    /// 1. Listing Events:
-    ///    - Users can list events from a specified generation or game. Optionally, users can filter this list by specifying a Pokémon species name.
-    ///    - Command format: .srp {generationOrGame} [speciesName] [pageX]
-    ///    - Example: .srp gen9 Mew page2
-    ///      This command lists the second page of events for the 'gen9' dataset, specifically filtering for events related to 'Mew'.
+    /// 1. 列出事件：
+    ///    - 可指定世代或游戏来列出事件，并可选地按物种名称筛选。
+    ///    - 指令格式：.srp {世代或游戏} [物种名称] [pageX]
+    ///    - 示例：.srp gen9 Mew page2（列出 gen9 数据集中与 Mew 相关的第二页事件）。
     ///
-    /// 2. Requesting Specific Events:
-    ///    - Users can request a specific event to be processed by providing an event index number.
-    ///    - Command format: .srp {generationOrGame} {eventIndex}
-    ///    - Example: .srp gen9 26
-    ///      This command requests the processing of the event at index 26 within the 'gen9' dataset.
+    /// 2. 请求特定事件：
+    ///    - 通过事件索引号请求处理特定事件。
+    ///    - 指令格式：.srp {世代或游戏} {事件编号}
+    ///    - 示例：.srp gen9 26（请求处理 gen9 数据集中编号为 26 的事件）。
     ///
-    /// 3. Pagination:
-    ///    - Users can navigate through pages of event listings by specifying the page number after the generation/game and optionally the species.
-    ///    - Command format: .srp {generationOrGame} [speciesName] pageX
-    ///    - Example: .srp gen9 page3
-    ///      This command lists the third page of events for the 'gen9' dataset.
+    /// 3. 分页浏览：
+    ///    - 可在参数中指定页码分页浏览，亦可搭配物种筛选。
+    ///    - 指令格式：.srp {世代或游戏} [物种名称] pageX
+    ///    - 示例：.srp gen9 page3（查看 gen9 数据集的第 3 页）。
     ///
-    /// This module ensures that user inputs are properly validated for the specific commands to manage event data effectively, adjusting listings or processing requests based on user interactions.
+    /// 模块会校验用户输入，依据指令调整列表或处理事件请求。
     /// </summary>
     public class SpecialRequestModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
     {
@@ -57,7 +54,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("specialrequestpokemon")]
         [Alias("srp")]
-        [Summary("Lists available wondercard events from the specified generation or game or requests a specific event if a number is provided.")]
+        [Summary("列出指定世代/游戏的 Wondercard 事件，或在提供编号时请求特定事件。")]
         public async Task ListSpecialEventsAsync(string generationOrGame, [Remainder] string args = "")
         {
             var botPrefix = SysCord<T>.Runner.Config.Discord.CommandPrefix;
@@ -74,7 +71,7 @@ namespace SysBot.Pokemon.Discord
 
             foreach (string part in parts)
             {
-                if (part.StartsWith("page", StringComparison.OrdinalIgnoreCase) && int.TryParse(part.AsSpan(4), out int pageNumber))
+                if (part.StartsWith("页", StringComparison.OrdinalIgnoreCase) && int.TryParse(part.AsSpan(4), out int pageNumber))
                 {
                     page = pageNumber;
                     continue;
@@ -85,14 +82,14 @@ namespace SysBot.Pokemon.Discord
             var eventData = GetEventData(generationOrGame);
             if (eventData == null)
             {
-                await ReplyAsync($"Invalid generation or game: {generationOrGame}").ConfigureAwait(false);
+                await ReplyAsync($"无效的世代或游戏：{generationOrGame}").ConfigureAwait(false);
                 return;
             }
 
             var allEvents = GetFilteredEvents(eventData, speciesName);
             if (!allEvents.Any())
             {
-                await ReplyAsync($"No events found for {generationOrGame} with the specified filter.").ConfigureAwait(false);
+                await ReplyAsync($"在 {generationOrGame} 中未找到符合筛选条件的事件。").ConfigureAwait(false);
                 return;
             }
 
@@ -105,20 +102,20 @@ namespace SysBot.Pokemon.Discord
 
         [Command("specialrequestpokemon")]
         [Alias("srp")]
-        [Summary("Downloads wondercard event attachments from the specified generation and adds to trade queue.")]
+        [Summary("下载指定世代的神秘礼物事件并加入交易队列。")]
         [RequireQueueRole(nameof(DiscordManager.RolesTrade))]
         public async Task SpecialEventRequestAsync(string generationOrGame, [Remainder] string args = "")
         {
             if (!int.TryParse(args, out int index))
             {
-                await ReplyAsync("Invalid event index. Please provide a valid event number.").ConfigureAwait(false);
+                await ReplyAsync("事件编号无效，请提供正确的编号。").ConfigureAwait(false);
                 return;
             }
 
             var userID = Context.User.Id;
             if (Info.IsUserInQueue(userID))
             {
-                await ReplyAsync("You already have an existing trade in the queue. Please wait until it is processed.").ConfigureAwait(false);
+                await ReplyAsync("你已在队列中有待处理的交易，请等待完成。").ConfigureAwait(false);
                 return;
             }
 
@@ -127,14 +124,14 @@ namespace SysBot.Pokemon.Discord
                 var eventData = GetEventData(generationOrGame);
                 if (eventData == null)
                 {
-                    await ReplyAsync($"Invalid generation or game: {generationOrGame}").ConfigureAwait(false);
+                    await ReplyAsync($"无效的世代或游戏：{generationOrGame}").ConfigureAwait(false);
                     return;
                 }
 
                 var entityEvents = eventData.Where(gift => gift.IsEntity && !gift.IsItem).ToArray();
                 if (index < 1 || index > entityEvents.Length)
                 {
-                    await ReplyAsync($"Invalid event index. Please use a valid event number from the `{SysCord<T>.Runner.Config.Discord.CommandPrefix}srp {generationOrGame}` command.").ConfigureAwait(false);
+                    await ReplyAsync($"事件编号无效，请参考 `{SysCord<T>.Runner.Config.Discord.CommandPrefix}srp {generationOrGame}` 提供的编号。").ConfigureAwait(false);
                     return;
                 }
 
@@ -142,7 +139,7 @@ namespace SysBot.Pokemon.Discord
                 var pk = ConvertEventToPKM(selectedEvent);
                 if (pk == null)
                 {
-                    await ReplyAsync("Wondercard data provided is not compatible with this module!").ConfigureAwait(false);
+                    await ReplyAsync("提供的神秘礼物数据不兼容，无法处理！").ConfigureAwait(false);
                     return;
                 }
 
@@ -154,7 +151,7 @@ namespace SysBot.Pokemon.Discord
             }
             catch (Exception ex)
             {
-                await ReplyAsync($"An error occurred: {ex.Message}").ConfigureAwait(false);
+                await ReplyAsync($"处理时发生错误：{ex.Message}").ConfigureAwait(false);
             }
             finally
             {
@@ -197,7 +194,7 @@ namespace SysBot.Pokemon.Discord
                     formName = !string.IsNullOrEmpty(formName) ? $"-{formName}" : "";
                     string trainerName = gift.OriginalTrainerName;
 
-                    string eventDetails = $"{gift.CardHeader} - {species}{formName} | Lvl.{levelInfo} | OT: {trainerName}";
+                string eventDetails = $"{gift.CardHeader} - {species}{formName} | 等级 {levelInfo} | OT: {trainerName}";
 
                     return (Index: index + 1, EventInfo: eventDetails);
                 })
@@ -207,13 +204,13 @@ namespace SysBot.Pokemon.Discord
         private static EmbedBuilder BuildEventListEmbed(string generationOrGame, IEnumerable<(int Index, string EventInfo)> allEvents, int page, int pageCount, string botPrefix)
         {
             var embed = new EmbedBuilder()
-                .WithTitle($"Available Events - {generationOrGame.ToUpperInvariant()}")
-                .WithDescription($"Page {page} of {pageCount}")
+                .WithTitle($"可用的神秘礼物事件 - {generationOrGame.ToUpperInvariant()}")
+                .WithDescription($"第 {page} 页，共 {pageCount} 页")
                 .WithColor(DiscordColor.Blue);
 
             foreach (var item in allEvents.Skip((page - 1) * itemsPerPage).Take(itemsPerPage))
             {
-                embed.AddField($"{item.Index}. {item.EventInfo}", $"Use `{botPrefix}srp {generationOrGame} {item.Index}` to request this event.");
+                embed.AddField($"{item.Index}. {item.EventInfo}", $"使用 `{botPrefix}srp {generationOrGame} {item.Index}` 请求该事件。");
             }
 
             return embed;
@@ -223,7 +220,7 @@ namespace SysBot.Pokemon.Discord
         {
             if (Context.User is not IUser user)
             {
-                await ReplyAsync("**Error**: Unable to send a DM. Please check your **Server Privacy Settings**.");
+                await ReplyAsync("**错误**：无法发送私信，请检查你的 **服务器隐私设置**。");
                 return;
             }
 
@@ -231,11 +228,11 @@ namespace SysBot.Pokemon.Discord
             {
                 var dmChannel = await user.CreateDMChannelAsync();
                 await dmChannel.SendMessageAsync(embed: embed.Build());
-                await ReplyAsync($"{Context.User.Mention}, I've sent you a DM with the list of events.");
+                await ReplyAsync($"{Context.User.Mention}，我已将事件列表通过私信发送给你。");
             }
             catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.Forbidden)
             {
-                await ReplyAsync($"{Context.User.Mention}, I'm unable to send you a DM. Please check your **Server Privacy Settings**.");
+                await ReplyAsync($"{Context.User.Mention}，无法向你发送私信，请检查你的 **服务器隐私设置**。");
             }
         }
 
@@ -328,7 +325,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("geteventpokemon")]
         [Alias("gep")]
-        [Summary("Downloads the requested event as a pk file and sends it to the user. Optionally, specify the language.")]
+        [Summary("下载指定事件为 PK 文件并发送给用户，可选指定语言。")]
         public async Task GetEventPokemonAsync(string generationOrGame, int eventIndex, byte? language = null)
         {
             try
@@ -336,14 +333,14 @@ namespace SysBot.Pokemon.Discord
                 var eventData = GetEventData(generationOrGame);
                 if (eventData == null)
                 {
-                    await ReplyAsync($"Invalid generation or game: {generationOrGame}").ConfigureAwait(false);
+                    await ReplyAsync($"无效的世代或游戏：{generationOrGame}").ConfigureAwait(false);
                     return;
                 }
 
                 var entityEvents = eventData.Where(gift => gift.IsEntity && !gift.IsItem).ToArray();
                 if (eventIndex < 1 || eventIndex > entityEvents.Length)
                 {
-                    await ReplyAsync($"Invalid event index. Please use a valid event number from the `{SysCord<T>.Runner.Config.Discord.CommandPrefix}gep {generationOrGame}` command.").ConfigureAwait(false);
+                    await ReplyAsync($"事件编号无效，请参考 `{SysCord<T>.Runner.Config.Discord.CommandPrefix}gep {generationOrGame}` 指令提供的编号。").ConfigureAwait(false);
                     return;
                 }
 
@@ -351,7 +348,7 @@ namespace SysBot.Pokemon.Discord
                 var pk = ConvertEventToPKM(selectedEvent);
                 if (pk == null)
                 {
-                    await ReplyAsync("Wondercard data provided is not compatible with this module!").ConfigureAwait(false);
+                    await ReplyAsync("提供的神秘礼物数据不兼容，无法处理！").ConfigureAwait(false);
                     return;
                 }
 
@@ -364,16 +361,16 @@ namespace SysBot.Pokemon.Discord
                 try
                 {
                     await Context.User.SendPKMAsync(pk);
-                    await ReplyAsync($"{Context.User.Mention}, I've sent you the PK file via DM.");
+                await ReplyAsync($"{Context.User.Mention}，我已通过私信发送 PK 文件。");
                 }
                 catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.Forbidden)
                 {
-                    await ReplyAsync($"{Context.User.Mention}, I'm unable to send you a DM. Please check your **Server Privacy Settings**.");
+                    await ReplyAsync($"{Context.User.Mention}，无法向你发送私信，请检查你的 **服务器隐私设置**。");
                 }
             }
             catch (Exception ex)
             {
-                await ReplyAsync($"An error occurred: {ex.Message}").ConfigureAwait(false);
+                await ReplyAsync($"处理时发生错误：{ex.Message}").ConfigureAwait(false);
             }
             finally
             {
@@ -387,8 +384,8 @@ namespace SysBot.Pokemon.Discord
             var la = new LegalityAnalysis(pk);
             if (!la.Valid)
             {
-                string responseMessage = pk.IsEgg ? "Invalid Showdown Set for this Egg. Please review your information and try again." :
-                    $"{typeof(T).Name} attachment is not legal, and cannot be traded!\n\n{la.Report()}\n";
+                string responseMessage = pk.IsEgg ? "该蛋的 Showdown 配置无效，请检查后重试。" :
+                    $"{typeof(T).Name} 附件不合法，无法进行交易！\n\n{la.Report()}\n";
                 var reply = await ReplyAsync(responseMessage).ConfigureAwait(false);
                 await Task.Delay(6000);
                 await reply.DeleteAsync().ConfigureAwait(false);

@@ -19,24 +19,24 @@ public class SeedSearchResult(Z3SearchResult Type, ulong Seed, int FlawlessIVCou
     {
         return Type switch
         {
-            Z3SearchResult.SeedMismatch => $"Seed found, but not an exact match {Seed:X16}",
+            Z3SearchResult.SeedMismatch => $"已找到种子，但与目标不完全一致 {Seed:X16}",
             Z3SearchResult.Success => string.Join(Environment.NewLine, GetLines()),
-            _ => "The Pokémon is not a raid Pokémon!",
+            _ => "该宝可梦并非团战宝可梦！",
         };
     }
 
     private IEnumerable<string> GetLines()
     {
         if (FlawlessIVCount >= 1)
-            yield return $"IVCount: {FlawlessIVCount}";
-        yield return "Spreads are listed by flawless IV count.";
+            yield return $"完美 IV 数：{FlawlessIVCount}";
+        yield return "以下结果按完美 IV 数量列出。";
 
         SeedSearchUtil.GetShinyFrames(Seed, out int[] frames, out uint[] type, out List<uint[,]> IVs, Mode);
 
         for (int i = 0; i < 3 && frames[i] != 0; i++)
         {
-            var shinytype = type[i] == 1 ? "Star" : "Square";
-            yield return $"\nFrame: {frames[i]} - {shinytype}";
+            var shinytype = type[i] == 1 ? "星型" : "方块";
+            yield return $"\n帧：{frames[i]} - {shinytype}";
 
             for (int ivcount = 0; ivcount < 5; ivcount++)
             {

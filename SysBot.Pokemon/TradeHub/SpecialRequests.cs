@@ -127,17 +127,17 @@ namespace SysBot.Pokemon.TradeHub
         /// </summary>
         private static void LogHeldItem<T>(T pk, int heldItem, PokeRoutineExecutor<T> caller) where T : PKM, new()
         {
-            GameStrings str = GameInfo.GetStrings(GameLanguage.DefaultLanguage);
+            GameStrings str = GameInfo.GetStrings("zh-Hans");//GameStrings str = GameInfo.GetStrings(GameLanguage.DefaultLanguage);
             var allitems = str.GetItemStrings(pk.Context, GameVersion.SWSH);
             
             if (heldItem > 0 && heldItem < allitems.Length)
             {
                 var itemHeld = allitems[heldItem];
-                caller.Log($"Item held: {itemHeld}");
+                caller.Log($"携带道具：{itemHeld}");
             }
             else
             {
-                caller.Log($"Held item was outside the bounds of the Array, or nothing was held: {heldItem}");
+                caller.Log($"携带道具超出数组范围或未携带任何物品：{heldItem}");
             }
         }
 
@@ -403,14 +403,14 @@ namespace SysBot.Pokemon.TradeHub
             if (!HandleHomeTrackerForCloneChange(hasHomeTracker, caller, detail))
                 return SpecialTradeType.FailReturn;
             
-            GameStrings strings = GameInfo.GetStrings(GameLanguage.DefaultLanguage);
+            GameStrings strings = GameInfo.GetStrings("zh-Hans");//GameStrings strings = GameInfo.GetStrings(GameLanguage.DefaultLanguage);
             var items = strings.GetItemStrings(pk.Context, GameVersion.SWSH);
             var itemName = items[heldItem];
             var natureName = itemName.Split(' ')[0];
             
             if (!Enum.TryParse(natureName, out Nature result))
             {
-                detail.SendNotification(caller, "Nature request was not found in the db.");
+                detail.SendNotification(caller, "未在数据库中找到对应的性格请求。");
                 return SpecialTradeType.FailReturn;
             }
 
@@ -429,13 +429,13 @@ namespace SysBot.Pokemon.TradeHub
         private static SpecialTradeType HandleItemRequest<T>(ref T pk, PokeRoutineExecutor<T> caller, PokeTradeDetail<T> detail) where T : PKM, new()
         {
             var itemLookup = pk.Nickname[1..].Replace(" ", string.Empty);
-            GameStrings strings = GameInfo.GetStrings(GameLanguage.DefaultLanguage);
+            GameStrings strings = GameInfo.GetStrings("zh-Hans");//GameStrings strings = GameInfo.GetStrings(GameLanguage.DefaultLanguage);
             var items = strings.GetItemStrings(pk.Context, GameVersion.SWSH);
             int item = Array.FindIndex(items, z => z.Replace(" ", string.Empty).StartsWith(itemLookup, StringComparison.OrdinalIgnoreCase));
 
             if (item < 0)
             {
-                detail.SendNotification(caller, "Item request was invalid. Check spelling & gen.");
+                detail.SendNotification(caller, "物品请求无效，请检查拼写和世代。");
                 return SpecialTradeType.FailReturn;
             }
 
@@ -453,13 +453,13 @@ namespace SysBot.Pokemon.TradeHub
         private static SpecialTradeType HandleBallRequest<T>(ref T pk, PokeRoutineExecutor<T> caller, PokeTradeDetail<T> detail) where T : PKM, new()
         {
             var ballLookup = pk.Nickname[1..].Replace(" ", string.Empty).Replace("poke", "poké").ToLower();
-            GameStrings strings = GameInfo.GetStrings(GameLanguage.DefaultLanguage);
+            GameStrings strings = GameInfo.GetStrings("zh-Hans");//GameStrings strings = GameInfo.GetStrings(GameLanguage.DefaultLanguage);
             var balls = strings.balllist;
 
             int ball = Array.FindIndex(balls, z => z.Replace(" ", string.Empty).StartsWith(ballLookup, StringComparison.OrdinalIgnoreCase));
             if (ball < 0)
             {
-                detail.SendNotification(caller, "Ball request was invalid. Check spelling & gen.");
+                detail.SendNotification(caller, "球种请求无效，请检查拼写和世代。");
                 return SpecialTradeType.FailReturn;
             }
 
@@ -482,7 +482,7 @@ namespace SysBot.Pokemon.TradeHub
 
             if (loaded == null)
             {
-                detail.SendNotification(caller, "This isn't a valid request!");
+                detail.SendNotification(caller, "请求无效，无法处理！");
                 return SpecialTradeType.FailReturn;
             }
 
@@ -537,7 +537,7 @@ namespace SysBot.Pokemon.TradeHub
 
             if (!la.Valid)
             {
-                detail.SendNotification(caller, "This modification made the Pokémon illegal per PKHeX's legality checks. Cannot complete this request. The Pokémon will be returned unchanged.");
+                detail.SendNotification(caller, "该修改导致宝可梦不合法（PKHeX 检查未通过），无法完成此请求，宝可梦将原样返还。");
                 var report = la.Report();
                 caller.Log(report);
                 detail.SendNotification(caller, report);
@@ -619,8 +619,8 @@ namespace SysBot.Pokemon.TradeHub
                 return true;
             
             // Pokemon has a Home Tracker - block all clone changes for safety
-            detail.SendNotification(caller, "Cannot apply clone changes to this Pokemon. It has a Home Tracker, and modifying it would invalidate the tracker. Please use a Pokemon without a Home Tracker.");
-            caller.Log("Clone change blocked - Pokemon has Home Tracker. Modifications would invalidate the tracker.");
+            detail.SendNotification(caller, "无法对该宝可梦应用克隆修改，因为其拥有 Home 追踪码，修改会使追踪码失效。请改用没有 Home 追踪码的宝可梦。");
+            caller.Log("已阻止克隆修改：宝可梦带有 Home 追踪码，修改将使其失效。");
             return false;
         }
     }

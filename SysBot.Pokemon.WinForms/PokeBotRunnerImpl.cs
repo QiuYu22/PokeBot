@@ -68,7 +68,7 @@ public class PokeBotRunnerImpl<T> : PokeBotRunner<T> where T : PKM, new()
         if (YouTube != null)
             return; // already created
 
-        WinFormsUtil.Alert("Please Login with your Browser");
+        WinFormsUtil.Alert("请在浏览器中登录");
         if (string.IsNullOrWhiteSpace(config.ChannelID))
             return;
         if (string.IsNullOrWhiteSpace(config.ClientID))

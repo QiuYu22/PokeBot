@@ -157,7 +157,7 @@ public class NonIdleBot
 /// </summary>
 public class UpdateCheckResponse : ApiResponse
 {
-    public string Version { get; set; } = "Unknown";
+    public string Version { get; set; } = "未知";
     public string Changelog { get; set; } = string.Empty;
     public bool Available { get; set; }
 }

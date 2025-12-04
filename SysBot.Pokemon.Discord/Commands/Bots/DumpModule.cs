@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace SysBot.Pokemon.Discord;
 
-[Summary("Queues new Dump trades")]
+[Summary("将 Dump 交易请求加入队列")]
 public class DumpModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
 {
     private static TradeQueueInfo<T> Info => SysCord<T>.Runner.Hub.Queues.Info;
 
     [Command("dump")]
     [Alias("d")]
-    [Summary("Dumps the Pokémon you show via Link Trade.")]
+    [Summary("转储你在连接交换中展示的宝可梦。")]
     [RequireQueueRole(nameof(DiscordManager.RolesDump))]
     public async Task DumpAsync(int code)
     {
@@ -42,7 +42,7 @@ public class DumpModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
 
     [Command("dump")]
     [Alias("d")]
-    [Summary("Dumps the Pokémon you show via Link Trade.")]
+    [Summary("转储你在连接交换中展示的宝可梦。")]
     [RequireQueueRole(nameof(DiscordManager.RolesDump))]
     public async Task DumpAsync([Summary("Trade Code")][Remainder] string code)
     {
@@ -56,7 +56,7 @@ public class DumpModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
 
     [Command("dump")]
     [Alias("d")]
-    [Summary("Dumps the Pokémon you show via Link Trade.")]
+    [Summary("转储你在连接交换中展示的宝可梦。")]
     [RequireQueueRole(nameof(DiscordManager.RolesDump))]
     public async Task DumpAsync()
     {
@@ -69,7 +69,7 @@ public class DumpModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
 
     [Command("dumpList")]
     [Alias("dl", "dq")]
-    [Summary("Prints the users in the Dump queue.")]
+    [Summary("显示 Dump 队列中的用户。")]
     [RequireSudo]
     public async Task GetListAsync()
     {
@@ -77,11 +77,11 @@ public class DumpModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
         var embed = new EmbedBuilder();
         embed.AddField(x =>
         {
-            x.Name = "Pending Trades";
+            x.Name = "待处理交易";
             x.Value = msg;
             x.IsInline = false;
         });
-        await ReplyAsync("These are the users who are currently waiting:", embed: embed.Build()).ConfigureAwait(false);
+        await ReplyAsync("当前等待中的用户如下：", embed: embed.Build()).ConfigureAwait(false);
     }
 
     private async Task<bool> CheckUserInQueueAsync()
@@ -89,7 +89,7 @@ public class DumpModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
         var userID = Context.User.Id;
         if (Info.IsUserInQueue(userID))
         {
-            await ReplyAsync("You already have an existing trade in the queue. Please wait until it is processed.").ConfigureAwait(false);
+            await ReplyAsync("你已在队列中有待处理的交易，请等待完成。").ConfigureAwait(false);
             return true;
         }
         return false;

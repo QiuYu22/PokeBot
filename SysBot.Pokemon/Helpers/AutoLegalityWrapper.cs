@@ -29,13 +29,13 @@ public static class AutoLegalityWrapper
         InitializeSettings(cfg);
     }
 
-    // The list of encounter types in the priority we prefer if no order is specified.
+        // 若未指定顺序，以下为默认的遭遇优先级。
     private static readonly EncounterTypeGroup[] EncounterPriority = [EncounterTypeGroup.Egg, EncounterTypeGroup.Slot, EncounterTypeGroup.Static, EncounterTypeGroup.Mystery, EncounterTypeGroup.Trade];
 
     private static void InitializeSettings(LegalitySettings cfg)
     {
-        // Disable expensive PID+ validation for PLZA shiny Pokemon
-        // PKHeX will skip correlation checks when SearchShiny1 is false (see EncounterGift9a.TryGetSeed)
+        // 对 PLZA 闪光宝可梦禁用开销较大的 PID+ 校验
+        // 当 SearchShiny1 为 false 时，PKHeX 将跳过相关性检查（参见 EncounterGift9a.TryGetSeed）
         LumioseSolver.SearchShiny1 = false;
 
         APILegality.SetAllLegalRibbons = cfg.SetAllLegalRibbons;
@@ -46,7 +46,7 @@ public static class AutoLegalityWrapper
         APILegality.AllowTrainerOverride = cfg.AllowTrainerDataOverride;
         APILegality.AllowBatchCommands = cfg.AllowBatchCommands;
         APILegality.PrioritizeGame = cfg.PrioritizeGame;
-        // Prevent missing entries in case of deletion
+        // 防止因缺失导致的条目删除
         GameVersion[] validVersions = [.. Enum.GetValues<GameVersion>().Where(ver => ver <= (GameVersion)52 && ver > GameVersion.Any)];
         foreach (var ver in validVersions)
         {
@@ -69,7 +69,7 @@ public static class AutoLegalityWrapper
         if (allowMissingHOME)
             settings.HOMETransfer.Disable();
 
-        // We need all the encounter types present, so add the missing ones at the end.
+        // 需要包含全部遭遇类型，将缺失的附加到末尾。
         var missing = EncounterPriority.Except(cfg.PrioritizeEncounters);
         cfg.PrioritizeEncounters.AddRange(missing);
         cfg.PrioritizeEncounters = [.. cfg.PrioritizeEncounters.Distinct()]; // Don't allow duplicates.
@@ -82,7 +82,7 @@ public static class AutoLegalityWrapper
         if (Directory.Exists(externalSource))
             TrainerSettings.LoadTrainerDatabaseFromPath(externalSource);
 
-        // Seed the Trainer Database with enough fake save files so that we return a generation sensitive format when needed.  
+        // 用足量的伪存档填充训练家数据库，以在需要时返回对应世代的格式。  
         var fallback = GetDefaultTrainer(cfg);
         for (byte generation = 1; generation <= GameUtil.GetGeneration(GameVersion.Gen9); generation++)
         {
@@ -90,7 +90,7 @@ public static class AutoLegalityWrapper
             foreach (var version in versions)
                 RegisterIfNoneExist(fallback, generation, version);
         }
-        // Manually register for LGP/E since Gen7 above will only register the 3DS versions.  
+        // 手动为 LGP/E 注册，因 Gen7 仅会注册 3DS 版本。  
         RegisterIfNoneExist(fallback, 7, GameVersion.GP);
         RegisterIfNoneExist(fallback, 7, GameVersion.GE);
     }
@@ -99,7 +99,7 @@ public static class AutoLegalityWrapper
     {
         var OT = cfg.GenerateOT;
         if (OT.Length == 0)
-            OT = "Blank"; // Will fail if actually left blank.
+            OT = "Blank"; // 若实际留空将导致失败。
         var fallback = new SimpleTrainerInfo(GameVersion.Any)
         {
             Language = (byte)cfg.GenerateLanguage,
@@ -122,7 +122,7 @@ public static class AutoLegalityWrapper
             Generation = generation,
         };
         var exist = TrainerSettings.GetSavedTrainerData(version, generation, fallback);
-        if (exist is SimpleTrainerInfo) // not anything from files; this assumes ALM returns SimpleTrainerInfo for non-user-provided fake templates.
+        if (exist is SimpleTrainerInfo) // 非用户提供模板，默认 ALM 返回 SimpleTrainerInfo
             TrainerSettings.Register(fallback);
     }
 
@@ -177,7 +177,7 @@ public static class AutoLegalityWrapper
         if (typeof(T) == typeof(PB7))
             return TrainerSettings.GetSavedTrainerData(GameVersion.GE, 7);
 
-        throw new ArgumentException("Type does not have a recognized trainer fetch.", typeof(T).Name);
+        throw new ArgumentException("未识别的训练家类型，无法获取对应模板。", typeof(T).Name);
     }
 
     public static ITrainerInfo GetTrainerInfo(byte gen) => TrainerSettings.GetSavedTrainerData(gen);
@@ -190,17 +190,17 @@ public static class AutoLegalityWrapper
             var result = task.Result;
             res = result.Status switch
             {
-                LegalizationResult.Regenerated => "Regenerated",
-                LegalizationResult.Failed => "Failed",
-                LegalizationResult.Timeout => "Timeout",
-                LegalizationResult.VersionMismatch => "VersionMismatch",
+                LegalizationResult.Regenerated => "已重新生成",
+                LegalizationResult.Failed => "生成失败",
+                LegalizationResult.Timeout => "超时",
+                LegalizationResult.VersionMismatch => "版本不匹配",
                 _ => "",
             };
             return result.Created;
         }
         else
         {
-            res = "Timeout";
+            res = "超时";
             return null!; // Explicitly return null with suppression since the res parameter indicates the failure
         }
     }

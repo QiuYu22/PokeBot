@@ -19,13 +19,13 @@ public class PokemonPool<T>(BaseConfig Settings) : List<T>
 
     public static bool DisallowRandomRecipientTrade(T pk)
     {
-        // Surprise Trade currently bans Mythicals and Legendaries, not Sub-Legendaries.
+        // 惊喜交换禁止幻兽和传说，但允许次级传说。
         if (SpeciesCategory.IsLegendary(pk.Species))
             return true;
         if (SpeciesCategory.IsMythical(pk.Species))
             return true;
 
-        // Can't surprise trade fused stuff.
+        // 融合形态无法进行惊喜交换。
         if (FormInfo.IsFusedForm(pk.Species, pk.Form, pk.Format))
             return true;
 
@@ -85,13 +85,13 @@ public class PokemonPool<T>(BaseConfig Settings) : List<T>
 
             if (dest.Species == 0)
             {
-                LogUtil.LogInfo("SKIPPED: Provided file is not valid: " + dest.FileName, nameof(PokemonPool<T>));
+            LogUtil.LogInfo(nameof(PokemonPool<T>), "跳过：提供的文件无效：" + dest.FileName);
                 continue;
             }
 
             if (!dest.CanBeTraded())
             {
-                LogUtil.LogInfo("SKIPPED: Provided file cannot be traded: " + dest.FileName, nameof(PokemonPool<T>));
+            LogUtil.LogInfo(nameof(PokemonPool<T>), "跳过：提供的文件无法交易：" + dest.FileName);
                 continue;
             }
 
@@ -99,7 +99,7 @@ public class PokemonPool<T>(BaseConfig Settings) : List<T>
             if (!la.Valid)
             {
                 var reason = la.Report();
-                LogUtil.LogInfo($"SKIPPED: Provided file is not legal: {dest.FileName} -- {reason}", nameof(PokemonPool<T>));
+                LogUtil.LogInfo(nameof(PokemonPool<T>), $"跳过：文件不合法：{dest.FileName} -- {reason}");
                 continue;
             }
 
@@ -117,12 +117,12 @@ public class PokemonPool<T>(BaseConfig Settings) : List<T>
             }
             else
             {
-                LogUtil.LogInfo("Provided file was not added due to duplicate name: " + dest.FileName, nameof(PokemonPool<T>));
+                LogUtil.LogInfo(nameof(PokemonPool<T>), "未添加：文件名重复：" + dest.FileName);
             }
             loadedAny = true;
         }
         if (surpriseBlocked == Count)
-            LogUtil.LogInfo(nameof(PokemonPool<T>), "Surprise trading will fail; failed to load any compatible files.");
+            LogUtil.LogInfo(nameof(PokemonPool<T>), "惊喜交换失败：未加载到任何兼容文件。");
 
         return loadedAny;
     }

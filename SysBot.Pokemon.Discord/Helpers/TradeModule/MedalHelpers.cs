@@ -16,31 +16,31 @@ public static class MedalHelpers
     {
         string status = milestone switch
         {
-            1 => "Newbie Trainer",
-            50 => "Novice Trainer",
-            100 => "Pokémon Professor",
-            150 => "Pokémon Specialist",
-            200 => "Pokémon Champion",
-            250 => "Pokémon Hero",
-            300 => "Pokémon Elite",
-            350 => "Pokémon Trader",
-            400 => "Pokémon Sage",
-            450 => "Pokémon Legend",
-            500 => "Region Master",
-            550 => "Trade Master",
-            600 => "World Famous",
-            650 => "Pokémon Master",
-            700 => "Pokémon God",
-            _ => "New Trainer"
+            1 => "新手训练家",
+            50 => "初级训练家",
+            100 => "宝可梦博士",
+            150 => "宝可梦专家",
+            200 => "宝可梦冠军",
+            250 => "宝可梦英雄",
+            300 => "宝可梦精英",
+            350 => "宝可梦交易师",
+            400 => "宝可梦贤者",
+            450 => "宝可梦传说",
+            500 => "地区大师",
+            550 => "交易大师",
+            600 => "世界闻名",
+            650 => "宝可梦大师",
+            700 => "宝可梦之神",
+            _ => "新人训练家"
         };
 
-        string description = $"Total Trades: **{totalTrades}**\n**Current Status:** {status}";
+        string description = $"总交易次数：**{totalTrades}**\n**当前等级：**{status}";
 
         if (milestone > 0)
         {
             string imageUrl = $"https://raw.githubusercontent.com/Secludedly/ZE-FusionBot-Sprite-Images/main/{milestone:D3}.png";
             return new EmbedBuilder()
-                .WithTitle($"{user.Username}'s Trading Status")
+                .WithTitle($"{user.Username} 的交易状态")
                 .WithColor(new Color(255, 215, 0))
                 .WithDescription(description)
                 .WithThumbnailUrl(imageUrl)
@@ -49,7 +49,7 @@ public static class MedalHelpers
         else
         {
             return new EmbedBuilder()
-                .WithTitle($"{user.Username}'s Trading Status")
+                .WithTitle($"{user.Username} 的交易状态")
                 .WithColor(new Color(255, 215, 0))
                 .WithDescription(description)
                 .Build();

@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 
 namespace SysBot.Pokemon.Discord;
 
-[Summary("Queues new Seed Check trades")]
+[Summary("将种子检查交易加入队列")]
 public class SeedCheckModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
 {
     private static TradeQueueInfo<T> Info => SysCord<T>.Runner.Hub.Queues.Info;
 
     [Command("findFrame")]
     [Alias("ff", "getFrameData")]
-    [Summary("Prints the next shiny frame from the provided seed.")]
+    [Summary("根据提供的种子计算下一次闪光帧。")]
     public async Task FindFrameAsync([Remainder] string seedString)
     {
         var me = SysCord<T>.Runner;
@@ -35,12 +35,12 @@ public class SeedCheckModule<T> : ModuleBase<SocketCommandContext> where T : PKM
             x.Value = msg;
             x.IsInline = false;
         });
-        await ReplyAsync($"Here are the details for `{r.Seed:X16}`:", embed: embed.Build()).ConfigureAwait(false);
+        await ReplyAsync($"以下是 `{r.Seed:X16}` 的详情：", embed: embed.Build()).ConfigureAwait(false);
     }
 
     [Command("seedList")]
     [Alias("sl", "scq", "seedCheckQueue", "seedQueue", "seedList")]
-    [Summary("Prints the users in the Seed Check queue.")]
+    [Summary("显示种子检查队列中的用户。")]
     [RequireSudo]
     public async Task GetSeedListAsync()
     {
@@ -48,16 +48,16 @@ public class SeedCheckModule<T> : ModuleBase<SocketCommandContext> where T : PKM
         var embed = new EmbedBuilder();
         embed.AddField(x =>
         {
-            x.Name = "Pending Trades";
+            x.Name = "待处理交易";
             x.Value = msg;
             x.IsInline = false;
         });
-        await ReplyAsync("These are the users who are currently waiting:", embed: embed.Build()).ConfigureAwait(false);
+        await ReplyAsync("当前等待中的用户如下：", embed: embed.Build()).ConfigureAwait(false);
     }
 
     [Command("seedCheck")]
     [Alias("checkMySeed", "checkSeed", "seed", "s", "sc", "specialrequest", "sr")]
-    [Summary("Checks the seed for a Pokémon.")]
+    [Summary("为指定宝可梦执行种子检查。")]
     [RequireQueueRole(nameof(DiscordManager.RolesSeed))]
     public async Task SeedCheckAsync(int code)
     {
@@ -65,7 +65,7 @@ public class SeedCheckModule<T> : ModuleBase<SocketCommandContext> where T : PKM
         var userID = Context.User.Id;
         if (Info.IsUserInQueue(userID))
         {
-            await ReplyAsync("You already have an existing trade in the queue. Please wait until it is processed.").ConfigureAwait(false);
+            await ReplyAsync("你已在队列中有待处理的交易，请等待完成。").ConfigureAwait(false);
             return;
         }
         var sig = Context.User.GetFavor();
@@ -74,7 +74,7 @@ public class SeedCheckModule<T> : ModuleBase<SocketCommandContext> where T : PKM
 
     [Command("seedCheck")]
     [Alias("checkMySeed", "checkSeed", "seed", "s", "sc", "specialrequest", "sr")]
-    [Summary("Checks the seed for a Pokémon.")]
+    [Summary("为指定宝可梦执行种子检查。")]
     [RequireQueueRole(nameof(DiscordManager.RolesSeed))]
     public async Task SeedCheckAsync([Summary("Trade Code")][Remainder] string code)
     {
@@ -82,7 +82,7 @@ public class SeedCheckModule<T> : ModuleBase<SocketCommandContext> where T : PKM
         var userID = Context.User.Id;
         if (Info.IsUserInQueue(userID))
         {
-            await ReplyAsync("You already have an existing trade in the queue. Please wait until it is processed.").ConfigureAwait(false);
+            await ReplyAsync("你已在队列中有待处理的交易，请等待完成。").ConfigureAwait(false);
             return;
         }
         int tradeCode = Util.ToInt32(code);
@@ -92,7 +92,7 @@ public class SeedCheckModule<T> : ModuleBase<SocketCommandContext> where T : PKM
 
     [Command("seedCheck")]
     [Alias("checkMySeed", "checkSeed", "seed", "s", "sc", "specialrequest", "sr")]
-    [Summary("Checks the seed for a Pokémon.")]
+    [Summary("为指定宝可梦执行种子检查。")]
     [RequireQueueRole(nameof(DiscordManager.RolesSeed))]
     public async Task SeedCheckAsync()
     {
@@ -100,7 +100,7 @@ public class SeedCheckModule<T> : ModuleBase<SocketCommandContext> where T : PKM
         var userID = Context.User.Id;
         if (Info.IsUserInQueue(userID))
         {
-            await ReplyAsync("You already have an existing trade in the queue. Please wait until it is processed.").ConfigureAwait(false);
+            await ReplyAsync("你已在队列中有待处理的交易，请等待完成。").ConfigureAwait(false);
             return;
         }
         var code = Info.GetRandomTradeCode(userID);

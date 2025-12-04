@@ -33,9 +33,9 @@ public class EncounterBotEggSWSH : EncounterBotSWSH
 
     public Task SetEggStepCounter(CancellationToken token)
     {
-        // Set the step counter in the Daycare metadata to 180. This is the threshold that triggers the "Should I create a new egg" subroutine.
-        // When the game executes the subroutine, it will generate a new seed and set the IsEggReady flag.
-        // Just setting the IsEggReady flag won't refresh the seed; we want a different egg every time.
+        // 将培育屋元数据中的步数计数设为 180，这是触发“是否生成蛋”子程序的阈值。
+        // 游戏执行该子程序时会生成新的种子并置位 IsEggReady。
+        // 仅设置 IsEggReady 无法刷新种子，因此需要通过步数触发。
         var data = new byte[] { 0xB4, 0, 0, 0 }; // 180
         return Connection.WriteBytesAsync(data, DayCare_Route5_Step_Counter, token);
     }
@@ -52,7 +52,7 @@ public class EncounterBotEggSWSH : EncounterBotSWSH
             if (attempts < 0) // aborted
                 return;
 
-            Log($"Egg available after {attempts} attempts! Clearing destination slot.");
+            Log($"第 {attempts} 次尝试后获得了蛋，正在清空目标槽位。");
             await SetBoxPokemon(Blank, 0, 0, token).ConfigureAwait(false);
 
             for (int i = 0; i < 10; i++)
@@ -62,11 +62,11 @@ public class EncounterBotEggSWSH : EncounterBotSWSH
             while (!await IsOnOverworld(OverworldOffset, token).ConfigureAwait(false))
                 await Click(B, 0_200, token).ConfigureAwait(false);
 
-            Log("Egg received. Checking details.");
+            Log("已领取蛋，正在检查详情。");
             var pk = await ReadBoxPokemon(0, 0, token).ConfigureAwait(false);
             if (pk.Species == 0)
             {
-                Log("No egg found in Box 1, slot 1. Ensure that the party is full. Restarting loop.");
+                Log("盒 1 槽 1 中未找到蛋，请确认队伍已满，重新开始循环。");
                 continue;
             }
 
@@ -77,7 +77,7 @@ public class EncounterBotEggSWSH : EncounterBotSWSH
 
     private async Task<int> StepUntilEgg(CancellationToken token)
     {
-        Log("Walking around until an egg is ready...");
+        Log("正在周围走动以等待蛋生成…");
         int attempts = 0;
         while (!token.IsCancellationRequested && Config.NextRoutineType == PokeRoutineType.EggFetch)
         {
@@ -97,7 +97,7 @@ public class EncounterBotEggSWSH : EncounterBotSWSH
 
             attempts++;
             if (attempts % 10 == 0)
-                Log($"Tried {attempts} times, still no egg.");
+                Log($"已尝试 {attempts} 次，仍未生成蛋。");
 
             if (attempts > 10)
                 await Click(B, 500, token).ConfigureAwait(false);

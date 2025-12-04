@@ -186,7 +186,7 @@ public class TradeQueueManager<T> where T : PKM, new()
         var code = cfg.RandomCode ? Hub.Config.Trade.GetRandomTradeCode() : cfg.TradeCode;
         var lgcode = GetLGPECode(cfg);
 
-        var trainer = new PokeTradeTrainerInfo("Random Distribution");
+        var trainer = new PokeTradeTrainerInfo("随机派发");
         detail = new(random, trainer, PokeTradeHub<T>.LogNotifier, PokeTradeType.Random, code, false, lgcode);
         return true;
     }

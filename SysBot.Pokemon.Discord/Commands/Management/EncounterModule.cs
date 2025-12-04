@@ -8,7 +8,7 @@ namespace SysBot.Pokemon.Discord;
 public class EchoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
 {
     [Command("toss")]
-    [Summary("Makes all bots that are currently waiting for a go-ahead continue operation.")]
+    [Summary("让所有等待继续的机器人同步恢复运行。")]
     [RequireSudo]
     public async Task TossAsync(string name = "")
     {
@@ -21,6 +21,6 @@ public class EchoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new
             x.Acknowledge();
         }
 
-        await ReplyAsync("Done.").ConfigureAwait(false);
+        await ReplyAsync("操作完成。").ConfigureAwait(false);
     }
 }
