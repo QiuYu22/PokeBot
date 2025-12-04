@@ -601,7 +601,7 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
                     else
                     {
                         var speciesName = set != null && set.Species > 0
-                            ? GameInfo.Strings.Species[set.Species]
+                            ? GameInfo.GetStrings("zh-Hans").Species[set.Species]
                             : "未知";
                         errors.Add(new BatchTradeError
                         {
@@ -637,6 +637,152 @@ public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, ne
 
                     await Context.Channel.SendMessageAsync($"{Context.User.Mention} 处理批量交易时发生错误，请稍后再试。");
                 Base.LogUtil.LogError($"批量交易处理错误：{ex.Message}", nameof(BatchTradeAsync));
+            }
+        });
+
+        if (Context.Message is IUserMessage userMessage)
+            _ = Helpers<T>.DeleteMessagesAfterDelayAsync(userMessage, null, 2);
+    }
+
+    [Command("binTrade")]
+    [Alias("bin")]
+    [Summary("根据上传的 bin 文件批量交易宝可梦。")]
+    [RequireQueueRole(nameof(DiscordManager.RolesTrade))]
+    public async Task BinTradeAsync()
+    {
+        var tradeConfig = SysCord<T>.Runner.Config.Trade.TradeConfiguration;
+
+        // Check if batch trades are allowed
+        if (!tradeConfig.AllowBatchTrades)
+        {
+            await Helpers<T>.ReplyAndDeleteAsync(Context,
+                "管理员已禁用批量交易功能。", 2);
+            return;
+        }
+
+        var userID = Context.User.Id;
+        if (!await Helpers<T>.EnsureUserNotInQueueAsync(userID))
+        {
+            await Helpers<T>.ReplyAndDeleteAsync(Context,
+                "你已在队列中有待处理的交易且无法清除，请等待完成。", 2);
+            return;
+        }
+
+        var attachment = Context.Message.Attachments.FirstOrDefault();
+        if (attachment == null)
+        {
+            await Helpers<T>.ReplyAndDeleteAsync(Context, "请附带一个 bin 文件！", 2);
+            return;
+        }
+
+        // Validate file name
+        if (!FileTradeHelper<T>.ValidFileName(attachment.Filename))
+        {
+            await Helpers<T>.ReplyAndDeleteAsync(Context,
+                $"文件格式不支持！请上传 .{typeof(T).Name.ToLower()} 或 .bin 格式的文件。", 2);
+            return;
+        }
+
+        // Validate file size
+        if (!FileTradeHelper<T>.ValidFileSize((long)attachment.Size))
+        {
+            await Helpers<T>.ReplyAndDeleteAsync(Context,
+                $"文件大小无效！单个文件最多支持 {FileTradeHelper<T>.MaxCountInBin} 只宝可梦。", 2);
+            return;
+        }
+
+        var processingMessage = await Context.Channel.SendMessageAsync($"{Context.User.Mention} 正在处理 bin 文件…");
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                // Download bin file
+                using var httpClient = new System.Net.Http.HttpClient();
+                var binData = await httpClient.GetByteArrayAsync(attachment.Url);
+
+                // Parse bin file to PKM list
+                var batchPokemonList = FileTradeHelper<T>.Bin2List(binData);
+
+                if (batchPokemonList.Count == 0)
+                {
+                    await processingMessage.DeleteAsync();
+                    await Helpers<T>.ReplyAndDeleteAsync(Context, "bin 文件中没有找到有效的宝可梦！", 5);
+                    return;
+                }
+
+                // Use configured max trades per batch
+                int maxTradesAllowed = tradeConfig.MaxPkmsPerTrade > 0 ? tradeConfig.MaxPkmsPerTrade : 4;
+
+                if (batchPokemonList.Count > maxTradesAllowed)
+                {
+                    await processingMessage.DeleteAsync();
+                    await Helpers<T>.ReplyAndDeleteAsync(Context,
+                        $"bin 文件包含 {batchPokemonList.Count} 只宝可梦，超过了单次最大限制 {maxTradesAllowed} 只。请减少文件中的宝可梦数量。", 5);
+                    return;
+                }
+
+                // Validate each Pokemon
+                var validPokemon = new List<T>();
+                var errors = new List<string>();
+
+                for (int i = 0; i < batchPokemonList.Count; i++)
+                {
+                    var pk = batchPokemonList[i];
+                    var la = new LegalityAnalysis(pk);
+                    var speciesName = SpeciesName.GetSpeciesName(pk.Species, (int)LanguageID.ChineseS);
+
+                    if (!la.Valid)
+                    {
+                        errors.Add($"第 {i + 1} 只 {speciesName}：不合法");
+                    }
+                    else if (!pk.CanBeTraded())
+                    {
+                        errors.Add($"第 {i + 1} 只 {speciesName}：无法交易");
+                    }
+                    else if (TradeExtensions<T>.IsItemBlocked(pk))
+                    {
+                        var itemName = pk.HeldItem > 0 ? GameInfo.GetStrings("zh-Hans").Item[pk.HeldItem] : "（无）";
+                        errors.Add($"第 {i + 1} 只 {speciesName}：携带物品「{itemName}」不被允许");
+                    }
+                    else
+                    {
+                        validPokemon.Add(pk);
+                    }
+                }
+
+                await processingMessage.DeleteAsync();
+
+                if (errors.Count > 0 && validPokemon.Count == 0)
+                {
+                    var errorMsg = string.Join("\n", errors.Take(10));
+                    if (errors.Count > 10) errorMsg += $"\n…还有 {errors.Count - 10} 个错误";
+                    await Helpers<T>.ReplyAndDeleteAsync(Context, $"所有宝可梦都无法交易：\n{errorMsg}", 10);
+                    return;
+                }
+
+                if (errors.Count > 0)
+                {
+                    var errorMsg = string.Join("\n", errors.Take(5));
+                    await Context.Channel.SendMessageAsync($"⚠️ 部分宝可梦被跳过：\n{errorMsg}");
+                }
+
+                if (validPokemon.Count > 0)
+                {
+                    var batchTradeCode = Info.GetRandomTradeCode(userID);
+                    await BatchHelpers<T>.ProcessBatchContainer(Context, validPokemon, batchTradeCode, validPokemon.Count);
+                }
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    await processingMessage.DeleteAsync();
+                }
+                catch { }
+
+                await Context.Channel.SendMessageAsync($"{Context.User.Mention} 处理 bin 文件时发生错误，请稍后再试。");
+                Base.LogUtil.LogError($"bin 文件处理错误：{ex.Message}", nameof(BinTradeAsync));
             }
         });
 
