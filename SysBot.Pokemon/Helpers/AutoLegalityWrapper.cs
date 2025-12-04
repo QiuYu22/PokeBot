@@ -1,6 +1,7 @@
 using PKHeX.Core;
 using PKHeX.Core.AutoMod;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -45,15 +46,8 @@ public static class AutoLegalityWrapper
         Legalizer.EnableEasterEggs = cfg.EnableEasterEggs;
         APILegality.AllowTrainerOverride = cfg.AllowTrainerDataOverride;
         APILegality.AllowBatchCommands = cfg.AllowBatchCommands;
-        APILegality.PrioritizeGame = cfg.PrioritizeGame;
-        // 防止因缺失导致的条目删除
-        GameVersion[] validVersions = [.. Enum.GetValues<GameVersion>().Where(ver => ver <= (GameVersion)52 && ver > GameVersion.Any)];
-        foreach (var ver in validVersions)
-        {
-            if (!cfg.PriorityOrder.Contains(ver))
-                cfg.PriorityOrder.Add(ver);
-        }
-        APILegality.PriorityOrder = cfg.PriorityOrder;
+        APILegality.GameVersionPriority = cfg.GameVersionPriority;
+        cfg.PriorityOrder = APILegality.PriorityOrder = SanitizePriorityOrder(cfg.PriorityOrder);
         APILegality.SetBattleVersion = cfg.SetBattleVersion;
         APILegality.Timeout = cfg.Timeout;
         var settings = ParseSettings.Settings;
@@ -74,6 +68,20 @@ public static class AutoLegalityWrapper
         cfg.PrioritizeEncounters.AddRange(missing);
         cfg.PrioritizeEncounters = [.. cfg.PrioritizeEncounters.Distinct()]; // Don't allow duplicates.
         EncounterMovesetGenerator.PriorityList = cfg.PrioritizeEncounters;
+    }
+
+    private static List<GameVersion> SanitizePriorityOrder(List<GameVersion> versionList)
+    {
+        var validVersions = Enum.GetValues<GameVersion>().Where(GameUtil.IsValidSavedVersion).Reverse().ToList();
+
+        foreach (var ver in validVersions)
+        {
+            if (!versionList.Contains(ver))
+                versionList.Add(ver); // Add any missing versions.
+        }
+
+        // Remove any versions in versionList that are not in validVersions and clean up duplicates in the process.
+        return [.. versionList.Intersect(validVersions)];
     }
 
     private static void InitializeTrainerDatabase(LegalitySettings cfg)
@@ -121,8 +129,8 @@ public static class AutoLegalityWrapper
             OT = fallback.OT,
             Generation = generation,
         };
-        var exist = TrainerSettings.GetSavedTrainerData(version, generation, fallback);
-        if (exist is SimpleTrainerInfo) // 非用户提供模板，默认 ALM 返回 SimpleTrainerInfo
+        var exist = TrainerSettings.GetSavedTrainerData(generation, version, fallback);
+        if (exist is SimpleTrainerInfo) // not anything from files; this assumes ALM returns SimpleTrainerInfo for non-user-provided fake templates.
             TrainerSettings.Register(fallback);
     }
 
@@ -165,17 +173,17 @@ public static class AutoLegalityWrapper
     public static ITrainerInfo GetTrainerInfo<T>() where T : PKM, new()
     {
         if (typeof(T) == typeof(PK8))
-            return TrainerSettings.GetSavedTrainerData(GameVersion.SWSH, 8);
+            return TrainerSettings.GetSavedTrainerData(GameVersion.SWSH);
         if (typeof(T) == typeof(PB8))
-            return TrainerSettings.GetSavedTrainerData(GameVersion.BDSP, 8);
+            return TrainerSettings.GetSavedTrainerData(GameVersion.BDSP);
         if (typeof(T) == typeof(PA8))
-            return TrainerSettings.GetSavedTrainerData(GameVersion.PLA, 8);
+            return TrainerSettings.GetSavedTrainerData(GameVersion.PLA);
         if (typeof(T) == typeof(PK9))
-            return TrainerSettings.GetSavedTrainerData(GameVersion.SV, 9);
+            return TrainerSettings.GetSavedTrainerData(GameVersion.SV);
         if (typeof(T) == typeof(PA9))
-            return TrainerSettings.GetSavedTrainerData(GameVersion.ZA, 9);
+            return TrainerSettings.GetSavedTrainerData(GameVersion.ZA);
         if (typeof(T) == typeof(PB7))
-            return TrainerSettings.GetSavedTrainerData(GameVersion.GE, 7);
+            return TrainerSettings.GetSavedTrainerData(GameVersion.GE);
 
         throw new ArgumentException("未识别的训练家类型，无法获取对应模板。", typeof(T).Name);
     }
@@ -207,5 +215,5 @@ public static class AutoLegalityWrapper
 
     public static string GetLegalizationHint(IBattleTemplate set, ITrainerInfo sav, PKM pk) => set.SetAnalysis(sav, pk);
     public static PKM LegalizePokemon(this PKM pk) => pk.Legalize();
-    public static IBattleTemplate GetTemplate(ShowdownSet set) => new RegenTemplate(set);
+    public static RegenTemplate GetTemplate(ShowdownSet set) => new RegenTemplate(set);
 }

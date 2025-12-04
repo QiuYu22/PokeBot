@@ -1,4 +1,5 @@
 using PKHeX.Core;
+using PKHeX.Core.AutoMod;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -73,16 +74,15 @@ public class LegalitySettings
         EncounterTypeGroup.Trade,
     ];
 
-    [Category(Generate), DisplayName("优先按照游戏排序"), Description("为 True 时按照 PriorityOrder 搜索遭遇；为 False 时使用最新游戏版本。建议保持 True。")]
-    public bool PrioritizeGame { get; set; } = false;
+    [Category(Generate), DisplayName("游戏版本优先级"), Description("生成宝可梦时搜索遭遇的方法。\"仅限原生\" 仅搜索当前游戏版本，\"最新优先\" 从最新游戏开始搜索，\"优先顺序\" 使用下方设置中指定的顺序。")]
+    public GameVersionPriorityType GameVersionPriority { get; set; } = GameVersionPriorityType.NativeOnly;
 
-    [Category(Generate), DisplayName("游戏版本优先顺序"), Description("自动合法化 (ALM) 尝试的游戏版本顺序。")]
-    public List<GameVersion> PriorityOrder { get; set; } =
-        [.. Enum.GetValues<GameVersion>().Where(ver => ver > GameVersion.Any && ver <= (GameVersion)52)];
+    [Category(Generate), DisplayName("游戏版本优先顺序"), Description("ALM 尝试合法化时使用的游戏版本顺序。")]
+    public List<GameVersion> PriorityOrder { get; set; } = Enum.GetValues<GameVersion>().Where(GameUtil.IsValidSavedVersion).Reverse().ToList();
 
     // Misc
     [Browsable(false)]
-    [Category(Misc), DisplayName("清除 HOME 追踪码"), Description("对克隆或用户请求的 PKM 清零 HOME Tracker，可能导致数据无效，建议保持关闭。")]
+    [Category(Misc), DisplayName("清除 HOME 追踪码"), Description("对克隆或用户请求的 PKM 清零 HOME 追踪码，可能导致数据无效，建议保持关闭。")]
     public bool ResetHOMETracker { get; set; } = false;
 
     [Category(Generate), DisplayName("设置所有合法缎带"), Description("为生成的宝可梦设置全部可能的合法缎带。")]

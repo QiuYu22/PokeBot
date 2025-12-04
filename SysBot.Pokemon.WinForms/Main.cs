@@ -591,10 +591,6 @@ namespace SysBot.Pokemon.WinForms
             }
         }
 
-        [JsonSerializable(typeof(ProgramConfig))]
-        [JsonSourceGenerationOptions(WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
-        public sealed partial class ProgramConfigContext : JsonSerializerContext
-        { }
 
         private void B_Start_Click(object sender, EventArgs e)
         {
